@@ -1,0 +1,55 @@
+URxvt*depth: 32
+URxvt*background: [90]#000000
+URxvt*foreground: White
+URxvt.scrollBar: false
+URxvt.font:xft:droid sans mono:pixelsize=14
+URxvt.letterSpace: -1
+
+! black
+*color0: #000000
+
+! bright_black
+*color8: #353535
+
+! red
+*color1: #c3403c
+
+! bright_red
+*color9: #dd9290
+
+! green
+*color2: #3cc340
+
+! bright_green
+*color10: #90dd92
+
+! yellow
+*color3: #bfc33c
+
+! bright_yellow
+*color11: #dadd90
+
+! blue
+*color4: #403cc3
+
+! bright_blue
+*color12: #9290dd
+
+! magenta
+*color5: #c33cbf
+
+! bright_magenta
+*color13: #dd90da
+
+! cyan
+*color6: #3cbfc3
+
+! bright_cyan
+*color14: #90dadd
+
+! white
+*color7: #c7c7c7
+
+! bright_white
+*color15: #ffffff
+
