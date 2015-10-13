@@ -7,13 +7,13 @@
 
 <menu id="root-menu" label="Openbox 3">
   <item label="Terminal Emulator">
-    <action name="Execute"><execute>x-terminal-emulator</execute></action>
+    <action name="Execute"><execute>urxvt</execute></action>
   </item>
   <item label="Web Browser">
-    <action name="Execute"><execute>x-www-browser</execute></action>
+    <action name="Execute"><execute>firefox</execute></action>
   </item>
   <item label="Music Player">
-    <action name="Execute"><execute>x-terminal-emulator -e mocp</execute></action>
+    <action name="Execute"><execute>urxvt -e mocp</execute></action>
   </item>
   <item label="Steam">
     <action name="Execute"><execute>steam</execute></action>
