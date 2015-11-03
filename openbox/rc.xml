@@ -286,7 +286,8 @@
     </keybind>
     <keybind key="XF86AudioMute">
       <action name="Execute">
-        <command>amixer -q sset Master toggle</command>
+        <!-- command>amixer -q sset Master toggle</command -->
+        <command>pactl set-sink-mute 1 toggle</command>
       </action>
     </keybind>
   </keyboard>
