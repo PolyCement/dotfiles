@@ -1,6 +1,9 @@
 #enable compositing
 xcompmgr&
 
+#disable screen dimming
+xset s off -dpms
+
 #set the background
 #eval `cat ~/.fehbg`
 feh --bg-scale ~/Pictures/bg/$(ls ~/Pictures/bg | sort -R | head -n 1)
