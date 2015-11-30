@@ -4,6 +4,9 @@ xcompmgr&
 #disable screen dimming
 xset s off -dpms
 
+#start ssh-agent
+eval `ssh-agent`
+
 #set the background
 #eval `cat ~/.fehbg`
 feh --bg-scale ~/Pictures/bg/$(ls ~/Pictures/bg | sort -R | head -n 1)
