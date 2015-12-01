@@ -5,7 +5,8 @@ xcompmgr&
 xset s off -dpms
 
 #start ssh-agent
-eval `ssh-agent`
+ssh-agent > ~/.ssh-agent
+eval `< ~/.ssh-agent`
 
 #set the background
 #eval `cat ~/.fehbg`
