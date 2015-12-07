@@ -8,3 +8,4 @@ ln -s "$BASEDIR/openbox" ~/.config/
 mkdir -p ~/.config/tint2
 ln -s "$BASEDIR/tint2rc" ~/.config/tint2
 ln -s "$BASEDIR/bashrc" ~/.bashrc
+ln -s "$BASEDIR/vimrc" ~/.vimrc
