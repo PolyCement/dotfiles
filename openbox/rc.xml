@@ -176,7 +176,7 @@
       </action>
     </keybind>
     <!-- Binds for maximising and minimising windows -->
-    <!-- can't figure out how to make these restore width correctly... ->
+    <!-- can't figure out how to make these restore width correctly... -->
     <keybind key="W-Up">
       <action name="Maximize"/>
       <action name="Undecorate"/>
