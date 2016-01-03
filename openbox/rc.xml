@@ -292,7 +292,7 @@
     <!-- Touchpad toggle -->
     <keybind key="XF86TouchpadToggle">
       <action name="Execute">
-        <command>touchpadtoggle</command>
+        <command>toggletouchpad</command>
       </action>
     </keybind>
   </keyboard>
