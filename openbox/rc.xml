@@ -289,6 +289,12 @@
         <command>pactl set-sink-mute 1 toggle</command>
       </action>
     </keybind>
+    <!-- Touchpad toggle -->
+    <keybind key="XF86TouchpadToggle">
+      <action name="Execute">
+        <command>touchpadtoggle</command>
+      </action>
+    </keybind>
   </keyboard>
   <mouse>
     <dragThreshold>1</dragThreshold>
