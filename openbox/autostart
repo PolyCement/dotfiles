@@ -4,9 +4,8 @@ xcompmgr&
 #disable screen dimming
 xset s off -dpms
 
-#start ssh-agent
-ssh-agent > ~/.ssh-agent
-eval `< ~/.ssh-agent`
+#disable coasting (virtual mousewheel)
+xinput --set-prop --type=float 13 "Synaptics Coasting Speed" 0 0
 
 #set the background
 #eval `cat ~/.fehbg`
@@ -14,6 +13,9 @@ feh --bg-scale ~/Pictures/bg/$(ls ~/Pictures/bg | sort -R | head -n 1)
 
 #open the panel
 tint2&
+
+#battery monitor
+cbatticon&
 
 #give me a volume control
 volumeicon&
