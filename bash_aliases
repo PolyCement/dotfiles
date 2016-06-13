@@ -6,3 +6,5 @@ alias la='ls -a'
 alias ll='ls -l'
 #mounting devices
 alias mntphone='go-mtpfs ~/mnt &'
+#make livestreamer use mpv
+alias livestreamer='livestreamer -p mpv'
