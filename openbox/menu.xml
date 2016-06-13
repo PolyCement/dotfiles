@@ -15,15 +15,15 @@
   <item label="Music Player">
     <action name="Execute"><execute>urxvt -e mocp</execute></action>
   </item>
+  <separator />
   <item label="Steam">
     <action name="Execute"><execute>steam</execute></action>
   </item>
-  <separator />
   <item label="GIMP">
     <action name="Execute"><execute>gimp</execute></action>
   </item>
-  <item label="Skype">
-    <action name="Execute"><execute>skype</execute></action>
+  <item label="Discord">
+    <action name="Execute"><execute>DiscordCanary</execute></action>
   </item>
   <!-- This requires the presence of the 'menu' package to work -->
   <menu id="/Debian" />
