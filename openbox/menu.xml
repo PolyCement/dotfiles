@@ -17,14 +17,21 @@
   </item>
   <separator />
   <item label="Steam">
-    <action name="Execute"><execute>steam</execute></action>
+    <action name="Execute">
+      <execute>sh -c "STEAM_RUNTIME=0 steam"</execute>
+    </action>
   </item>
   <item label="GIMP">
     <action name="Execute"><execute>gimp</execute></action>
   </item>
-  <item label="Discord">
-    <action name="Execute"><execute>DiscordCanary</execute></action>
-  </item>
+  <menu id="voip-menu" label="VOIP">
+    <item label="Discord">
+      <action name="Execute"><execute>DiscordCanary</execute></action>
+    </item>
+    <item label="Skype">
+      <action name="Execute"><execute>skype</execute></action>
+    </item>
+  </menu>
   <!-- This requires the presence of the 'menu' package to work -->
   <menu id="/Debian" />
   <separator />

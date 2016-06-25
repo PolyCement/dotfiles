@@ -8,3 +8,5 @@ alias ll='ls -l'
 alias mntphone='go-mtpfs ~/mnt &'
 #make livestreamer use mpv
 alias livestreamer='livestreamer -p mpv'
+#stop steam using its own runtime
+alias steam='STEAM_RUNTIME=0 steam'
