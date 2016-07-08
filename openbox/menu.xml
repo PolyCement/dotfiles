@@ -26,7 +26,7 @@
   </item>
   <menu id="voip-menu" label="VOIP">
     <item label="Discord">
-      <action name="Execute"><execute>DiscordCanary</execute></action>
+      <action name="Execute"><execute>discord-canary</execute></action>
     </item>
     <item label="Skype">
       <action name="Execute"><execute>skype</execute></action>
