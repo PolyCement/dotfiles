@@ -1,0 +1,9 @@
+#!/usr/bin/bash
+
+#when trying to less a zip file, list its contents with unzip
+if [[ $1 == *.zip ]]
+then
+    unzip -l $1 | less
+else
+    less $1
+fi

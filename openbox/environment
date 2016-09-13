@@ -1,2 +1,2 @@
 #add /opt/setlayout to the path
-PATH=$PATH:/opt/setlayout:~/bin
+PATH=$PATH:/opt/setlayout:~/bin:~/dotfiles/bin
