@@ -12,11 +12,13 @@
   <item label="Web Browser">
     <action name="Execute"><execute>firefox</execute></action>
   </item>
-  <item label="Music Player">
-    <action name="Execute"><execute>urxvt -e mocp</execute></action>
-  </item>
   <separator />
   <item label="Steam">
+    <action name="Execute">
+      <execute>sh -c "steam"</execute>
+    </action>
+  </item>
+  <item label="Steam (Native Runtime)">
     <action name="Execute">
       <execute>sh -c "STEAM_RUNTIME=0 steam"</execute>
     </action>
