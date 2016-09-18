@@ -1,12 +1,16 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+#get the path to this directory
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+#link all the files
 ln -s "$BASEDIR/Xresources" ~/.Xresources
 mkdir -p ~/.config
 ln -s "$BASEDIR/openbox" ~/.config/
 mkdir -p ~/.config/tint2
 ln -s "$BASEDIR/tint2rc" ~/.config/tint2
+mkdir -p ~/.config/dunst
+ln -s "$BASEDIR/dunstrc" ~/.config/dunst
 ln -s "$BASEDIR/bashrc" ~/.bashrc
 ln -s "$BASEDIR/vimrc" ~/.vimrc
 ln -s "$BASEDIR/bash_aliases" ~/.bash_aliases

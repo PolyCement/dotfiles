@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/usr/bin/env bash
 
 #when trying to less a zip file, list its contents with unzip
 if [[ $1 == *.zip ]]
