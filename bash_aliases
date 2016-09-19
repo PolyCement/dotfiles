@@ -10,3 +10,7 @@ alias mntphone='go-mtpfs ~/mnt/phone &'
 alias livestreamer='livestreamer -p mpv'
 #use my extension of less
 alias less='less2'
+#force view to call vim instead of vi
+alias view='vim -R'
+#more handy shortcuts
+alias suspend='systemctl suspend'
