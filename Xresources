@@ -4,6 +4,7 @@ URxvt*foreground: White
 URxvt.scrollBar: false
 URxvt.font:xft:droid sans mono:pixelsize=14
 URxvt.letterSpace: -1
+URxvt.lineSpace: 2
 
 ! black
 *color0: #000000

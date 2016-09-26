@@ -13,16 +13,23 @@
     <action name="Execute"><execute>firefox</execute></action>
   </item>
   <separator />
-  <item label="Steam">
-    <action name="Execute">
-      <execute>sh -c "steam"</execute>
-    </action>
-  </item>
-  <item label="Steam (Native Runtime)">
-    <action name="Execute">
-      <execute>sh -c "STEAM_RUNTIME=0 steam"</execute>
-    </action>
-  </item>
+  <menu id="games-menu" label="Games">
+      <item label="Feed the Beast">
+        <action name="Execute">
+          <execute>feedthebeast</execute>
+        </action>
+      </item>
+      <item label="Steam">
+        <action name="Execute">
+          <execute>steam</execute>
+        </action>
+      </item>
+      <item label="Steam (Native Runtime)">
+        <action name="Execute">
+          <execute>sh -c "STEAM_RUNTIME=0 steam"</execute>
+        </action>
+      </item>
+  </menu>
   <item label="GIMP">
     <action name="Execute"><execute>gimp</execute></action>
   </item>
