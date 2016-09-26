@@ -2,7 +2,7 @@ URxvt*depth: 32
 URxvt*background: [80]#000000
 URxvt*foreground: White
 URxvt.scrollBar: false
-URxvt.font:xft:droid sans mono:pixelsize=14
+URxvt.font:xft:droid sans mono:pixelsize=14,xft:dejavu sans mono:pixelsize=14
 URxvt.letterSpace: -1
 URxvt.lineSpace: 2
 
