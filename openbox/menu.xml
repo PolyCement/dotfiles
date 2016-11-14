@@ -30,9 +30,18 @@
         </action>
       </item>
   </menu>
-  <item label="GIMP">
-    <action name="Execute"><execute>gimp</execute></action>
-  </item>
+  <menu id="graphics-menu" label="Graphics">
+      <item label="GIMP">
+        <action name="Execute">
+            <execute>gimp</execute>
+        </action>
+      </item>
+      <item label="Krita">
+        <action name="Execute">
+            <execute>krita</execute>
+        </action>
+      </item>
+  </menu>
   <menu id="voip-menu" label="VOIP">
     <item label="Discord">
       <action name="Execute"><execute>discord-canary</execute></action>
