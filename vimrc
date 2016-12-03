@@ -10,3 +10,11 @@ set linebreak
 
 "syntax highlighting
 syntax on
+
+"search highlighting
+set hlsearch
+
+"plugins!
+call plug#begin()
+Plug 'tpope/vim-sensible'
+call plug#end()

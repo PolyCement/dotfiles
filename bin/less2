@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
-#when trying to less a zip file, list its contents with unzip
-if [[ $1 == *.zip ]]
-then
-    unzip -l "$1" | less
-else
-    less "$1"
-fi
+#when trying to less certain file types, list their contents instead
+case $1 in
+*.zip)
+    unzip -l "$1" | less ;;
+*.rar)
+    unrar l "$1" | less ;;
+*)
+    if [[ -z "$1" ]]; then
+        less
+    else
+        less "$*"
+    fi ;;
+esac
