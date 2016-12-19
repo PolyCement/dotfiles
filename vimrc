@@ -18,4 +18,5 @@ set hlsearch
 call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+Plug 'dietsche/vim-lastplace'
 call plug#end()

@@ -7,6 +7,7 @@ BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ln -s "$BASEDIR/Xresources" ~/.Xresources
 mkdir -p ~/.config
 ln -s "$BASEDIR/openbox" ~/.config/
+ln -s "$BASEDIR/awesome" ~/.config/
 mkdir -p ~/.config/tint2
 ln -s "$BASEDIR/tint2rc" ~/.config/tint2
 mkdir -p ~/.config/dunst
@@ -15,3 +16,4 @@ ln -s "$BASEDIR/bashrc" ~/.bashrc
 ln -s "$BASEDIR/vimrc" ~/.vimrc
 ln -s "$BASEDIR/bash_aliases" ~/.bash_aliases
 ln -s "$BASEDIR/inputrc" ~/.inputrc
+ln -s "$BASEDIR/profile" ~/.profile
