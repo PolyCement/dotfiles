@@ -36,7 +36,6 @@ do
 end
 -- }}}
 
--- autostart - consider moving some of this stuff to xinit
 -- start the compositor
 awful.util.spawn_with_shell("xcompmgr &")
 
@@ -87,7 +86,7 @@ end
 tags = {}
 for s = 1, screen.count() do
     -- Each screen has its own tag table.
-    tags[s] = awful.tag({ 1, 2, 3, 4 }, s, { layouts[2], layouts[9], layouts[9], layouts[9] })
+    tags[s] = awful.tag({ "home", "web", 3, 4 }, s, { layouts[2], layouts[9], layouts[9], layouts[9] })
 end
 -- }}}
 
