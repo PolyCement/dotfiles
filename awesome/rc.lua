@@ -10,6 +10,8 @@ local beautiful = require("beautiful")
 -- Notification library
 local naughty = require("naughty")
 local menubar = require("menubar")
+-- widget library
+local vicious = require("vicious")
 
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -124,6 +126,10 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- Create a textclock widget
 mytextclock = awful.widget.textclock()
 
+-- battery monitor
+mybatmon = wibox.widget.textbox()
+vicious.register(mybatmon, vicious.widgets.bat, " Battery: $2% |", 30, "BAT0")
+
 -- Create a wibox for each screen and add it
 mywibox = {}
 mypromptbox = {}
@@ -203,6 +209,7 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
+    right_layout:add(mybatmon)
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
@@ -230,7 +237,9 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey,           }, "Right",  awful.tag.viewnext       ),
     awful.key({ modkey,           }, "Escape", awful.tag.history.restore),
 
-    -- i reversed these, i have no idea why they're set backwards by default
+    -- i reversed these, by default i think they're using vim logic of j to go forward, k to go back?
+    -- reversing makes j go left and k go right relative to the toolbar, which feels more intuitive imo
+    -- (especially since h and l are already in use......)
     awful.key({ modkey,           }, "j",
         function ()
             awful.client.focus.byidx(-1)
@@ -256,6 +265,21 @@ globalkeys = awful.util.table.join(
                 client.focus:raise()
             end
         end),
+
+    -- volume controls
+    awful.key({ }, "XF86AudioLowerVolume",
+              function()
+                  awful.util.spawn("pactl set-sink-volume 1 -5%")
+              end),
+    awful.key({ }, "XF86AudioRaiseVolume",
+              function()
+                  awful.util.spawn("pactl set-sink-volume 1 +5%")
+              end),
+    awful.key({ }, "XF86AudioMute",
+              function()
+                  awful.util.spawn("pactl set-sink-mute 1 toggle")
+              end),
+
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.util.spawn(terminal) end),
