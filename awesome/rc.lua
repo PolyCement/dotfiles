@@ -45,6 +45,9 @@ awful.util.spawn_with_shell("xcompmgr &")
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
 
+-- make notifications stay on screen longer
+naughty.config.defaults.timeout = 10
+
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
