@@ -130,8 +130,13 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 mytextclock = awful.widget.textclock()
 
 -- battery monitor
-mybatmon = wibox.widget.textbox()
-vicious.register(mybatmon, vicious.widgets.bat, " Battery: $2% |", 30, "BAT0")
+-- don't add it if there's no battery info
+local batdir = io.open("/sys/class/power_supply/BAT0", "r")
+if batdir ~= nil then
+    io.close(batdir)
+    mybatmon = wibox.widget.textbox()
+    vicious.register(mybatmon, vicious.widgets.bat, " Battery: $2% |", 30, "BAT0")
+end
 
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -212,7 +217,9 @@ for s = 1, screen.count() do
     -- Widgets that are aligned to the right
     local right_layout = wibox.layout.fixed.horizontal()
     if s == 1 then right_layout:add(wibox.widget.systray()) end
-    right_layout:add(mybatmon)
+    if mybatmon ~= nil then
+        right_layout:add(mybatmon)
+    end
     right_layout:add(mytextclock)
     right_layout:add(mylayoutbox[s])
 
