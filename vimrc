@@ -19,4 +19,5 @@ call plug#begin()
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
 Plug 'dietsche/vim-lastplace'
+Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 call plug#end()
