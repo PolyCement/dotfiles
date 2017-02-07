@@ -49,7 +49,7 @@ beautiful.init("~/.config/awesome/themes/default/theme.lua")
 naughty.config.defaults.timeout = 10
 
 -- This is used later as the default terminal and editor to run.
-terminal = "xterm"
+terminal = "urxvt"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -369,7 +369,16 @@ globalkeys = awful.util.table.join(
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
     awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"})
+              {description = "show the menubar", group = "launcher"}),
+    -- print screen
+    awful.key({ }, "Print",
+             function()
+                 awful.util.spawn_with_shell("scrot ~/pictures/screenshots/%y%m%d-%H%M%S.png")
+             end),
+    awful.key({ "Mod1" }, "Print",
+             function()
+                 awful.util.spawn_with_shell("scrot -s ~/pictures/screenshots/%y%m%d-%H%M%S.png")
+             end)
 )
 
 clientkeys = awful.util.table.join(
