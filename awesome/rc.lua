@@ -489,6 +489,7 @@ awful.rules.rules = {
     },
 
     -- Floating clients.
+    -- todo: clean this up, i don't use any of these apps lmao
     { rule_any = {
         instance = {
           "DTA",  -- Firefox addon DownThemAll.
@@ -514,10 +515,16 @@ awful.rules.rules = {
         }
       }, properties = { floating = true }},
 
+    -- make gimp's toolbox and docks stay on top
+    {
+        rule_any = { class = "gimp", role = { "gimp-toolbox", "gimp-dock" } },
+        properties = { ontop = true }
+    }
+
     -- Add titlebars to normal clients and dialogs
-    { rule_any = {type = { "normal", "dialog" }
-      }, properties = { titlebars_enabled = false}
-    },
+    -- { rule_any = {type = { "normal", "dialog" }
+    --   }, properties = { titlebars_enabled = false}
+    -- },
 
     -- Set Firefox to always map on the tag named "2" on screen 1.
     -- { rule = { class = "Firefox" },
