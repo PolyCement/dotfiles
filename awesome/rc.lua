@@ -368,16 +368,18 @@ globalkeys = awful.util.table.join(
               end,
               {description = "lua execute prompt", group = "awesome"}),
     -- Menubar
-    awful.key({ modkey }, "p", function() menubar.show() end,
-              {description = "show the menubar", group = "launcher"}),
+    -- awful.key({ modkey }, "p", function() menubar.show() end,
+    --        {description = "show the menubar", group = "launcher"}),
     -- print screen
     awful.key({ }, "Print",
              function()
-                 awful.util.spawn_with_shell("scrot ~/pictures/screenshots/%y%m%d-%H%M%S.png")
+                 local timestamp = os.date("%y%m%d-%H%M%S")
+                 awful.util.spawn_with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
              end),
     awful.key({ "Mod1" }, "Print",
              function()
-                 awful.util.spawn_with_shell("scrot -s ~/pictures/screenshots/%y%m%d-%H%M%S.png")
+                 local timestamp = os.date("%y%m%d-%H%M%S")
+                 awful.util.spawn_with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
              end)
 )
 
@@ -590,12 +592,12 @@ client.connect_signal("request::titlebars", function(c)
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
-client.connect_signal("mouse::enter", function(c)
-    if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-        and awful.client.focus.filter(c) then
-        client.focus = c
-    end
-end)
+-- client.connect_signal("mouse::enter", function(c)
+--     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+--         and awful.client.focus.filter(c) then
+--         client.focus = c
+--     end
+-- end)
 
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
