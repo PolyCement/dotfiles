@@ -14,3 +14,5 @@ alias less='less2'
 alias view='vim -R'
 #more handy shortcuts
 alias suspend='systemctl suspend'
+#ughhhhhhh
+alias pcsx2='PCSX2'

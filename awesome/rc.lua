@@ -521,6 +521,12 @@ awful.rules.rules = {
     {
         rule_any = { class = "gimp", role = { "gimp-toolbox", "gimp-dock" } },
         properties = { ontop = true }
+    },
+
+    -- make tf2 (and presumably other source engine games) run in fullscreen
+    {
+        rule = { class = "hl2_linux" },
+        properties = { fullscreen = true }
     }
 
     -- Add titlebars to normal clients and dialogs
