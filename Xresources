@@ -1,56 +1,41 @@
-URxvt*depth: 32
-URxvt*background: [80]#000000
-URxvt*foreground: White
 URxvt.scrollBar: false
 URxvt.font:xft:droid sans mono:pixelsize=14,xft:dejavu sans mono:pixelsize=14
 URxvt.letterSpace: -1
 URxvt.lineSpace: 2
 
-! black
-*color0: #000000
+! colour scheme (lifted from solarized: https://github.com/altercation/solarized)
+*depth: 32
+*background: [98]#002b36
+*foreground: #839496
 
-! bright_black
-*color8: #353535
+! black, light black
+*color0: #073642
+*color8: #002b36
 
-! red
-*color1: #c3403c
+! red, light red
+*color1: #dc322f
+*color9: #cb4b16
 
-! bright_red
-*color9: #dd9290
+! green, light green
+*color2: #859900
+*color10: #586e75
 
-! green
-*color2: #3cc340
+! yellow, light yellow
+*color3: #b58900
+*color11: #657b83
 
-! bright_green
-*color10: #90dd92
+! blue, light blue
+*color4: #268bd2
+*color12: #839496
 
-! yellow
-*color3: #bfc33c
+! magenta, light magenta
+*color5: #d33682
+*color13: #6c71c4
 
-! bright_yellow
-*color11: #dadd90
+! cyan, light cyan
+*color6: #2aa198
+*color14: #93a1a1
 
-! blue
-*color4: #403cc3
-
-! bright_blue
-*color12: #9290dd
-
-! magenta
-*color5: #c33cbf
-
-! bright_magenta
-*color13: #dd90da
-
-! cyan
-*color6: #3cbfc3
-
-! bright_cyan
-*color14: #90dadd
-
-! white
-*color7: #c7c7c7
-
-! bright_white
-*color15: #ffffff
-
+! white, light white
+*color7: #eee8d5
+*color15: #fdf6e3
