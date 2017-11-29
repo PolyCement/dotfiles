@@ -6,6 +6,8 @@ case $1 in
     unzip -l "$1" | less ;;
 *.rar)
     unrar l "$1" | less ;;
+*.7z)
+    7z l "$1" | less ;;
 *)
     if [[ -z "$1" ]]; then
         less

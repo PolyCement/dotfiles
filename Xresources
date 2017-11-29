@@ -1,41 +1,13 @@
+Xft.dpi: 69
 URxvt.scrollBar: false
 URxvt.font:xft:droid sans mono:pixelsize=14,xft:dejavu sans mono:pixelsize=14
 URxvt.letterSpace: -1
 URxvt.lineSpace: 2
-
-! colour scheme (lifted from solarized: https://github.com/altercation/solarized)
-*depth: 32
-*background: [98]#002b36
-*foreground: #839496
-
-! black, light black
-*color0: #073642
-*color8: #002b36
-
-! red, light red
-*color1: #dc322f
-*color9: #cb4b16
-
-! green, light green
-*color2: #859900
-*color10: #586e75
-
-! yellow, light yellow
-*color3: #b58900
-*color11: #657b83
-
-! blue, light blue
-*color4: #268bd2
-*color12: #839496
-
-! magenta, light magenta
-*color5: #d33682
-*color13: #6c71c4
-
-! cyan, light cyan
-*color6: #2aa198
-*color14: #93a1a1
-
-! white, light white
-*color7: #eee8d5
-*color15: #fdf6e3
+! by default urxvt attempts to use high intensity colours for boldface
+! this breaks base16 colourschemes, so turn it off
+URxvt.intensityStyles: false
+! remember to specify urxvt otherwise it breaks vim, xterm and probably a bunch of other stuff
+URxvt.depth: 32
+! colour scheme
+#define background_opacity 98
+#include "~/dotfiles/base16-atelier-heath.Xresources"

@@ -4,7 +4,7 @@
 
 theme = {}
 
-theme.font          = "sans 8"
+theme.font          = "sans 11"
 
 theme.bg_normal     = "#222222"
 theme.bg_focus      = "#535d6c"
@@ -96,6 +96,19 @@ theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
 -- Define the icon theme for application icons. If not set then the icons 
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.
 theme.icon_theme = nil
+
+-- notification settings
+theme.notification_width = 250
+theme.notification_height = 80
+
+-- hotkey popup font size
+theme.hotkeys_font = "sans 11"
+theme.hotkeys_description_font = "sans 11"
+
+-- put gaps round windows (but only when there's multiple clients)
+-- TODO: disable gaps on maximized layouts
+theme.useless_gap = 6
+theme.gap_single_client = false
 
 return theme
 -- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80

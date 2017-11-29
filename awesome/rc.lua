@@ -47,6 +47,14 @@ beautiful.init("~/.config/awesome/themes/default/theme.lua")
 
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
+naughty.config.defaults.position = "bottom_right"
+
+-- resize icons
+-- TODO: replace this with beautiful.notification_icon_size next time awesome updates
+naughty.config.notify_callback = function(args)
+    args.icon_size = 72
+    return args
+end
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -67,10 +75,10 @@ awful.layout.layouts = {
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
+    -- awful.layout.suit.fair,
+    -- awful.layout.suit.fair.horizontal,
     -- awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
+    -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
     -- awful.layout.suit.magnifier,
@@ -112,8 +120,22 @@ mysystemmenu = {
     { "reboot", "reboot" }
 }
 
+gamesmenu = {
+    { "dolphin", "dolphin-emu" },
+    { "retroarch", "retroarch" },
+    { "steam", "steam" },
+    { "steam (native)", "steam-native" }
+}
+
+devmenu = {
+    { "godot", "godot" },
+    { "unity", "unity-editor" }
+}
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "system", mysystemmenu },
+                                    { "games", gamesmenu },
+                                    { "game dev", devmenu },
                                     { "browser", "firefox" },
                                     { "voip", "discord-canary" },
                                     { "terminal", terminal }
@@ -128,11 +150,14 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- }}}
 
 -- Keyboard map indicator and switcher
-mykeyboardlayout = awful.widget.keyboardlayout()
+-- mykeyboardlayout = awful.widget.keyboardlayout()
 
 -- {{{ Wibar
--- Create a textclock widget
-mytextclock = wibox.widget.textclock()
+-- blank space for padding
+local pad_widget = wibox.widget.textbox(" ")
+
+-- textclock widget
+local clock_widget = wibox.widget.textclock("%a %d %b, %H:%M")
 
 -- battery monitor
 -- don't add it if there's no battery info
@@ -201,12 +226,28 @@ end
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
 
+-- list of tags to add to each screen
+local tag_list = {
+    { "home", awful.layout.layouts[2] },
+    { "web", awful.layout.layouts[6] },
+    { "3", awful.layout.layouts[6] },
+    { "4", awful.layout.layouts[6] }
+}
+
 awful.screen.connect_for_each_screen(function(s)
     -- Wallpaper
     set_wallpaper(s)
 
-    -- Each screen has its own tag table.
-    awful.tag({ "home", "web", "3", "4" }, s, { awful.layout.layouts[2], awful.layout.layouts[9], awful.layout.layouts[9], awful.layout.layouts[9] })
+    -- add tags
+    for i, d in ipairs(tag_list) do
+        local name, layout = unpack(d)
+        local selected = i == 1 and true or false
+        local gap_size = beautiful.useless_gap
+        if layout.name == "max" or layout.name == "fullscreen" then
+            gap_size = 0
+        end
+        awful.tag.add(name, { layout = layout, selected = selected, gap = gap_size })
+    end
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
@@ -239,13 +280,24 @@ awful.screen.connect_for_each_screen(function(s)
         s.mytasklist, -- Middle widget
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
-            mykeyboardlayout,
+            -- mykeyboardlayout,
             wibox.widget.systray(),
             mybatmon,
-            mytextclock,
+            pad_widget,
+            clock_widget,
+            pad_widget,
             s.mylayoutbox,
         },
     }
+
+    -- disable useless gaps when layout is set to maximized or fullscreen
+    awful.tag.attached_connect_signal(s, "property::layout", function(t)
+        if t.layout.name == "max" or t.layout.name == "fullscreen" then
+            t.gap = 0
+        else
+            t.gap = beautiful.useless_gap
+        end
+    end)
 end)
 -- }}}
 
@@ -478,44 +530,24 @@ root.keys(globalkeys)
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
-    { rule = { },
-      properties = { border_width = beautiful.border_width,
-                     border_color = beautiful.border_normal,
-                     focus = awful.client.focus.filter,
-                     raise = true,
-                     keys = clientkeys,
-                     buttons = clientbuttons,
-                     screen = awful.screen.preferred,
-                     placement = awful.placement.no_overlap+awful.placement.no_offscreen
-     }
+    {
+        rule = { },
+        properties = { border_width = beautiful.border_width,
+                       border_color = beautiful.border_normal,
+                       focus = awful.client.focus.filter,
+                       raise = true,
+                       keys = clientkeys,
+                       buttons = clientbuttons,
+                       screen = awful.screen.preferred,
+                       placement = awful.placement.no_overlap+awful.placement.no_offscreen
+        }
     },
 
     -- Floating clients.
-    -- todo: clean this up, i don't use any of these apps lmao
-    { rule_any = {
-        instance = {
-          "DTA",  -- Firefox addon DownThemAll.
-          "copyq",  -- Includes session name in class.
-        },
-        class = {
-          "Arandr",
-          "Gpick",
-          "Kruler",
-          "MessageWin",  -- kalarm.
-          "Sxiv",
-          "Wpa_gui",
-          "pinentry",
-          "veromix",
-          "xtightvncviewer"},
-
-        name = {
-          "Event Tester",  -- xev.
-        },
-        role = {
-          "AlarmWindow",  -- Thunderbird's calendar.
-          "pop-up",       -- e.g. Google Chrome's (detached) Developer Tools.
-        }
-      }, properties = { floating = true }},
+    {
+        rule = { class = "Simplescreenrecorder" },
+        properties = { floating = true }
+    },
 
     -- make gimp's toolbox and docks stay on top
     {
@@ -527,16 +559,41 @@ awful.rules.rules = {
     {
         rule = { class = "hl2_linux" },
         properties = { fullscreen = true }
+    },
+
+    -- firefox always on web tag
+    {
+        rule = { class = "Firefox" },
+        properties = { tag = "web" }
+    },
+
+    -- make firefox windows other than the main one float
+    {
+        rule = { class = "Firefox" },
+        except = { instance = "Navigator" },
+        properties = { floating = true }
+    },
+
+    -- ignore discord's size hints
+    {
+        rule = { class = "discord" },
+        properties = { size_hints_honor = false }
+    },
+
+    -- godot.....
+    {
+        rule = { class = "Godot" },
+        except = { instance = "Godot_Editor" },
+        properties = { floating = true },
+        callback = function (c) naughty.notify({ text = "hey" }) end
     }
 
     -- Add titlebars to normal clients and dialogs
-    -- { rule_any = {type = { "normal", "dialog" }
-    --   }, properties = { titlebars_enabled = false}
-    -- },
+--     {
+--         rule_any = { type = { "normal", "dialog" } },
+--         properties = { titlebars_enabled = true }
+--     },
 
-    -- Set Firefox to always map on the tag named "2" on screen 1.
-    -- { rule = { class = "Firefox" },
-    --   properties = { screen = 1, tag = "2" } },
 }
 -- }}}
 
@@ -595,6 +652,21 @@ client.connect_signal("request::titlebars", function(c)
         },
         layout = wibox.layout.align.horizontal
     }
+end)
+
+-- centre floating clients
+client.connect_signal("property::floating", function(c)
+    if c.floating then
+        awful.placement.centered(c)
+    end
+end)
+
+-- godot seems to maximise itself after the client is created so.....
+client.connect_signal("property::maximized", function(c)
+    -- fuck u godot
+    if c.class == "Godot" then
+        c.maximized = false
+    end
 end)
 
 -- Enable sloppy focus, so that focus follows mouse.
