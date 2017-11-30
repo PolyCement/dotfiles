@@ -10,4 +10,4 @@ URxvt.intensityStyles: false
 URxvt.depth: 32
 ! colour scheme
 #define background_opacity 98
-#include "~/dotfiles/base16-atelier-heath.Xresources"
+#include "dotfiles/base16-atelier-heath.Xresources"
