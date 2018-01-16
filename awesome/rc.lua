@@ -122,6 +122,7 @@ mysystemmenu = {
 
 gamesmenu = {
     { "dolphin", "dolphin-emu" },
+    { "ftb", "feedthebeast" },
     { "retroarch", "retroarch" },
     { "steam", "steam" },
     { "steam (native)", "steam-native" }
@@ -574,10 +575,11 @@ awful.rules.rules = {
         properties = { floating = true }
     },
 
-    -- ignore discord's size hints
+    -- ignore discord's size hints, put it on home tag
+    -- TODO: is there any way to force this to always start up on the right?
     {
         rule = { class = "discord" },
-        properties = { size_hints_honor = false }
+        properties = { size_hints_honor = false, tag = "home" }
     },
 
     -- godot.....

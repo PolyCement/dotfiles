@@ -19,10 +19,10 @@
 #define base0F #cc33cc
 
 *.foreground:   base05
-#ifdef background_opacity
-*.background:   [background_opacity]base00
-#else
 *.background:   base00
+! freya edit: only set opacity for urxvt or vim will complain
+#ifdef background_opacity
+URxvt.background:   [background_opacity]base00
 #endif
 *.cursorColor:  base05
 
