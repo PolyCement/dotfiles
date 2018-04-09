@@ -14,6 +14,9 @@ syntax on
 " search highlighting
 set hlsearch
 
+" if this aint set numbertoggle does nothing
+set number relativenumber
+
 " plugins!
 call plug#begin()
 " general good stuff
