@@ -17,6 +17,9 @@ set hlsearch
 " set hidden so i dont have to save buffers to switch between em
 set hidden
 
+" if this aint set numbertoggle does nothing
+set number relativenumber
+
 " plugins!
 call plug#begin()
 " general good stuff
@@ -33,9 +36,6 @@ Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
-
-" now required for numbertoggle, apparently
-set number relativenumber
 
 " set colour scheme
 colorscheme base16-atelier-heath

@@ -583,11 +583,10 @@ awful.rules.rules = {
     },
 
     -- godot.....
+    -- TODO: make sure this doesn't apply to games made in godot
     {
         rule = { class = "Godot" },
-        except = { instance = "Godot_Editor" },
-        properties = { floating = true },
-        callback = function (c) naughty.notify({ text = "hey" }) end
+        properties = { floating = true }
     }
 
     -- Add titlebars to normal clients and dialogs
@@ -663,11 +662,17 @@ client.connect_signal("property::floating", function(c)
     end
 end)
 
--- godot seems to maximise itself after the client is created so.....
-client.connect_signal("property::maximized", function(c)
-    -- fuck u godot
-    if c.class == "Godot" then
-        c.maximized = false
+-- godot uses a single client from the splash screen through the project manager, all the way to the main editor view
+-- this hack stops godot from maximising itself on the way there (and toggles floating off, since that's set above)
+-- the second splash screen will still maximise itself but it's there for like 1 second so w/e
+-- the godot_hack variable stops this from triggering more than once per client, allowing it to be maximised manually
+client.connect_signal("property::name", function(c)
+    if c.class == "Godot" and not c.godot_hack then
+        if c.name and c.name:find("Godot Engine - ") and not c.name:find("Project Manager") then
+            c.maximized = false
+            c.floating = false
+            c.godot_hack = true
+        end
     end
 end)
 
