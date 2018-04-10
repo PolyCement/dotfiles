@@ -546,7 +546,7 @@ awful.rules.rules = {
 
     -- Floating clients.
     {
-        rule = { class = "Simplescreenrecorder" },
+        rule = { class = "SimpleScreenRecorder" },
         properties = { floating = true }
     },
 
