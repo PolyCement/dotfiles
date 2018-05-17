@@ -30,5 +30,37 @@ man() {
 # enable more autocompletion
 . /usr/share/bash-completion/bash_completion
 
+# print the wu tang logo
+# i'll put somethin else here eventually (probably)
+
+# this function centres the given string
+function print_centred {
+    columns=$(tput cols)
+    while read -r line; do
+        printf "%*s\n" $(( (${#line} + columns) / 2)) "$line"
+    done <<< "$1"
+}
+
+# its the wu, comin thru
+message=$'                             ,;ldo;     
+    ;::;,,                ,:ldO000x:    
+   ;dOOkxxdolc:;       ,:lxO0000000d;   
+  ,oO000000000kc,     ,ck0000000000Oo,  
+  ck0000000000d;  ;clc;,oO0000000000x;  
+ ,o00000000000d;;lkO0Od;lO0000000000kc  
+ ;d00000000000Oolx0000Oxk00000000000Oc  
+ ;d0000000000000O0000000000000000000kc  
+ ,d000000000000000000000000000000000k:  
+  cO0000000000000000Oxdk000000000000d,  
+  ,oO00000000000000Oxc,:x0000000000kc   
+   ;oO0000000000000Okl, :x00000000Ol,   
+    ,cxO0000000000000kc, ck000000kl,    
+      ,cdkO00000000000kl;,o0000Ox:,     
+        ,;:lodxkkkkkkxxo:,cO0Odc,       
+              ,,,,,,,,,   ;ll;,         '
+
+# print_centred "$message"
+
 # start keychain (does this belong here???)
-eval $(keychain -q --eval id_rsa)
+# commented out cos i never use it anymore
+# eval $(keychain -q --eval id_rsa)

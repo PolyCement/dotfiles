@@ -552,14 +552,15 @@ awful.rules.rules = {
 
     -- make gimp's toolbox and docks stay on top
     {
-        rule_any = { class = "gimp", role = { "gimp-toolbox", "gimp-dock" } },
+        rule_any = { class = "gimp", role = { "gimp-toolbox-1", "gimp-dock-1" } },
         properties = { ontop = true }
     },
 
     -- make tf2 (and presumably other source engine games) run in fullscreen
+    -- this seems to screw up games that already fullscreen themselves.....
     {
         rule = { class = "hl2_linux" },
-        properties = { fullscreen = true }
+        -- properties = { fullscreen = true }
     },
 
     -- firefox always on web tag
