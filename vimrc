@@ -26,6 +26,8 @@ call plug#begin()
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
+" i suspect this might be causing issues when opening to a specified line
+" number - check how unity is calling vim cos i can't reproduce the bug myself
 Plug 'dietsche/vim-lastplace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'ap/vim-buftabline'

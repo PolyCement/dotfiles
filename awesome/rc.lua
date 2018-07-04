@@ -550,9 +550,17 @@ awful.rules.rules = {
         properties = { floating = true }
     },
 
+    -- make all unity windows but the main one float (otherwise loading bars etc look weird)
+    -- will need to keep an eye out to make sure this doesn't float games made in unity,
+    {
+        rule = { class = "Unity" },
+        except = { name = "Unity %- Unity.+PC, Mac & Linux Standalone.+" },
+        properties = { floating = true }
+    },
+
     -- make gimp's toolbox and docks stay on top
     {
-        rule_any = { class = "gimp", role = { "gimp-toolbox-1", "gimp-dock-1" } },
+        rule_any = { role = { "gimp-toolbox-1", "gimp-dock-1" } },
         properties = { ontop = true }
     },
 

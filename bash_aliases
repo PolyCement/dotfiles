@@ -21,3 +21,4 @@ alias pcsx2='PCSX2'
 # locally installed game's
 alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
+alias fallout='~/games/fallout/run.sh'
