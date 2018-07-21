@@ -42,7 +42,7 @@ end
 -- }}}
 
 -- start the compositor
-awful.util.spawn_with_shell("xcompmgr &")
+awful.spawn.with_shell("xcompmgr &")
 
 -- {{{ Variable definitions
 -- Themes define colours, icons, font and wallpapers.
@@ -365,15 +365,15 @@ globalkeys = gears.table.join(
     -- volume controls
     awful.key({ }, "XF86AudioLowerVolume",
               function()
-                  awful.util.spawn("pactl set-sink-volume 0 -5%")
+                  awful.spawn("pactl set-sink-volume 0 -5%")
               end),
     awful.key({ }, "XF86AudioRaiseVolume",
               function()
-                  awful.util.spawn("pactl set-sink-volume 0 +5%")
+                  awful.spawn("pactl set-sink-volume 0 +5%")
               end),
     awful.key({ }, "XF86AudioMute",
               function()
-                  awful.util.spawn("pactl set-sink-mute 0 toggle")
+                  awful.spawn("pactl set-sink-mute 0 toggle")
               end),
 
     -- Standard program
@@ -422,7 +422,7 @@ globalkeys = gears.table.join(
                     prompt       = "Run Lua code: ",
                     textbox      = awful.screen.focused().mypromptbox.widget,
                     exe_callback = awful.util.eval,
-                    history_path = awful.util.get_cache_dir() .. "/history_eval"
+                    history_path = gears.filesystem.get_cache_dir() .. "/history_eval"
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
@@ -433,12 +433,12 @@ globalkeys = gears.table.join(
     awful.key({ }, "Print",
              function()
                  local timestamp = os.date("%y%m%d-%H%M%S")
-                 awful.util.spawn_with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
+                 awful.spawn.with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
              end),
     awful.key({ "Mod1" }, "Print",
              function()
                  local timestamp = os.date("%y%m%d-%H%M%S")
-                 awful.util.spawn_with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
+                 awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
              end)
 )
 
