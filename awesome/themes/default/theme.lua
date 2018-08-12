@@ -111,5 +111,10 @@ theme.hotkeys_description_font = "sans 11"
 theme.useless_gap = 6
 theme.gap_single_client = false
 
+-- calendar font
+-- surely there's a way to just use one font for everything without manual
+-- specification...
+theme.calendar_font = "sans 11"
+
 return theme
 -- vim: filetype=lua:expandtab:shiftwidth=4:tabstop=8:softtabstop=4:textwidth=80
