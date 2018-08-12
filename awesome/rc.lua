@@ -123,9 +123,12 @@ mysystemmenu = {
     { "reboot", "reboot" }
 }
 
+-- some of these are specific to one machine,
+-- there's gotta be a way to generate it semi-automatically
 gamesmenu = {
     { "dolphin", "dolphin-emu" },
     { "ftb", "feedthebeast" },
+    { "pcsx2", "PCSX2" },
     { "retroarch", "retroarch" },
     { "steam", "steam" },
     { "steam (native)", "steam-native" }
@@ -137,10 +140,18 @@ devmenu = {
     { "unity", "unity-editor" }
 }
 
+graphicsmenu = {
+    { "aseprite", "aseprite" },
+    { "gimp", "gimp" },
+    { "inkscape", "inkscape" },
+    { "krita", "krita" }
+}
+
 mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
                                     { "system", mysystemmenu },
                                     { "games", gamesmenu },
                                     { "game dev", devmenu },
+                                    { "graphics", graphicsmenu },
                                     { "browser", "firefox" },
                                     { "voip", "discord-canary" },
                                     { "terminal", terminal }
