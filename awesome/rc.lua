@@ -53,7 +53,7 @@ naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
 
 -- resize icons
--- TODO: replace this with beautiful.notification_icon_size next time awesome updates
+-- TODO: replace this with beautiful.notification_icon_size when 4.3 finally drops...
 naughty.config.notify_callback = function(args)
     args.icon_size = 72
     return args
