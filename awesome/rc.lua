@@ -48,10 +48,6 @@ awful.spawn.with_shell("xcompmgr &")
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
 
--- naughty stuff
-table.insert(naughty.dbus.config.mapping, {{ appname = "discord-canary" },
-                                           { callback = function(args) args.title = "honk" return args end }})
-
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
@@ -79,10 +75,6 @@ function naughty.notify(args)
     end
     return notification
 end
-
--- callback for notification stacking
-    -- if there's an existing notification with the same appname 
-    -- stack em
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
