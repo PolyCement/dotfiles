@@ -48,6 +48,10 @@ awful.spawn.with_shell("xcompmgr &")
 -- Themes define colours, icons, font and wallpapers.
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
 
+-- naughty stuff
+table.insert(naughty.dbus.config.mapping, {{ appname = "discord-canary" },
+                                           { callback = function(args) args.title = "honk" return args end }})
+
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
@@ -58,6 +62,27 @@ naughty.config.notify_callback = function(args)
     args.icon_size = 72
     return args
 end
+
+-- hack to make discord notifications replace each other correctly
+-- discord's notifications specify replaces_id, but the id never actually exists
+-- this hack checks for replaces_id, then sets the id of the created notification
+-- to that id
+-- TODO: there's gotta be a better way to do this, one that works for any app
+-- known bug: it's possible for the counter to get high enough that a notification is
+-- created with the same id as a notification altered by this hack. not sure what'll happen then lol
+local old_notify = naughty.notify
+function naughty.notify(args)
+    local replaces_id = args.replaces_id
+    notification = old_notify(args)
+    if replaces_id then
+        notification.id = replaces_id
+    end
+    return notification
+end
+
+-- callback for notification stacking
+    -- if there's an existing notification with the same appname 
+    -- stack em
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
