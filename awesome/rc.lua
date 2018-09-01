@@ -204,11 +204,27 @@ if batdir then
 end
 
 -- volume widget
+-- volume control function
+local function change_volume(percent)
+    -- TODO: replace grep & cut with some regex? not sure which is more efficient really
+    local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
+    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+        awful.spawn("pactl set-sink-volume " .. tonumber(stdout) .. " " .. percent)
+        vicious.force({ vol_widget })
+    end)
+end
+-- could probably be updated less often
 vol_widget = wibox.widget.textbox()
-vicious.register(vol_widget, vicious.widgets.volume, " Vol: $1% |", 1, "Master")
+vicious.register(vol_widget, vicious.widgets.volume, " Vol: $1% |", 5, "Master")
 vol_widget:buttons(gears.table.join(
     awful.button({ }, 1, function()
         awful.spawn("pavucontrol")
+    end),
+    awful.button({ }, 4, function()
+        change_volume("+5%")
+    end),
+    awful.button({ }, 5, function()
+        change_volume("-5%")
     end)
 ))
 
@@ -401,18 +417,17 @@ globalkeys = gears.table.join(
         {description = "go back", group = "client"}),
 
     -- volume controls
-    awful.key({ }, "XF86AudioLowerVolume",
-              function()
-                  awful.spawn("pactl set-sink-volume 0 -5%")
-              end),
-    awful.key({ }, "XF86AudioRaiseVolume",
-              function()
-                  awful.spawn("pactl set-sink-volume 0 +5%")
-              end),
-    awful.key({ }, "XF86AudioMute",
-              function()
-                  awful.spawn("pactl set-sink-mute 0 toggle")
-              end),
+    awful.key({ }, "XF86AudioLowerVolume", function()
+        change_volume("-5%")
+    end),
+    awful.key({ }, "XF86AudioRaiseVolume", function()
+        change_volume("+5%")
+    end),
+    -- TODO: update this for the widget
+    awful.key({ }, "XF86AudioMute", function()
+        awful.spawn("pactl set-sink-mute 0 toggle")
+        vicious.force({ vol_widget })
+    end),
 
     -- Standard program
     awful.key({ modkey,           }, "Return", function () awful.spawn(terminal) end,
