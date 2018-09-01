@@ -199,9 +199,12 @@ calendar_popup:attach(clock_widget, "tr")
 local batdir = io.open("/sys/class/power_supply/BAT0", "r")
 if batdir then
     io.close(batdir)
-    mybatmon = wibox.widget.textbox()
-    vicious.register(mybatmon, vicious.widgets.bat, " Battery: $2% |", 30, "BAT0")
+    bat_widget = wibox.widget.textbox()
+    vicious.register(bat_widget, vicious.widgets.bat, " Bat: $2% |", 30, "BAT0")
 end
+
+vol_widget = wibox.widget.textbox()
+vicious.register(vol_widget, vicious.widgets.volume, " Vol: $1% |", 1, "Master")
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -317,7 +320,8 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
             wibox.widget.systray(),
-            mybatmon,
+            bat_widget,
+            vol_widget,
             pad_widget,
             clock_widget,
             pad_widget,
