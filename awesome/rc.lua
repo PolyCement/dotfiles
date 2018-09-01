@@ -599,13 +599,13 @@ awful.rules.rules = {
                        keys = clientkeys,
                        buttons = clientbuttons,
                        screen = awful.screen.preferred,
-                       placement = awful.placement.no_overlap+awful.placement.no_offscreen
+                       placement = awful.placement.no_offscreen+awful.placement.centered
         }
     },
 
     -- Floating clients.
     {
-        rule = { class = "SimpleScreenRecorder" },
+        rule_any = { class = { "SimpleScreenRecorder" }, instance = { "pavucontrol" } },
         properties = { floating = true }
     },
 
@@ -617,10 +617,10 @@ awful.rules.rules = {
         properties = { floating = true }
     },
 
-    -- make gimp's toolbox and docks stay on top
+    -- make gimp's toolbox/docks remember their positions and stay on top
     {
         rule_any = { role = { "gimp-toolbox-1", "gimp-dock-1" } },
-        properties = { ontop = true }
+        properties = { ontop = true, placement = awful.placement.restore }
     },
 
     -- make tf2 (and presumably other source engine games) run in fullscreen
@@ -721,15 +721,6 @@ client.connect_signal("request::titlebars", function(c)
         },
         layout = wibox.layout.align.horizontal
     }
-end)
-
--- centre floating clients
-client.connect_signal("property::floating", function(c)
-    -- this signal now fires when a client is maximised too
-    -- so check that it's not or the client will end up placed weird
-    if c.floating and not c.maximized then
-        awful.placement.centered(c)
-    end
 end)
 
 -- godot uses a single client from the splash screen through the project manager, all the way to the main editor view
