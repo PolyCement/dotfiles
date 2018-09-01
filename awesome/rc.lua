@@ -203,8 +203,14 @@ if batdir then
     vicious.register(bat_widget, vicious.widgets.bat, " Bat: $2% |", 30, "BAT0")
 end
 
+-- volume widget
 vol_widget = wibox.widget.textbox()
 vicious.register(vol_widget, vicious.widgets.volume, " Vol: $1% |", 1, "Master")
+vol_widget:buttons(gears.table.join(
+    awful.button({ }, 1, function()
+        awful.spawn("pavucontrol")
+    end)
+))
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
