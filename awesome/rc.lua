@@ -294,8 +294,8 @@ screen.connect_signal("property::geometry", set_wallpaper)
 local tag_list = {
     { " ♃ ", awful.layout.layouts[2] },
     { " ♄ ", awful.layout.layouts[6] },
-    { " ♆ ", awful.layout.layouts[6] },
-    { " ♅ ", awful.layout.layouts[6] }
+    { " ♅ ", awful.layout.layouts[6] },
+    { " ♆ ", awful.layout.layouts[6] }
 }
 
 awful.screen.connect_for_each_screen(function(s)

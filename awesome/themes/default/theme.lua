@@ -4,7 +4,7 @@
 
 theme = {}
 
-theme.font          = "sans 11"
+theme.font          = "sans 8"
 
 -- theme.bg_normal     = "#222222"
 -- theme.bg_focus      = "#535d6c"
@@ -56,7 +56,7 @@ theme.taglist_squares_unsel = "/usr/share/awesome/themes/default/taglist/squarew
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
-theme.menu_submenu_icon = "/usr/share/awesome/themes/default/submenu.png"
+theme.menu_submenu_icon = "~/dotfiles/awesome/themes/default/submenu.png"
 theme.menu_height = 15
 theme.menu_width  = 100
 
@@ -108,7 +108,7 @@ theme.layout_tiletop = "/usr/share/awesome/themes/default/layouts/tiletopw.png"
 theme.layout_spiral  = "/usr/share/awesome/themes/default/layouts/spiralw.png"
 theme.layout_dwindle = "/usr/share/awesome/themes/default/layouts/dwindlew.png"
 
-theme.awesome_icon = "/usr/share/awesome/icons/awesome16.png"
+theme.awesome_icon = "~/dotfiles/awesome/themes/default/awesome16.png"
 
 -- Define the icon theme for application icons. If not set then the icons 
 -- from /usr/share/icons and /usr/share/icons/hicolor will be used.

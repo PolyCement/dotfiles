@@ -1,4 +1,4 @@
-Xft.dpi: 69
+Xft.dpi: 102
 URxvt.scrollBar: false
 URxvt.font:xft:droid sans mono:pixelsize=14,xft:symbola:pixelsize=14,xft:dejavu sans mono:pixelsize=14
 URxvt.letterSpace: -1
