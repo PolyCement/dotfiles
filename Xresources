@@ -1,6 +1,6 @@
 Xft.dpi: 69
 URxvt.scrollBar: false
-URxvt.font:xft:droid sans mono:pixelsize=14,xft:dejavu sans mono:pixelsize=14
+URxvt.font:xft:droid sans mono:pixelsize=14,xft:symbola:pixelsize=14,xft:dejavu sans mono:pixelsize=14
 URxvt.letterSpace: -1
 URxvt.lineSpace: 2
 ! by default urxvt attempts to use high intensity colours for boldface

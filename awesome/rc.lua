@@ -36,6 +36,9 @@ do
         naughty.notify({ preset = naughty.config.presets.critical,
                          title = "Error!",
                          text = tostring(err) })
+        local logfile = io.open(".awesome.log", "a")
+        logfile:write(tostring(err) .. "\n")
+        logfile:close()
         in_error = false
     end)
 end
@@ -188,6 +191,7 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- {{{ Wibar
 -- blank space for padding
 local pad_widget = wibox.widget.textbox(" ")
+local div_widget = wibox.widget.textbox(" | ")
 
 -- textclock widget
 local clock_widget = wibox.widget.textclock("%a %d %b, %H:%M")
@@ -200,7 +204,7 @@ local batdir = io.open("/sys/class/power_supply/BAT0", "r")
 if batdir then
     io.close(batdir)
     bat_widget = wibox.widget.textbox()
-    vicious.register(bat_widget, vicious.widgets.bat, " Bat: $2% |", 30, "BAT0")
+    vicious.register(bat_widget, vicious.widgets.bat, " | 🔋 $2%", 30, "BAT0")
 end
 
 -- volume widget
@@ -215,7 +219,7 @@ local function change_volume(percent)
 end
 -- could probably be updated less often
 vol_widget = wibox.widget.textbox()
-vicious.register(vol_widget, vicious.widgets.volume, " Vol: $1% |", 5, "Master")
+vicious.register(vol_widget, vicious.widgets.volume, "🔊 $1%", 5, "Master")
 vol_widget:buttons(gears.table.join(
     awful.button({ }, 1, function()
         awful.spawn("pavucontrol")
@@ -288,10 +292,10 @@ screen.connect_signal("property::geometry", set_wallpaper)
 
 -- list of tags to add to each screen
 local tag_list = {
-    { "home", awful.layout.layouts[2] },
-    { "web", awful.layout.layouts[6] },
-    { "3", awful.layout.layouts[6] },
-    { "4", awful.layout.layouts[6] }
+    { " ♃ ", awful.layout.layouts[2] },
+    { " ♄ ", awful.layout.layouts[6] },
+    { " ♆ ", awful.layout.layouts[6] },
+    { " ♅ ", awful.layout.layouts[6] }
 }
 
 awful.screen.connect_for_each_screen(function(s)
@@ -341,10 +345,12 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Right widgets
             layout = wibox.layout.fixed.horizontal,
             -- mykeyboardlayout,
+            pad_widget,
             wibox.widget.systray(),
             bat_widget,
+            div_widget,
             vol_widget,
-            pad_widget,
+            div_widget,
             clock_widget,
             pad_widget,
             s.mylayoutbox,
@@ -633,7 +639,7 @@ awful.rules.rules = {
     -- firefox always on web tag
     {
         rule = { class = "Firefox" },
-        properties = { tag = "web" }
+        properties = { tag = screen[1].tags[2] }
     },
 
     -- make firefox windows other than the main one float
@@ -647,7 +653,7 @@ awful.rules.rules = {
     -- TODO: is there any way to force this to always start up on the right?
     {
         rule = { class = "discord" },
-        properties = { size_hints_honor = false, tag = "home" }
+        properties = { size_hints_honor = false, tag = screen[1].tags[1] }
     },
 
     -- godot.....
