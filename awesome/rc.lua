@@ -201,10 +201,11 @@ calendar_popup:attach(clock_widget, "tr")
 -- battery monitor
 -- don't add it if there's no battery info
 local batdir = io.open("/sys/class/power_supply/BAT0", "r")
+local bat_widget = nil
 if batdir then
     io.close(batdir)
     bat_widget = wibox.widget.textbox()
-    vicious.register(bat_widget, vicious.widgets.bat, " | 🔋 $2%", 30, "BAT0")
+    vicious.register(bat_widget, vicious.widgets.bat, "🔋 $2%", 30, "BAT0")
 end
 
 -- volume widget
@@ -217,12 +218,28 @@ local function change_volume(percent)
         vicious.force({ vol_widget })
     end)
 end
+
+local function toggle_mute()
+    -- TODO: as above,
+    local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
+    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+        awful.spawn("pactl set-sink-mute " .. tonumber(stdout) .. " toggle")
+        vicious.force({ vol_widget })
+    end)
+end
+
 -- could probably be updated less often
 vol_widget = wibox.widget.textbox()
-vicious.register(vol_widget, vicious.widgets.volume, "🔊 $1%", 5, "Master")
+vicious.register(vol_widget, vicious.widgets.volume, function (widget, args)
+    local icon = { ["♫"] = "🔊", ["♩"] = "🔈" }
+    return icon[args[2]] .. " " .. args[1] .. "%"
+end, 5, "Master")
 vol_widget:buttons(gears.table.join(
     awful.button({ }, 1, function()
         awful.spawn("pavucontrol")
+    end),
+    awful.button({ }, 3, function()
+        toggle_mute()
     end),
     awful.button({ }, 4, function()
         change_volume("+5%")
@@ -332,6 +349,27 @@ awful.screen.connect_for_each_screen(function(s)
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s })
 
+    -- build right widget table
+    local right_widgets = {
+        layout = wibox.layout.fixed.horizontal,
+        pad_widget,
+        wibox.widget.systray()
+    }
+    if bat_widget ~= nil then
+        gears.table.merge(right_widgets, {
+            div_widget,
+            bat_widget
+        })
+    end
+    gears.table.merge(right_widgets, {
+        div_widget,
+        vol_widget,
+        div_widget,
+        clock_widget,
+        pad_widget,
+        s.mylayoutbox,
+    })
+
     -- Add widgets to the wibox
     s.mywibox:setup {
         layout = wibox.layout.align.horizontal,
@@ -342,19 +380,7 @@ awful.screen.connect_for_each_screen(function(s)
             s.mypromptbox,
         },
         s.mytasklist, -- Middle widget
-        { -- Right widgets
-            layout = wibox.layout.fixed.horizontal,
-            -- mykeyboardlayout,
-            pad_widget,
-            wibox.widget.systray(),
-            bat_widget,
-            div_widget,
-            vol_widget,
-            div_widget,
-            clock_widget,
-            pad_widget,
-            s.mylayoutbox,
-        },
+        right_widgets
     }
 
     -- disable useless gaps when layout is set to maximized or fullscreen
