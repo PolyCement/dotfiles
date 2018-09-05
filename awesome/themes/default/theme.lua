@@ -22,20 +22,20 @@ theme.font          = "sans 8"
 -- theme.border_focus  = "#535d6c"
 -- theme.border_marked = "#91231c"
 
-theme.bg_normal     = "#22072e"
+theme.bg_normal     = "#40177e"
 theme.bg_focus      = "#a46bf5"
 theme.bg_urgent     = "#ff0000"
 theme.bg_minimize   = "#66459f"
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#dec1fd"
+theme.fg_normal     = "#c0a1fd"
 theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
 
 theme.border_width  = 1
-theme.border_normal = "#000000"
-theme.border_focus  = "#535d6c"
+theme.border_normal = "#40177e"
+theme.border_focus  = "#c0a1fd"
 theme.border_marked = "#91231c"
 
 -- There are other variable sets
@@ -52,7 +52,6 @@ theme.border_marked = "#91231c"
 -- Display the taglist squares
 theme.taglist_squares_sel   = "~/dotfiles/awesome/themes/default/taglist/squarefw.png"
 theme.taglist_squares_unsel = "~/dotfiles/awesome/themes/default/taglist/squarew.png"
-theme.taglist_squares_resize = false
 
 -- Variables set for theming the menu:
 -- menu_[bg|fg]_[normal|focus]
