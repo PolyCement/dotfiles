@@ -17,3 +17,5 @@ ln -s "$BASEDIR/vimrc" ~/.vimrc
 ln -s "$BASEDIR/bash_aliases" ~/.bash_aliases
 ln -s "$BASEDIR/inputrc" ~/.inputrc
 ln -s "$BASEDIR/profile" ~/.profile
+ln -s "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
+ln -s "$BASEDIR/gtk3-settings.ini" ~/.config/gtk-3.0/settings.ini
