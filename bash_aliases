@@ -18,6 +18,7 @@ alias feh='feh -.'
 alias suspend='systemctl suspend'
 # ughhhhhhh
 alias pcsx2='PCSX2'
+alias bookworm='com.github.babluboy.bookworm'
 # locally installed game's
 alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'

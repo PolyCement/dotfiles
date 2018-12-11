@@ -249,6 +249,10 @@ vol_widget:buttons(gears.table.join(
     end)
 ))
 
+-- core temp widget
+temp_widget = wibox.widget.textbox()
+vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, "thermal_zone2")
+
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
                     awful.button({ }, 1, function(t) t:view_only() end),
@@ -362,6 +366,8 @@ awful.screen.connect_for_each_screen(function(s)
         })
     end
     gears.table.merge(right_widgets, {
+        div_widget,
+        temp_widget,
         div_widget,
         vol_widget,
         div_widget,
@@ -687,6 +693,12 @@ awful.rules.rules = {
     {
         rule = { class = "Godot" },
         properties = { floating = true }
+    },
+
+    -- steam always goes on tag 3
+    {
+        rule = { class = "Steam" },
+        properties = { tag = screen[1].tags[3] }
     }
 
     -- Add titlebars to normal clients and dialogs
