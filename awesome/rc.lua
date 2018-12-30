@@ -251,7 +251,7 @@ vol_widget:buttons(gears.table.join(
 
 -- core temp widget
 temp_widget = wibox.widget.textbox()
-vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, "thermal_zone2")
+vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, "thermal_zone0")
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
