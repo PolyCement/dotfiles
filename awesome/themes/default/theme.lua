@@ -5,6 +5,7 @@
 theme = {}
 
 theme.font          = "sans 8"
+-- theme.font          = "ricty 10"
 
 -- theme.bg_normal     = "#222222"
 -- theme.bg_focus      = "#535d6c"
@@ -117,6 +118,7 @@ theme.icon_theme = nil
 -- notification settings
 theme.notification_width = 250
 theme.notification_height = 80
+theme.notification_icon_size = 72
 
 -- hotkey popup font size
 theme.hotkeys_font = "sans 11"

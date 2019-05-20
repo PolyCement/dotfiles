@@ -15,6 +15,8 @@ local vicious = require("vicious")
 -- shows hotkeys for the current client (if available) in the hotkeys popup
 require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
+-- my "hot new script" for monitoring uim/mozc input mode state
+local mozcmon = require("mozcmon")
  
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -45,6 +47,9 @@ end
 -- }}}
 
 -- start the compositor
+-- i still don't know if this should be in here honestly
+-- like, doesnt this mean that every time i restart awesome wm, i make *another* xcompmgr???
+-- seems bad. imo.
 awful.spawn.with_shell("xcompmgr &")
 
 -- {{{ Variable definitions
@@ -55,13 +60,6 @@ beautiful.init("~/.config/awesome/themes/default/theme.lua")
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
 
--- resize icons
--- TODO: replace this with beautiful.notification_icon_size when 4.3 finally drops...
-naughty.config.notify_callback = function(args)
-    args.icon_size = 72
-    return args
-end
-
 -- hack to make discord notifications replace each other correctly
 -- discord's notifications specify replaces_id, but the id never actually exists
 -- this hack checks for replaces_id, then sets the id of the created notification
@@ -69,15 +67,25 @@ end
 -- TODO: there's gotta be a better way to do this, one that works for any app
 -- known bug: it's possible for the counter to get high enough that a notification is
 -- created with the same id as a notification altered by this hack. not sure what'll happen then lol
-local old_notify = naughty.notify
-function naughty.notify(args)
-    local replaces_id = args.replaces_id
-    notification = old_notify(args)
-    if replaces_id then
-        notification.id = replaces_id
-    end
-    return notification
-end
+-- NOTE: i think something changed here... lets go without for a while
+--local old_notify = naughty.notify
+--function naughty.notify(args)
+--    local replaces_id = args.replaces_id
+--    notification = old_notify(args)
+--    if replaces_id then
+--        notification.id = replaces_id
+--    end
+--    return notification
+--end
+
+-- get the hostname so i can turn stuff on or off for different machines
+-- NOTE: awesome wm documentation says not to use io.popen because it's blocking
+-- i'm using it *because* it's blocking - no further code should run until we have the hostname.
+-- an alternative would be to export hostname as a var but... idk. might have to if this way is bad
+local f = io.popen("/bin/hostname")
+local hostname = f:read("*a") or ""
+f:close()
+hostname = string.gsub(hostname, "\n$", "")
 
 -- This is used later as the default terminal and editor to run.
 terminal = "urxvt"
@@ -157,6 +165,7 @@ gamesmenu = {
 devmenu = {
     { "godot", "godot" },
     { "rpg maker mv", "steam-native steam://rungameid/363890" },
+    { "tiled", "tiled" },
     { "unity", "unity-editor" }
 }
 
@@ -173,7 +182,7 @@ mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesom
                                     { "game dev", devmenu },
                                     { "graphics", graphicsmenu },
                                     { "browser", "firefox" },
-                                    { "voip", "discord-canary" },
+                                    { "voip", "discord" },
                                     { "terminal", terminal }
                                   }
                         })
@@ -185,9 +194,6 @@ mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 menubar.utils.terminal = terminal -- Set the terminal for applications that require it
 -- }}}
 
--- Keyboard map indicator and switcher
--- mykeyboardlayout = awful.widget.keyboardlayout()
-
 -- {{{ Wibar
 -- blank space for padding
 local pad_widget = wibox.widget.textbox(" ")
@@ -195,16 +201,13 @@ local div_widget = wibox.widget.textbox(" | ")
 
 -- textclock widget
 local clock_widget = wibox.widget.textclock("🕒 %a %d %b, %H:%M")
+-- local clock_widget = wibox.widget.textclock("🕒 %m月%d日、%H:%M")
 local calendar_popup = calendar.month()
 calendar_popup:attach(clock_widget, "tr")
 
--- battery monitor
--- don't add it if there's no battery info
--- might be best to just make this exclusive to doubleslap branch, idk
-local batdir = io.open("/sys/class/power_supply/BAT0", "r")
+-- battery monitor, only useful on laptop
 local bat_widget = nil
-if batdir then
-    io.close(batdir)
+if hostname == "doubleslap" then
     bat_widget = wibox.widget.textbox()
     -- has the low power warning been shown yet?
     local low_power_warning_shown = false
@@ -269,26 +272,35 @@ vol_widget:buttons(gears.table.join(
 ))
 
 -- core temp widget
-temp_widget = wibox.widget.textbox()
-vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, "thermal_zone2")
+local temp_widget = wibox.widget.textbox()
+local thermal_zone = hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
+vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, thermal_zone)
+
+-- set up mozc widget
+local mozc_widget = wibox.widget.textbox()
+mozcmon.register(mozc_widget, function(args)
+    local indicator_char = (args[2] == "-") and "ー" or args[2]
+    return "⌨ " .. indicator_char
+end)
+mozcmon.start()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
-                    awful.button({ }, 1, function(t) t:view_only() end),
-                    awful.button({ modkey }, 1, function(t)
-                                              if client.focus then
-                                                  client.focus:move_to_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 3, awful.tag.viewtoggle),
-                    awful.button({ modkey }, 3, function(t)
-                                              if client.focus then
-                                                  client.focus:toggle_tag(t)
-                                              end
-                                          end),
-                    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
-                    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
-                )
+    awful.button({ }, 1, function(t) t:view_only() end),
+    awful.button({ modkey }, 1, function(t)
+        if client.focus then
+            client.focus:move_to_tag(t)
+        end
+    end),
+    awful.button({ }, 3, awful.tag.viewtoggle),
+    awful.button({ modkey }, 3, function(t)
+        if client.focus then
+            client.focus:toggle_tag(t)
+        end
+    end),
+    awful.button({ }, 4, function(t) awful.tag.viewnext(t.screen) end),
+    awful.button({ }, 5, function(t) awful.tag.viewprev(t.screen) end)
+)
 
 local tasklist_buttons = gears.table.join(
                      awful.button({ }, 1, function (c)
@@ -370,13 +382,16 @@ awful.screen.connect_for_each_screen(function(s)
     s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
 
     -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 })
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })
 
     -- build right widget table
+    -- might make this a loop tbh this shit long as hell for no good reason
     local right_widgets = {
         layout = wibox.layout.fixed.horizontal,
         pad_widget,
-        wibox.widget.systray()
+        wibox.widget.systray(),
+        div_widget,
+        mozc_widget
     }
     if bat_widget ~= nil then
         gears.table.merge(right_widgets, {

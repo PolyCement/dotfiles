@@ -32,9 +32,12 @@ Plug 'dietsche/vim-lastplace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'ap/vim-buftabline'
 " base16 colourschemes
-Plug 'chriskempson/base16-vim'
+"Plug 'chriskempson/base16-vim'
+" dude ain't maintaining his repo rn and his plugin broke so here's a fixed fork
+Plug 'danielwe/base16-vim'
 " syntax highlighting for other languages
 Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
+Plug 'calviken/vim-gdscript3'
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
