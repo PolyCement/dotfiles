@@ -375,11 +375,89 @@ awful.screen.connect_for_each_screen(function(s)
                            awful.button({ }, 3, function () awful.layout.inc(-1) end),
                            awful.button({ }, 4, function () awful.layout.inc( 1) end),
                            awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+
     -- Create a taglist widget
-    s.mytaglist = awful.widget.taglist(s, awful.widget.taglist.filter.all, taglist_buttons)
+    -- literally all this widget template stuff is just so i can center the taglist squares
+    -- its a little wild but it works so whatever
+    
+    -- function to call when creating/updating taglist widgets
+    local function update_tag(self, t, index, objects)
+        local bg_color, square
+        if t.selected then
+            bg_color = beautiful.bg_focus
+            square   = beautiful.taglist_squares_sel
+        else
+            bg_color = beautiful.bg_normal
+            square   = beautiful.taglist_squares_unsel
+        end
+        self.bg = bg_color
+        self:get_children_by_id("square_role")[1].image = square
+    end
+
+    s.mytaglist = awful.widget.taglist {
+        screen  = s,
+        filter  = awful.widget.taglist.filter.all,
+        buttons = taglist_buttons,
+        widget_template = {
+            {
+                {
+                    {
+                        id = "text_role",
+                        widget = wibox.widget.textbox
+                    },
+                    widget = wibox.container.place
+                },
+                {
+                    {
+                        id = "square_role",
+                        widget = wibox.widget.imagebox,
+                        image = beautiful.taglist_squares_sel,
+                        resize = false
+                    },
+                    widget = wibox.container.place,
+                    content_fill_vertical = true
+                },
+                layout = wibox.layout.stack,
+                -- not super happy about forcing a width like this, is there another way?
+                forced_width = 26
+            },
+            widget = wibox.container.background,
+            create_callback = update_tag,
+            update_callback = update_tag
+        }
+    }
 
     -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, tasklist_buttons)
+    -- TODO: more margins?
+    s.mytasklist = awful.widget.tasklist {
+        screen  = s,
+        filter  = awful.widget.tasklist.filter.currenttags,
+        buttons = tasklist_buttons,
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id = "icon_role",
+                            widget = wibox.widget.imagebox
+                        },
+                        {
+                            id = "text_role",
+                            widget = wibox.widget.textbox
+                        },
+                        layout = wibox.layout.align.horizontal
+                    },
+                    widget = wibox.container.place,
+                    halign = "center",
+                    valign = "center"
+                },
+                widget = wibox.container.margin,
+                margins = 2
+            },
+            id = "background_role",
+            widget = wibox.container.background
+        }
+    }
 
     -- Create the wibox
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })

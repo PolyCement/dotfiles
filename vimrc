@@ -44,3 +44,8 @@ call plug#end()
 
 " set colour scheme
 colorscheme base16-atelier-heath
+
+" enable 24-bit colour if supported (otherwise vim will look weird in termite)
+if $COLORTERM == 'truecolor'
+    set termguicolors
+endif
