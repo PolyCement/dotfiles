@@ -176,16 +176,18 @@ graphicsmenu = {
     { "krita", "krita" }
 }
 
-mymainmenu = awful.menu({ items = { { "awesome", myawesomemenu, beautiful.awesome_icon },
-                                    { "system", mysystemmenu },
-                                    { "games", gamesmenu },
-                                    { "game dev", devmenu },
-                                    { "graphics", graphicsmenu },
-                                    { "browser", "firefox" },
-                                    { "voip", "discord" },
-                                    { "terminal", terminal }
-                                  }
-                        })
+mymainmenu = awful.menu({
+    items = {
+        { "awesome",  myawesomemenu, beautiful.awesome_icon },
+        { "system",   mysystemmenu },
+        { "games",    gamesmenu },
+        { "game dev", devmenu },
+        { "graphics", graphicsmenu },
+        { "browser",  "firefox" },
+        { "voip",     "discord" },
+        { "terminal", terminal }
+    }
+})
 
 mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = mymainmenu })
@@ -303,29 +305,29 @@ local taglist_buttons = gears.table.join(
 )
 
 local tasklist_buttons = gears.table.join(
-                     awful.button({ }, 1, function (c)
-                                              if c == client.focus then
-                                                  c.minimized = true
-                                              else
-                                                  -- Without this, the following
-                                                  -- :isvisible() makes no sense
-                                                  c.minimized = false
-                                                  if not c:isvisible() and c.first_tag then
-                                                      c.first_tag:view_only()
-                                                  end
-                                                  -- This will also un-minimize
-                                                  -- the client, if needed
-                                                  client.focus = c
-                                                  c:raise()
-                                              end
-                                          end),
-                     awful.button({ }, 3, client_menu_toggle_fn()),
-                     awful.button({ }, 4, function ()
-                                              awful.client.focus.byidx(1)
-                                          end),
-                     awful.button({ }, 5, function ()
-                                              awful.client.focus.byidx(-1)
-                                          end))
+    awful.button({ }, 1, function (c)
+        if c == client.focus then
+            c.minimized = true
+        else
+            -- Without this, the following
+            -- :isvisible() makes no sense
+            c.minimized = false
+            if not c:isvisible() and c.first_tag then
+                c.first_tag:view_only()
+            end
+            -- This will also un-minimize
+            -- the client, if needed
+            client.focus = c
+            c:raise()
+        end
+    end),
+    awful.button({ }, 3, client_menu_toggle_fn()),
+    awful.button({ }, 4, function ()
+        awful.client.focus.byidx(1)
+    end),
+    awful.button({ }, 5, function ()
+        awful.client.focus.byidx(-1)
+    end))
 
 local function set_wallpaper(s)
     -- Wallpaper
@@ -371,26 +373,37 @@ awful.screen.connect_for_each_screen(function(s)
     -- We need one layoutbox per screen.
     s.mylayoutbox = awful.widget.layoutbox(s)
     s.mylayoutbox:buttons(gears.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(-1) end),
-                           awful.button({ }, 4, function () awful.layout.inc( 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(-1) end)))
+        awful.button({ }, 1, function () awful.layout.inc( 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(-1) end),
+        awful.button({ }, 4, function () awful.layout.inc( 1) end),
+        awful.button({ }, 5, function () awful.layout.inc(-1) end)
+    ))
 
     -- Create a taglist widget
-    -- literally all this widget template stuff is just so i can center the taglist squares
-    -- its a little wild but it works so whatever
     
     -- function to call when creating/updating taglist widgets
     local function update_tag(self, t, index, objects)
         local bg_color, square
-        if t.selected then
+        -- NOTE: tag.urgent isnt really documented? but it's real and it's my friend
+        if t.urgent then
+            bg_color = beautiful.bg_urgent
+        elseif t.selected then
             bg_color = beautiful.bg_focus
-            square   = beautiful.taglist_squares_sel
         else
             bg_color = beautiful.bg_normal
-            square   = beautiful.taglist_squares_unsel
         end
         self.bg = bg_color
+
+        if #t:clients() > 0 then
+            if t.selected then
+                square = beautiful.taglist_squares_sel
+            else
+                square = beautiful.taglist_squares_unsel
+            end
+            if not (t.selected or t.urgent) then
+                square = gears.color.recolor_image(square, beautiful.fg_normal)
+            end
+        end
         self:get_children_by_id("square_role")[1].image = square
     end
 
@@ -411,7 +424,6 @@ awful.screen.connect_for_each_screen(function(s)
                     {
                         id = "square_role",
                         widget = wibox.widget.imagebox,
-                        image = beautiful.taglist_squares_sel,
                         resize = false
                     },
                     widget = wibox.container.place,
@@ -447,9 +459,7 @@ awful.screen.connect_for_each_screen(function(s)
                         },
                         layout = wibox.layout.align.horizontal
                     },
-                    widget = wibox.container.place,
-                    halign = "center",
-                    valign = "center"
+                    widget = wibox.container.place
                 },
                 widget = wibox.container.margin,
                 margins = 2
