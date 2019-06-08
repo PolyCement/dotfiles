@@ -1,0 +1,104 @@
+[options]
+#allow_bold = true
+#audible_bell = false
+#bold_is_bright = true
+#cell_height_scale = 1.0
+#cell_width_scale = 1.0
+#clickable_url = true
+#dynamic_title = true
+font = ricty 12
+#fullscreen = true
+#icon_name = terminal
+#mouse_autohide = false
+#scroll_on_output = false
+#scroll_on_keystroke = true
+# Length of the scrollback buffer, 0 disabled the scrollback buffer
+# and setting it to a negative value means "infinite scrollback"
+scrollback_lines = 10000
+#search_wrap = true
+#urgent_on_bell = true
+#hyperlinks = false
+
+# $BROWSER is used by default if set, with xdg-open as a fallback
+#browser = xdg-open
+
+# "system", "on" or "off"
+#cursor_blink = system
+
+# "block", "underline" or "ibeam"
+#cursor_shape = block
+
+# Hide links that are no longer valid in url select overlay mode
+#filter_unmatched_urls = true
+
+# Emit escape sequences for extra modified keys
+#modify_other_keys = false
+
+# set size hints for the window
+#size_hints = false
+
+# "off", "left" or "right"
+#scrollbar = off
+
+[colors]
+# Base16 Atelier Heath
+# Author: Bram de Haan (http://atelierbramdehaan.nl)
+
+foreground          = #ab9bab
+foreground_bold     = #d8cad8
+cursor              = #d8cad8
+cursor_foreground   = #1b181b
+background          = rgba(27, 24, 27, 0.98)
+
+# 16 color space
+
+# Black, Gray, Silver, White
+color0  = #1b181b
+color8  = #776977
+color7  = #ab9bab
+color15 = #f7f3f7
+
+# Red
+color1  = #ca402b
+color9  = #ca402b
+
+# Green
+color2  = #918b3b
+color10 = #918b3b
+
+# Yellow
+color3  = #bb8a35
+color11 = #bb8a35
+
+# Blue
+color4  = #516aec
+color12 = #516aec
+
+# Purple
+color5  = #7b59c0
+color13 = #7b59c0
+
+# Teal
+color6  = #159393
+color14 = #159393
+
+# Extra colors
+color16 = #a65926
+color17 = #cc33cc
+color18 = #292329
+color19 = #695d69
+color20 = #9e8f9e
+color21 = #d8cad8
+
+[hints]
+#font = Monospace 12
+#foreground = #dcdccc
+#background = #3f3f3f
+#active_foreground = #e68080
+#active_background = #3f3f3f
+#padding = 2
+#border = #3f3f3f
+#border_width = 0.5
+#roundness = 2.0
+
+# vim: ft=dosini cms=#%s
