@@ -18,6 +18,8 @@ ln -s "$BASEDIR/bash_aliases" ~/.bash_aliases
 ln -s "$BASEDIR/inputrc" ~/.inputrc
 ln -s "$BASEDIR/profile" ~/.profile
 ln -s "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
-ln -s "$BASEDIR/gtk3-settings.ini" ~/.config/gtk-3.0/settings.ini
+ln -s "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
+ln -s "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
 ln -s "$BASEDIR/xprofile" ~/.xprofile
 ln -s "$BASEDIR/termiteconf" ~/.config/termite/config
+ln -s "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
