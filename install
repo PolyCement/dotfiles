@@ -1,25 +1,63 @@
 #!/usr/bin/env bash
 
-#get the path to this directory
+# function for linking files
+# not entirely happy with how this handles linking directories,
+link_file () {
+    echo "============================================================"
+    echo "$2 -> $1"
+    target_dir="$( dirname "$2" )"
+    if [[ ! -d $target_dir ]]; then
+        read -p "Directory $target_dir does not exist. Create it now? (Y/n): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Nn]$ ]]; then
+            echo "Skipping $2..."
+            return
+        else
+            echo "Creating directory $target_dir"
+            mkdir -p "$target_dir"
+        fi
+    fi
+    if [[ -e $2 ]]; then
+        read -p "File $2 already exists. Overwrite it? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            echo "Linked dotfile $2 at $1"
+            ln -s -f "$1" "$2"
+        else
+            echo "Skipping $2..."
+            return
+        fi
+    else
+        echo "Linked dotfile $2 at $1"
+        ln -s "$1" "$2"
+    fi
+}
+
+# get the path to this directory
 BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-#link all the files
-ln -s "$BASEDIR/Xresources" ~/.Xresources
-mkdir -p ~/.config
-ln -s "$BASEDIR/openbox" ~/.config/
-ln -s "$BASEDIR/awesome" ~/.config/
-mkdir -p ~/.config/tint2
-ln -s "$BASEDIR/tint2rc" ~/.config/tint2
-mkdir -p ~/.config/dunst
-ln -s "$BASEDIR/dunstrc" ~/.config/dunst
-ln -s "$BASEDIR/bashrc" ~/.bashrc
-ln -s "$BASEDIR/vimrc" ~/.vimrc
-ln -s "$BASEDIR/bash_aliases" ~/.bash_aliases
-ln -s "$BASEDIR/inputrc" ~/.inputrc
-ln -s "$BASEDIR/profile" ~/.profile
-ln -s "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
-ln -s "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
-ln -s "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
-ln -s "$BASEDIR/xprofile" ~/.xprofile
-ln -s "$BASEDIR/termiteconf" ~/.config/termite/config
-ln -s "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
+echo "============================================================"
+echo "INSTALLING DOTFILES FROM $BASEDIR"
+
+# link all the files
+# stuff for the home directory iself goes first
+link_file "$BASEDIR/Xresources" ~/.Xresources
+link_file "$BASEDIR/bashrc" ~/.bashrc
+link_file "$BASEDIR/vimrc" ~/.vimrc
+link_file "$BASEDIR/bash_aliases" ~/.bash_aliases
+link_file "$BASEDIR/inputrc" ~/.inputrc
+link_file "$BASEDIR/profile" ~/.profile
+link_file "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
+link_file "$BASEDIR/xprofile" ~/.xprofile
+
+# then all the stuff tucked away in .config
+link_file "$BASEDIR/tint2rc" ~/.config/tint2/tint2rc
+link_file "$BASEDIR/dunstrc" ~/.config/dunst/dunstrc
+link_file "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
+link_file "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
+link_file "$BASEDIR/termiteconf" ~/.config/termite/config
+link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
+
+# finally, link directories
+link_file "$BASEDIR/openbox" ~/.config/
+link_file "$BASEDIR/awesome" ~/.config/
