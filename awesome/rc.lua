@@ -792,13 +792,13 @@ awful.rules.rules = {
 
     -- firefox always on web tag
     {
-        rule = { class = "Firefox" },
+        rule_any = { class = { "Firefox", "firefox" } },
         properties = { tag = screen[1].tags[2] }
     },
 
     -- make firefox windows other than the main one float
     {
-        rule = { class = "Firefox" },
+        rule_any = { class = { "Firefox", "firefox" } },
         except = { instance = "Navigator" },
         properties = { floating = true }
     },

@@ -38,6 +38,7 @@ Plug 'danielwe/base16-vim'
 " syntax highlighting for other languages
 Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 Plug 'calviken/vim-gdscript3'
+Plug 'elmcast/elm-vim'
 " and languages vim is bad at highlighting by default
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 " this one's mine,
