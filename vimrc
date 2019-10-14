@@ -39,14 +39,21 @@ Plug 'danielwe/base16-vim'
 Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 Plug 'calviken/vim-gdscript3'
 Plug 'elmcast/elm-vim'
+Plug 'digitaltoad/vim-pug'
 " and languages vim is bad at highlighting by default
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
+" this probably has to be loaded after the js one? not sure if order matters
+Plug 'mxw/vim-jsx'
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
 
 " set colour scheme
 colorscheme base16-atelier-heath
+
+" for whatever reason cursorlinenr just had no setting applied til recently?
+" and it suddenly started applying underline, which looks bad to me, so...
+highlight CursorLineNr cterm=bold
 
 " enable 24-bit colour if supported (otherwise vim will look weird in termite)
 if $COLORTERM == 'truecolor'
