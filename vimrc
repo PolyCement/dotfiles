@@ -20,6 +20,10 @@ set hidden
 " if this aint set numbertoggle does nothing
 set number relativenumber
 
+" highlight the current line number (but not the whole line)
+set cursorline
+set cursorlineopt=number
+
 " plugins!
 call plug#begin()
 " general good stuff
@@ -53,6 +57,8 @@ colorscheme base16-atelier-heath
 
 " for whatever reason cursorlinenr just had no setting applied til recently?
 " and it suddenly started applying underline, which looks bad to me, so...
+" huh this seems to be related to this actually: https://github.com/vim/vim/issues/5017
+" maybe give this another look next time vim updates but tbh i like it bold
 highlight CursorLineNr cterm=bold
 
 " enable 24-bit colour if supported (otherwise vim will look weird in termite)
