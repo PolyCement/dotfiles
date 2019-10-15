@@ -82,10 +82,14 @@ naughty.config.defaults.position = "bottom_right"
 -- NOTE: awesome wm documentation says not to use io.popen because it's blocking
 -- i'm using it *because* it's blocking - no further code should run until we have the hostname.
 -- an alternative would be to export hostname as a var but... idk. might have to if this way is bad
-local f = io.popen("/bin/hostname")
-local hostname = f:read("*a") or ""
-f:close()
-hostname = string.gsub(hostname, "\n$", "")
+-- ok so it looks like, at some point, awesome.hostname was added as a way to get the hostname
+-- and waiting for the hard drive takes several seconds so lets try using this instead
+-- if this works better then just delete this whole block and use awesome.hostname directly i guess
+-- local f = io.popen("/bin/hostname")
+-- local hostname = f:read("*a") or ""
+-- f:close()
+-- hostname = string.gsub(hostname, "\n$", "")
+local hostname = awesome.hostname
 
 -- This is used later as the default terminal and editor to run.
 terminal = "termite"
@@ -199,21 +203,43 @@ menubar.utils.terminal = terminal -- Set the terminal for applications that requ
 -- {{{ Wibar
 -- blank space for padding
 local pad_widget = wibox.widget.textbox(" ")
-local div_widget = wibox.widget.textbox(" | ")
+local div_widget = wibox.widget {
+    {
+        text = " | ",
+        widget = wibox.widget.textbox
+    },
+    widget = wibox.container.margin,
+    bottom = 4
+}
 
 -- textclock widget
-local clock_widget = wibox.widget.textclock("🕒 %a %d %b, %H:%M")
+local clock_widget = wibox.widget {
+    {
+        widget = wibox.widget.textclock,
+        format = "🕒 %a %d %b, %H:%M"
+    },
+    widget = wibox.container.margin,
+    bottom = 1
+}
 -- local clock_widget = wibox.widget.textclock("🕒 %m月%d日、%H:%M")
 local calendar_popup = calendar.month()
 calendar_popup:attach(clock_widget, "tr")
 
--- battery monitor, only useful on laptop
+-- battery monitor, only used on doubleslap
+-- TODO: make sure the margin looks right on doubleslap
 local bat_widget = nil
 if hostname == "doubleslap" then
-    bat_widget = wibox.widget.textbox()
+    local bat_widget_info = wibox.widget.textbox()
+    bat_widget = wibox.widget {
+        {
+            widget = bat_widget_info
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    }
     -- has the low power warning been shown yet?
     local low_power_warning_shown = false
-    vicious.register(bat_widget, vicious.widgets.bat, function (widget, args)
+    vicious.register(bat_widget_info, vicious.widgets.bat, function (widget, args)
         -- /!\ GOOD PROGRAMMER ALERT /!\
         -- when power drops below 15%, spawn a notification warning me about it
         -- todo: move this literally anywhere else cos it sure as hell shouldn't be tacked on here
@@ -233,13 +259,28 @@ if hostname == "doubleslap" then
 end
 
 -- volume widget
--- volume control function
+local vol_widget_info = wibox.widget.textbox()
+local vol_widget = wibox.widget {
+    {
+        widget = vol_widget_info
+    },
+    widget = wibox.container.margin,
+    bottom = 1
+}
+-- could probably be updated less often?
+-- but then it wouldn't react to changes in eg. the mixer as fast. hmmm
+vicious.register(vol_widget_info, vicious.widgets.volume, function (widget, args)
+    local icon = { ["♫"] = "🔊", ["♩"] = "🔈" }
+    return icon[args[2]] .. " " .. args[1] .. "%"
+end, 5, "Master")
+
+-- volume control functions
 local function change_volume(percent)
     -- TODO: replace grep & cut with some regex? not sure which is more efficient really
     local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
         awful.spawn("pactl set-sink-volume " .. tonumber(stdout) .. " " .. percent)
-        vicious.force({ vol_widget })
+        vicious.force({ vol_widget_info })
     end)
 end
 
@@ -248,16 +289,10 @@ local function toggle_mute()
     local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
         awful.spawn("pactl set-sink-mute " .. tonumber(stdout) .. " toggle")
-        vicious.force({ vol_widget })
+        vicious.force({ vol_widget_info })
     end)
 end
 
--- could probably be updated less often
-vol_widget = wibox.widget.textbox()
-vicious.register(vol_widget, vicious.widgets.volume, function (widget, args)
-    local icon = { ["♫"] = "🔊", ["♩"] = "🔈" }
-    return icon[args[2]] .. " " .. args[1] .. "%"
-end, 5, "Master")
 vol_widget:buttons(gears.table.join(
     awful.button({ }, 1, function()
         awful.spawn("pavucontrol")
@@ -274,15 +309,57 @@ vol_widget:buttons(gears.table.join(
 ))
 
 -- core temp widget
-local temp_widget = wibox.widget.textbox()
+local temp_widget_info = wibox.widget.textbox()
+-- rename to temp_container or some shit idk
+local temp_widget = wibox.widget {
+    {
+        {
+            {
+                widget = wibox.widget.textbox,
+                text = "🌡",
+                font = "sans 6",
+                valign = "center"
+            },
+            widget = wibox.container.place,
+            valign = "bottom"
+        },
+        widget = wibox.container.background,
+    },
+    {
+        {
+            widget = temp_widget_info
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    },
+    layout = wibox.layout.fixed.horizontal
+}
 local thermal_zone = hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
-vicious.register(temp_widget, vicious.widgets.thermal, "🌡 $1°C", 19, thermal_zone)
+vicious.register(temp_widget_info, vicious.widgets.thermal, " $1°C", 19, thermal_zone)
 
 -- set up mozc widget
-local mozc_widget = wibox.widget.textbox()
-mozcmon.register(mozc_widget, function(args)
+local mozc_widget_info = wibox.widget.textbox()
+local mozc_widget = wibox.widget {
+    {
+        {
+            widget = wibox.widget.textbox,
+            text = "⌨ "
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    },
+    {
+        {
+            widget = mozc_widget_info
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    },
+    widget = wibox.layout.fixed.horizontal
+}
+mozcmon.register(mozc_widget_info, function(args)
     local indicator_char = (args[2] == "-") and "ー" or args[2]
-    return "⌨ " .. indicator_char
+    return indicator_char
 end)
 mozcmon.start()
 
@@ -415,8 +492,12 @@ awful.screen.connect_for_each_screen(function(s)
             {
                 {
                     {
-                        id = "text_role",
-                        widget = wibox.widget.textbox
+                        {
+                            id = "text_role",
+                            widget = wibox.widget.textbox
+                        },
+                        widget = wibox.container.margin,
+                        bottom = 1
                     },
                     widget = wibox.container.place
                 },
@@ -440,7 +521,6 @@ awful.screen.connect_for_each_screen(function(s)
     }
 
     -- Create a tasklist widget
-    -- TODO: more margins?
     s.mytasklist = awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
@@ -454,15 +534,20 @@ awful.screen.connect_for_each_screen(function(s)
                             widget = wibox.widget.imagebox
                         },
                         {
-                            id = "text_role",
-                            widget = wibox.widget.textbox
+                            {
+                                id = "text_role",
+                                widget = wibox.widget.textbox
+                            },
+                            widget = wibox.container.margin,
+                            left = 3,
+                            bottom = 1
                         },
                         layout = wibox.layout.align.horizontal
                     },
-                    widget = wibox.container.place
+                    widget = wibox.container.margin,
+                    margins = 2
                 },
-                widget = wibox.container.margin,
-                margins = 2
+                widget = wibox.container.place
             },
             id = "background_role",
             widget = wibox.container.background
@@ -583,10 +668,9 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioRaiseVolume", function()
         change_volume("+5%")
     end),
-    -- TODO: update this for the widget
+    -- TODO: check this works on doubleslap
     awful.key({ }, "XF86AudioMute", function()
-        awful.spawn("pactl set-sink-mute 0 toggle")
-        vicious.force({ vol_widget })
+        toggle_mute()
     end),
 
     -- Standard program
