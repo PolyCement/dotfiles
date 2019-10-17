@@ -661,6 +661,17 @@ globalkeys = gears.table.join(
         end,
         {description = "go back", group = "client"}),
 
+    -- brightness controls
+    -- these are very basic and don't *really* work in a "normal" way
+    -- brightness down applies redshift, brightness up removes it
+    -- TODO: think of something better
+    awful.key({ }, "XF86MonBrightnessUp", function()
+        awful.spawn("redshift -x")
+    end),
+    awful.key({ }, "XF86MonBrightnessDown", function()
+        awful.spawn("redshift -O 2700")
+    end),
+
     -- volume controls
     awful.key({ }, "XF86AudioLowerVolume", function()
         change_volume("-5%")
@@ -668,7 +679,6 @@ globalkeys = gears.table.join(
     awful.key({ }, "XF86AudioRaiseVolume", function()
         change_volume("+5%")
     end),
-    -- TODO: check this works on doubleslap
     awful.key({ }, "XF86AudioMute", function()
         toggle_mute()
     end),
