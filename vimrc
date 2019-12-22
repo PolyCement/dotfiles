@@ -48,6 +48,9 @@ Plug 'digitaltoad/vim-pug'
 Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
 " this probably has to be loaded after the js one? not sure if order matters
 Plug 'mxw/vim-jsx'
+" i guess i use typescript now...
+Plug 'leafgarland/typescript-vim'
+Plug 'peitalin/vim-jsx-typescript'
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
@@ -65,3 +68,6 @@ highlight CursorLineNr cterm=bold
 if $COLORTERM == 'truecolor'
     set termguicolors
 endif
+
+" enable numbering for buftabline
+let g:buftabline_numbers=1
