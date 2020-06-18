@@ -30,6 +30,10 @@ man() {
 # enable more autocompletion
 . /usr/share/bash-completion/bash_completion
 
+# for whatever reason nvm doesn't put itself in the path?
+# i dont know the specifics but there's probably a good reason
+. /usr/share/nvm/init-nvm.sh
+
 # print the wu tang logo
 # i'll put somethin else here eventually (probably)
 

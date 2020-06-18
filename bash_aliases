@@ -23,3 +23,5 @@ alias bookworm='com.github.babluboy.bookworm'
 alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
 alias fallout='~/games/fallout/run.sh'
+# :)
+alias youtube-yownloader='youtube-dl'

@@ -45,12 +45,12 @@ Plug 'calviken/vim-gdscript3'
 Plug 'elmcast/elm-vim'
 Plug 'digitaltoad/vim-pug'
 " and languages vim is bad at highlighting by default
-Plug 'pangloss/vim-javascript', { 'for': 'javascript' }
-" this probably has to be loaded after the js one? not sure if order matters
-Plug 'mxw/vim-jsx'
+Plug 'yuezk/vim-js'
 " i guess i use typescript now...
 Plug 'leafgarland/typescript-vim'
-Plug 'peitalin/vim-jsx-typescript'
+" this probably has to be loaded after the js one? not sure if order matters
+" also it covers typescript jsx too which is nice
+Plug 'maxmellon/vim-jsx-pretty'
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
