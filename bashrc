@@ -32,7 +32,9 @@ man() {
 
 # for whatever reason nvm doesn't put itself in the path?
 # i dont know the specifics but there's probably a good reason
-. /usr/share/nvm/init-nvm.sh
+if test -f "/usr/share/nvm/init-nvm.sh"; then
+    . /usr/share/nvm/init-nvm.sh
+fi
 
 # print the wu tang logo
 # i'll put somethin else here eventually (probably)
