@@ -70,7 +70,7 @@ mozcmon.start = function ()
             local b_name, b_char, b_jp = string.match(line, "branch%s+([^%s]+)%s+([^%s]+)%s+([^%s]+)")
             if b_name then
                 for _, r in pairs(registered_widgets) do
-                    local widget, format = unpack(r)
+                    local widget, format = table.unpack(r)
                     if type(format) == "string" then
                         -- swap out placeholders for args
                         -- simplistic, but anything more would be overcomplication

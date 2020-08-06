@@ -8,6 +8,8 @@ case $1 in
     unrar l "$1" | less ;;
 *.7z)
     7z l "$1" | less ;;
+*.bz2)
+    tar -jtvf "$1" | less ;;
 *)
     if [[ -z "$1" ]]; then
         less

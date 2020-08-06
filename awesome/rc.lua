@@ -170,7 +170,7 @@ devmenu = {
     { "godot", "godot" },
     { "rpg maker mv", "steam-native steam://rungameid/363890" },
     { "tiled", "tiled" },
-    { "unity", "unity-editor" }
+    { "unity", "unityhub" }
 }
 
 graphicsmenu = {
@@ -435,7 +435,7 @@ awful.screen.connect_for_each_screen(function(s)
 
     -- add tags
     for i, d in ipairs(tag_list) do
-        local name, layout = unpack(d)
+        local name, layout = table.unpack(d)
         local selected = i == 1 and true or false
         local gap_size = beautiful.useless_gap
         if layout.name == "max" or layout.name == "fullscreen" then
