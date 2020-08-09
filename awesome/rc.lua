@@ -270,7 +270,7 @@ local vol_widget = wibox.widget {
 -- could probably be updated less often?
 -- but then it wouldn't react to changes in eg. the mixer as fast. hmmm
 vicious.register(vol_widget_info, vicious.widgets.volume, function (widget, args)
-    local icon = { ["♫"] = "🔊", ["♩"] = "🔈" }
+    local icon = { ["🔉"] = "🔊", ["🔈"] = "🔇" }
     return icon[args[2]] .. " " .. args[1] .. "%"
 end, 5, "Master")
 
@@ -865,6 +865,7 @@ awful.rules.rules = {
 
     -- make all unity windows but the main one float (otherwise loading bars etc look weird)
     -- will need to keep an eye out to make sure this doesn't float games made in unity,
+    -- TODO: update this, the header text changed!!
     {
         rule = { class = "Unity" },
         except = { name = "Unity %- Unity.+PC, Mac & Linux Standalone.+" },
