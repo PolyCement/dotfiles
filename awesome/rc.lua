@@ -940,6 +940,14 @@ client.connect_signal("manage", function (c)
         -- Prevent clients from being unreachable after screen count changes.
         awful.placement.no_offscreen(c)
     end
+
+    -- for whatever reason, fullscreen apps end up kinda shoved off the screen
+    -- this just shoves em back into the right position
+    -- i feel like it's probably not the *right* solution. but it works,
+    if c.fullscreen then
+        c.x = 0
+        c.y = 0
+    end
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.

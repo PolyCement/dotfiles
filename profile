@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# stuff for go...
+export GOPATH=~/go
+export GO111MODULE=on
 # self explanatory
-export PATH=$PATH:~/bin:~/dotfiles/bin:~/.gem/ruby/2.4.0/bin:~/go/bin
+export PATH=$PATH:~/bin:~/.local/bin:~/dotfiles/bin:~/.gem/ruby/2.4.0/bin:$GOPATH/bin
 export VISUAL=vim
 # dualshock 2 mapping, taken from https://github.com/gabomdq/SDL_GameControllerDB
 # some games will use this if it's defined, but fall back to autoconfig if it's missing
