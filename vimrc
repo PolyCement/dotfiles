@@ -61,6 +61,11 @@ colorscheme base16-atelier-heath
 " huh this seems to be related to this actually: https://github.com/vim/vim/issues/5017
 " maybe give this another look next time vim updates but tbh i like it bold
 highlight CursorLineNr cterm=bold
+" make visual mode invert colours rather than using a dark grey that makes the text borderline unreadable
+" note that bg is set over fg due to reverse flipping the colours
+highlight Visual cterm=reverse guibg=#1b181b
+" similar for matching parenthesis highlighting
+highlight MatchParen cterm=reverse guibg=#1b181b
 
 " enable 24-bit colour if supported (otherwise vim will look weird in termite/alacritty)
 if $COLORTERM == 'truecolor'
