@@ -56,16 +56,15 @@ call plug#end()
 " set colour scheme
 colorscheme base16-atelier-heath
 
-" for whatever reason cursorlinenr just had no setting applied til recently?
-" and it suddenly started applying underline, which looks bad to me, so...
-" huh this seems to be related to this actually: https://github.com/vim/vim/issues/5017
-" maybe give this another look next time vim updates but tbh i like it bold
+" make the line number of the current line bold instead of underlined
 highlight CursorLineNr cterm=bold
 " make visual mode invert colours rather than using a dark grey that makes the text borderline unreadable
 " note that bg is set over fg due to reverse flipping the colours
 highlight Visual cterm=reverse guibg=#1b181b
 " similar for matching parenthesis highlighting
 highlight MatchParen cterm=reverse guibg=#1b181b
+" stop theme making the background opaque
+highlight Normal guibg=NONE
 
 " enable 24-bit colour if supported (otherwise vim will look weird in termite/alacritty)
 if $COLORTERM == 'truecolor'
@@ -77,6 +76,10 @@ execute "set t_8b=\e[48;2;%lu;%lu;%lum"
 
 " enable numbering for buftabline
 let g:buftabline_numbers=1
+
+" enable mouse
+set mouse=a
+set ttymouse=sgr
 
 " chokidar a shit
 au FileType javascript,typescript setl backupcopy=yes
