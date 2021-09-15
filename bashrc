@@ -70,3 +70,6 @@ message=$'                             ,;ldo;
 # start keychain (does this belong here???)
 # commented out cos i never use it anymore
 # eval $(keychain -q --eval id_rsa)
+
+# load pyenv
+eval "$(pyenv init -)"

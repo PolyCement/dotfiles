@@ -92,7 +92,7 @@ naughty.config.defaults.position = "bottom_right"
 local hostname = awesome.hostname
 
 -- This is used later as the default terminal and editor to run.
-terminal = "termite"
+terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
@@ -160,6 +160,7 @@ mysystemmenu = {
 gamesmenu = {
     { "dolphin", "dolphin-emu" },
     { "ftb", "feedthebeast" },
+    { "lutris", "lutris" },
     { "pcsx2", "PCSX2" },
     { "retroarch", "retroarch" },
     { "steam", "steam" },
@@ -180,6 +181,12 @@ graphicsmenu = {
     { "krita", "krita" }
 }
 
+musicmenu = {
+    { "jack", "qjackctl" },
+    { "reaper", "reaper" },
+    { "tenacity", "tenacity" },
+}
+
 mymainmenu = awful.menu({
     items = {
         { "awesome",  myawesomemenu, beautiful.awesome_icon },
@@ -187,6 +194,7 @@ mymainmenu = awful.menu({
         { "games",    gamesmenu },
         { "game dev", devmenu },
         { "graphics", graphicsmenu },
+        { "music", musicmenu },
         { "browser",  "firefox" },
         { "voip",     "discord" },
         { "terminal", terminal }
@@ -859,7 +867,7 @@ awful.rules.rules = {
 
     -- Floating clients.
     {
-        rule_any = { class = { "SimpleScreenRecorder" }, instance = { "pavucontrol" } },
+        rule_any = { class = { "SimpleScreenRecorder", "QjackCtl" }, instance = { "pavucontrol" } },
         properties = { floating = true }
     },
 

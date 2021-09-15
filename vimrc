@@ -36,9 +36,7 @@ Plug 'dietsche/vim-lastplace'
 Plug 'jeffkreeftmeijer/vim-numbertoggle'
 Plug 'ap/vim-buftabline'
 " base16 colourschemes
-"Plug 'chriskempson/base16-vim'
-" dude ain't maintaining his repo rn and his plugin broke so here's a fixed fork
-Plug 'danielwe/base16-vim'
+Plug 'chriskempson/base16-vim'
 " syntax highlighting for other languages
 Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 Plug 'calviken/vim-gdscript3'
@@ -64,10 +62,16 @@ colorscheme base16-atelier-heath
 " maybe give this another look next time vim updates but tbh i like it bold
 highlight CursorLineNr cterm=bold
 
-" enable 24-bit colour if supported (otherwise vim will look weird in termite)
+" enable 24-bit colour if supported (otherwise vim will look weird in termite/alacritty)
 if $COLORTERM == 'truecolor'
     set termguicolors
 endif
+" fixes colours being fucked in alacritty, 
+execute "set t_8f=\e[38;2;%lu;%lu;%lum"
+execute "set t_8b=\e[48;2;%lu;%lu;%lum"
 
 " enable numbering for buftabline
 let g:buftabline_numbers=1
+
+" chokidar a shit
+au FileType javascript,typescript setl backupcopy=yes
