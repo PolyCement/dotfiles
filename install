@@ -57,7 +57,8 @@ link_file "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
 link_file "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
 link_file "$BASEDIR/termiteconf" ~/.config/termite/config
 link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
+link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
 
 # finally, link directories
-link_file "$BASEDIR/openbox" ~/.config/
-link_file "$BASEDIR/awesome" ~/.config/
+link_file "$BASEDIR/openbox" ~/.config/openbox
+link_file "$BASEDIR/awesome" ~/.config/awesome
