@@ -58,6 +58,7 @@ link_file "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
 link_file "$BASEDIR/termiteconf" ~/.config/termite/config
 link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
 link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
+link_file "$BASEDIR/base16-atelier-heath-vim.theme" ~/.config/cmus/base16-atelier-heath-vim.theme
 
 # finally, link directories
 link_file "$BASEDIR/openbox" ~/.config/openbox
