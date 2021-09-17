@@ -348,25 +348,25 @@ local thermal_zone = hostname == "cometpunch" and "thermal_zone2" or "thermal_zo
 vicious.register(temp_widget_info, vicious.widgets.thermal, " $1°C", 19, thermal_zone)
 
 -- set up mozc widget
-local mozc_widget_info = wibox.widget.textbox()
-local mozc_widget = wibox.widget {
-    {
-        {
-            widget = wibox.widget.textbox,
-            text = "⌨ "
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    },
-    {
-        {
-            widget = mozc_widget_info
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    },
-    widget = wibox.layout.fixed.horizontal
-}
+--local mozc_widget_info = wibox.widget.textbox()
+--local mozc_widget = wibox.widget {
+--    {
+--        {
+--            widget = wibox.widget.textbox,
+--            text = "⌨ "
+--        },
+--        widget = wibox.container.margin,
+--        bottom = 1
+--    },
+--    {
+--        {
+--            widget = mozc_widget_info
+--        },
+--        widget = wibox.container.margin,
+--        bottom = 1
+--    },
+--    widget = wibox.layout.fixed.horizontal
+--}
 -- commented out for now, see above
 --mozcmon.register(mozc_widget_info, function(args)
 --    local indicator_char = (args[2] == "-") and "ー" or args[2]
@@ -574,8 +574,8 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.fixed.horizontal,
         pad_widget,
         wibox.widget.systray(),
-        div_widget,
-        mozc_widget
+--        div_widget,
+--        mozc_widget
     }
     if bat_widget ~= nil then
         gears.table.merge(right_widgets, {
