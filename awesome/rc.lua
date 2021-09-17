@@ -16,7 +16,9 @@ local vicious = require("vicious")
 require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
 -- my "hot new script" for monitoring uim/mozc input mode state
-local mozcmon = require("mozcmon")
+-- commenting this out for now since fcitx has its own tray icon that more or less does this
+-- might bring it back tho cos altho fcitx has configurable icons mozc doesn't and god are they ugly
+-- local mozcmon = require("mozcmon")
  
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -365,11 +367,12 @@ local mozc_widget = wibox.widget {
     },
     widget = wibox.layout.fixed.horizontal
 }
-mozcmon.register(mozc_widget_info, function(args)
-    local indicator_char = (args[2] == "-") and "ー" or args[2]
-    return indicator_char
-end)
-mozcmon.start()
+-- commented out for now, see above
+--mozcmon.register(mozc_widget_info, function(args)
+--    local indicator_char = (args[2] == "-") and "ー" or args[2]
+--    return indicator_char
+--end)
+--mozcmon.start()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(

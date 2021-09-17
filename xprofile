@@ -1,8 +1,9 @@
 # afaik these are needed so uim will work in gtk and qt apps
-export GTK_IM_MODULE='uim'
-export QT_IM_MODULE='uim'
-uim-xim&
-export XMODIFIERS='@im=uim'
+export GTK_IM_MODULE='fcitx'
+export QT_IM_MODULE='fcitx'
+# maybe this should be in awesome's rc.lua?? idk
+fcitx &
+export XMODIFIERS='@im=fcitx'
 # caps lock is useless, rebind it so i can use it to toggle direct input mode
 xmodmap -e "remove lock = Caps_Lock"
 xmodmap -e "keysym Caps_Lock = Zenkaku_Hankaku"
