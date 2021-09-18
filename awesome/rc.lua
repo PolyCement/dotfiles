@@ -15,10 +15,8 @@ local vicious = require("vicious")
 -- shows hotkeys for the current client (if available) in the hotkeys popup
 require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
--- my "hot new script" for monitoring uim/mozc input mode state
--- commenting this out for now since fcitx has its own tray icon that more or less does this
--- might bring it back tho cos altho fcitx has configurable icons mozc doesn't and god are they ugly
--- local mozcmon = require("mozcmon")
+-- it's back baby! fcitxmon: the sequel to mozcmon
+local fcitxmon = require("fcitxmon")
  
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -347,32 +345,38 @@ local temp_widget = wibox.widget {
 local thermal_zone = hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
 vicious.register(temp_widget_info, vicious.widgets.thermal, " $1°C", 19, thermal_zone)
 
--- set up mozc widget
---local mozc_widget_info = wibox.widget.textbox()
---local mozc_widget = wibox.widget {
---    {
---        {
---            widget = wibox.widget.textbox,
---            text = "⌨ "
---        },
---        widget = wibox.container.margin,
---        bottom = 1
---    },
---    {
---        {
---            widget = mozc_widget_info
---        },
---        widget = wibox.container.margin,
---        bottom = 1
---    },
---    widget = wibox.layout.fixed.horizontal
---}
--- commented out for now, see above
---mozcmon.register(mozc_widget_info, function(args)
---    local indicator_char = (args[2] == "-") and "ー" or args[2]
---    return indicator_char
---end)
---mozcmon.start()
+-- set up fcitx widget
+local fcitx_widget_info = wibox.widget.textbox()
+local fcitx_widget = wibox.widget {
+    {
+        {
+            widget = wibox.widget.textbox,
+            text = "⌨ "
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    },
+    {
+        {
+            widget = fcitx_widget_info
+        },
+        widget = wibox.container.margin,
+        bottom = 1
+    },
+    widget = wibox.layout.fixed.horizontal
+}
+fcitxmon.register(fcitx_widget_info, function(state)
+    local indicator_char
+    if state == 0 then
+        indicator_char = "Ｘ"
+    elseif state == 1 then
+        indicator_char = "ー"
+    elseif state == 2 then
+        indicator_char = "あ"
+    end
+    return indicator_char
+end)
+fcitxmon.start()
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -574,8 +578,8 @@ awful.screen.connect_for_each_screen(function(s)
         layout = wibox.layout.fixed.horizontal,
         pad_widget,
         wibox.widget.systray(),
---        div_widget,
---        mozc_widget
+        div_widget,
+        fcitx_widget
     }
     if bat_widget ~= nil then
         gears.table.merge(right_widgets, {
