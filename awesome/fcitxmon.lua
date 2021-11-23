@@ -12,6 +12,7 @@
 -- 1 - fcitx open, but inactive
 -- 2 - fcitx open and active
 -- the return value of the function will be set as the widget text
+-- TODO: figure out if some kind of close signal is sent so we can set the state back to 0
 
 -- lua libraries:
 -- we're using lgi to listen for dbus signals (it's a dependency of awesomewm, so you have it installed)

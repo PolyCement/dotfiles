@@ -761,7 +761,21 @@ globalkeys = gears.table.join(
              function()
                  local timestamp = os.date("%y%m%d-%H%M%S")
                  awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
-             end)
+             end),
+    awful.key({ modkey, "Shift"   }, "o",
+             function ()
+                 -- this command takes the output of pactl, cuts it down to only
+                 -- sink #1's info, then grabs the active port
+                 local cmd = "pactl list sinks | sed -n -e '/^Sink #1$/,/^$/s/^\\s*Active Port: //p'"
+                 awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+                     if stdout:gsub("%s+", "") == "analog-output-lineout" then
+                         awful.spawn("pactl set-sink-port 1 analog-output-headphones")
+                     else
+                         awful.spawn("pactl set-sink-port 1 analog-output-lineout")
+                     end
+                 end)
+             end,
+              {description = "toggle output device", group = "audio"})
 )
 
 clientkeys = gears.table.join(

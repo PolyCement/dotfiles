@@ -42,6 +42,7 @@ Plug 'tikhomirov/vim-glsl', { 'for': 'glsl' }
 Plug 'calviken/vim-gdscript3'
 Plug 'elmcast/elm-vim'
 Plug 'digitaltoad/vim-pug'
+Plug 'elixir-editors/vim-elixir'
 " and languages vim is bad at highlighting by default
 Plug 'yuezk/vim-js'
 " i guess i use typescript now...
