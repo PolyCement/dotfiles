@@ -30,6 +30,10 @@ man() {
 # enable more autocompletion
 . /usr/share/bash-completion/bash_completion
 
+# fzf stuff
+. /usr/share/fzf/key-bindings.bash
+. /usr/share/fzf/completion.bash
+
 # for whatever reason nvm doesn't put itself in the path?
 # i dont know the specifics but there's probably a good reason
 if test -f "/usr/share/nvm/init-nvm.sh"; then
