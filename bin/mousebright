@@ -1,0 +1,155 @@
+#!/usr/bin/env python
+
+# second attempt at a script for adjusting mouse led brightness
+# because for some fucking reason theres not a single cli app for converting between rgb and hsv
+# and hsv is the only colour space that makes sense in this context
+
+# REQUIREMENTS:
+# - rivalcfg (for actually sending shit to the mouse)
+# - xdg (for saving the current colourscheme in a settings file)
+# - sty (optional) (for coloured terminal output)
+
+from rivalcfg import get_first_mouse
+from rivalcfg.color_helpers import is_color, parse_color_string
+from argparse import ArgumentParser, ArgumentTypeError
+from colorsys import rgb_to_hsv, hsv_to_rgb
+from xdg import xdg_config_home
+from json import dumps, load
+from os import makedirs
+from os.path import dirname, isdir, join
+import logging
+from logging import info
+# try to import sty, if it doesnt exist then fuck it whatever
+try:
+    from sty import fg, bg
+    sty_installed = True
+except ImportError:
+    sty_installed = False
+
+PROPS = [
+    "z1_color",
+    "z2_color",
+    "z3_color",
+    "logo_color"
+]
+
+def float_between_0_and_1(arg):
+    try:
+        arg_as_float = float(arg)
+    except ValueError:    
+        raise ArgumentTypeError("argument must be a floating point number")
+    if arg_as_float < 0 or arg_as_float > 1:
+        raise ArgumentTypeError("argument must be between 0 and 1 (inclusive)")
+    return arg_as_float
+
+# load a color from rivalcfg's configs
+# should work fine provided the user didnt fuck with it manually :)
+def rivalcfg_color_to_rgb(color):
+    if type(color) in (tuple, list):
+        return color
+    return parse_color_string(color)
+
+def get_rivalcfg_colors(mouse):
+    info("Reading config from mouse...")
+    return {prop: rivalcfg_color_to_rgb(mouse.mouse_settings.get(prop)) for prop in PROPS}
+
+# try and load a config file
+# if it doesn't exist just return None
+def load_config_from_file(config_path):
+    info("Attempting to load info from %s..." % config_path)
+    try:
+        with open(config_path, "r") as file:
+            config = load(file)
+        return config
+    except:
+        info("Unable to read config!")
+        return None
+
+def save_config_to_file(config_path, config):
+    makedirs(dirname(config_path), exist_ok=True)
+    with open(config_path, "w") as file:
+        file.write(dumps(config))
+
+# take an rgb color (as a list or tuple, vals from 0-255), set its brightness in hsv space,
+# then return it as a new rgb color tuple
+def set_color_brightness(color, brightness):
+    # convert rgb to hsv
+    hsv_value = rgb_to_hsv(*color)
+    # set brightness (just discard the old brightness for now)
+    new_hsv_value = (hsv_value[0], hsv_value[1], 255 * brightness)
+    # convert back
+    return tuple(map(int, hsv_to_rgb(*new_hsv_value)))
+
+# return the given rgb list/tuple as a hex string
+def rgb_to_hex(r, g, b):
+    return "#%02x%02x%02x" % (r, g, b)
+
+# turn the colour into a string (with colour(!) if sty is installed)
+def color_to_string(r, g, b):
+    if sty_installed:
+        # make sure the fg colour stands out, probably gonna have to tweak this part
+        # maybe making it just use the g value would work better???
+        fg_color = fg.white if rgb_to_hsv(r, g, b)[2] < 128 else fg.black
+        return "    " + fg_color + bg(r, g, b) + rgb_to_hex(r, g, b) + bg.rs + fg.rs
+    return "    %s" % rgb_to_hex(r, g, b)
+
+# figure out what we're doing
+parser = ArgumentParser()
+parser.add_argument("brightness", type=float_between_0_and_1)
+parser.add_argument("-s", "--scheme", help="select colour scheme", default="current")
+parser.add_argument(
+    "-v", "--verbose", help="enable logging", action="store_const", const=logging.INFO, dest="loglevel"
+)
+parser.add_argument("-q", "--quiet", help="don't print anything (overrides -v)", action="store_true")
+args = parser.parse_args()
+logging.basicConfig(level=args.loglevel if not args.quiet else None)
+
+# get the mouse
+mouse = get_first_mouse()
+
+# if config exists load it
+config_path = join(xdg_config_home(), "mousebright", "config.json")
+config = load_config_from_file(config_path)
+# if config doesn't exist or doesn't contain "current", pull the current colours from the mouse
+if not config:
+    config = {}
+if not "current" in config:
+    config["current"] = get_rivalcfg_colors(mouse)
+info("Config loaded!")
+
+# if the selected scheme isn't in config, default to current
+if not args.scheme in config:
+    info("Colour scheme \"%s\" not found in config, defaulting to current colour scheme." % args.scheme)
+    args.scheme = "current"
+
+# actually do the brightness adjustment
+info("Calculating new colour scheme...")
+new_scheme = {
+    prop: set_color_brightness(value, args.brightness) for prop, value in config[args.scheme].items()
+}
+
+# push results to the mouse
+info("Applying new colour scheme to mouse...")
+for prop, rgb_value in new_scheme.items():
+    # this bit writes the new colours to the mouse
+    getattr(mouse, "set_%s" % prop)(rgb_value)
+    # this bit doesn't. but it's needed for writing to rivalcfg's config file
+    mouse.mouse_settings.set(prop, rgb_value)
+
+# write new colours to rivalcfg's config file
+info("Saving new colour scheme to rivalcfg config...")
+mouse.save()
+# and update current colours in our own config
+config["current"] = config[args.scheme]
+info("Saving new colour scheme to mousebright config...")
+save_config_to_file(config_path, config)
+
+# print the new colours
+# PROPS is used to make sure the order is right
+if not args.quiet:
+    print("Settings applied! Mouse colours are now:")
+    for prop in PROPS:
+        print(color_to_string(*(new_scheme[prop])))
+
+# close the mouse or we segfault
+mouse.close()
