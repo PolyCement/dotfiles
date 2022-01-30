@@ -284,17 +284,18 @@ end, 5, "Master")
 
 -- volume control functions
 local function change_volume(percent)
-    -- TODO: replace grep & cut with some regex? not sure which is more efficient really
-    local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
+    -- first get the "symbolic name"(???) of the default sink
+    local cmd = "pactl get-default-sink"
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        awful.spawn("pactl set-sink-volume " .. tonumber(stdout) .. " " .. percent)
+        -- then actually set the volume
+        awful.spawn("pactl set-sink-volume " .. stdout .. " " .. percent)
         vicious.force({ vol_widget_info })
     end)
 end
 
 local function toggle_mute()
-    -- TODO: as above,
-    local cmd = "pacmd list-sinks | grep \"* index:\" | cut -b12-"
+    -- more or less the same as above, but mute instead
+    local cmd = "pactl get-default-sink"
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
         awful.spawn("pactl set-sink-mute " .. tonumber(stdout) .. " toggle")
         vicious.force({ vol_widget_info })
@@ -763,19 +764,26 @@ globalkeys = gears.table.join(
                  awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
              end),
     awful.key({ modkey, "Shift"   }, "o",
-             function ()
-                 -- this command takes the output of pactl, cuts it down to only
-                 -- sink #45's info, then grabs the active port
-                 local cmd = "pactl list sinks | sed -n -e '/^Sink #45$/,/^$/s/^\\s*Active Port: //p'"
-                 awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-                     if stdout:gsub("%s+", "") == "analog-output-lineout" then
-                         awful.spawn("pactl set-sink-port 45 analog-output-headphones")
-                     else
-                         awful.spawn("pactl set-sink-port 45 analog-output-lineout")
-                     end
-                 end)
-             end,
-              {description = "toggle output device", group = "audio"})
+        function ()
+            -- TODO: this is getting disgusting, maybe i should boot it to a bash script
+            -- get the default sink
+            local cmd_sink = "pactl get-default-sink"
+            awful.spawn.easy_async_with_shell(cmd_sink, function(stdout, stderr, reason, exit_code)
+                local default_sink = stdout:gsub("%s+", "")
+                -- this command takes the output of pactl, cuts it down to only
+                -- the default sink's info, then grabs the active port
+                local cmd_port = "pactl list sinks | sed -n -e '/^\\s*Name: "
+                                 .. default_sink .. "$/,/^$/s/^\\s*Active Port: //p'"
+                awful.spawn.easy_async_with_shell(cmd_port, function(stdout, stderr, reason, exit_code)
+                    if stdout:gsub("%s+", "") == "analog-output-lineout" then
+                        awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-headphones")
+                    else
+                        awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-lineout")
+                    end
+                end)
+            end)
+        end,
+         {description = "toggle output device", group = "audio"})
 )
 
 clientkeys = gears.table.join(
