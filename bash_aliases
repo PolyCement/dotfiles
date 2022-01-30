@@ -24,8 +24,8 @@ alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
 alias fallout='~/games/fallout/run.sh'
 # :)
-alias youtube-yownloader='youtube-dl'
-alias yy='youtube-dl'
+alias youtube-yownloader='youtube-dlc'
+alias yy='youtube-dlc'
 # spleeter needs a specific version of python and having to specify a model is tedious
 alias spleeter2='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:2stems-16kHz -o output'
 alias spleeter5='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:5stems-16kHz -o output'
