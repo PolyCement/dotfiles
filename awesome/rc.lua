@@ -187,6 +187,11 @@ musicmenu = {
     { "tenacity", "tenacity" },
 }
 
+workmenu = {
+    { "slack", "slack" },
+    { "zoom", "zoom" },
+}
+
 mymainmenu = awful.menu({
     items = {
         { "awesome",  myawesomemenu, beautiful.awesome_icon },
@@ -195,8 +200,10 @@ mymainmenu = awful.menu({
         { "game dev", devmenu },
         { "graphics", graphicsmenu },
         { "music", musicmenu },
+        { "work", workmenu },
         { "browser",  "firefox" },
-        { "voip",     "discord" },
+        { "email",  "thunderbird" },
+        { "chat",     "discord" },
         { "terminal", terminal }
     }
 })
