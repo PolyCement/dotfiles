@@ -24,8 +24,12 @@ alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
 alias fallout='~/games/fallout/run.sh'
 # :)
-alias youtube-yownloader='youtube-dlc'
-alias yy='youtube-dlc'
+alias youtube-yownloader='yt-dlp'
+alias yy='yt-dlp'
 # spleeter needs a specific version of python and having to specify a model is tedious
 alias spleeter2='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:2stems-16kHz -o output'
 alias spleeter5='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:5stems-16kHz -o output'
+# torch doesn't exist in python 3.10 so until it does demucs has to be run via pyenv
+alias demucs='PYENV_VERSION=3.9.10 python -m demucs'
+# i'm not adding this one to my path get outta here
+alias resolve='/opt/resolve/bin/resolve'
