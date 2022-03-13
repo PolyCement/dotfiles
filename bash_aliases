@@ -33,3 +33,5 @@ alias spleeter5='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:5stems-16kHz
 alias demucs='PYENV_VERSION=3.9.10 python -m demucs'
 # i'm not adding this one to my path get outta here
 alias resolve='/opt/resolve/bin/resolve'
+# run discord with a bunch of args that make it use hardware acceleration
+alias discord-accelerated='discord --enable-accelerated-mjpeg-decode --enable-accelerated-video --ignore-gpu-blacklist --enable-native-gpu-memory-buffers --enable-gpu-rasterization'
