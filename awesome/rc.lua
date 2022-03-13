@@ -203,7 +203,7 @@ mymainmenu = awful.menu({
         { "work", workmenu },
         { "browser",  "firefox" },
         { "email",  "thunderbird" },
-        { "chat",     "discord" },
+        { "chat",     "discord-accelerated" },
         { "terminal", terminal }
     }
 })

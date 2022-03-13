@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+# run discord with a bunch of args that make it use hardware acceleration
+# to my knowledge these are all built-in flags of chromium
+# for electron these can just be dumped in ~/.config/electron-flags.conf
+# but i'm unsure if discord's weird setup will even read those, so...
+discord \
+    --enable-accelerated-mjpeg-decode \
+    --enable-accelerated-video \
+    --ignore-gpu-blacklist \
+    --enable-native-gpu-memory-buffers \
+    --enable-gpu-rasterization \
+    $@
