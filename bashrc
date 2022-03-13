@@ -49,3 +49,6 @@ if [[ $HOSTNAME == cometpunch ]]
 then
     eval "$(pyenv init -)"
 fi
+
+# load direnv (has to go last, apparently)
+eval "$(direnv hook bash)"
