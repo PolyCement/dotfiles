@@ -237,8 +237,6 @@ local clock_widget = wibox.widget {
     bottom = 1
 }
 -- local clock_widget = wibox.widget.textclock("🕒 %m月%d日、%H:%M")
-local calendar_popup = calendar.month()
-calendar_popup:attach(clock_widget, "tr")
 
 -- battery monitor, only used on doubleslap
 -- TODO: make sure the margin looks right on doubleslap
@@ -464,7 +462,12 @@ awful.screen.connect_for_each_screen(function(s)
         if layout.name == "max" or layout.name == "fullscreen" then
             gap_size = 0
         end
-        awful.tag.add(name, { layout = layout, selected = selected, gap = gap_size })
+        awful.tag.add(name, {
+            layout = layout,
+            selected = selected,
+            gap = gap_size,
+            screen = s,
+        })
     end
 
     -- Create a promptbox for each screen
@@ -581,30 +584,49 @@ awful.screen.connect_for_each_screen(function(s)
     s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })
 
     -- build right widget table
-    -- might make this a loop tbh this shit long as hell for no good reason
-    local right_widgets = {
-        layout = wibox.layout.fixed.horizontal,
-        pad_widget,
-        wibox.widget.systray(),
-        div_widget,
-        fcitx_widget
-    }
-    if bat_widget ~= nil then
+    -- we only want most of these on 1 screen
+    -- TODO: figure out how to get the rightmost screen specifically
+    -- (indices are not necessarily tied to position)
+    -- TODO: make this a function or something? it kinda sucks
+    local right_widgets
+    if s.index == screen:count() then
+        -- for whatever reason the systray has to be told what screen to display on?
+        local systray = wibox.widget.systray()
+        systray:set_screen(s)
+
+        -- this has to be defined here because we need to tell it what screen to show up on,
+        local calendar_popup = calendar.month({ screen = s })
+        calendar_popup:attach(clock_widget, "tr")
+
+        right_widgets = {
+            layout = wibox.layout.fixed.horizontal,
+            pad_widget,
+            systray,
+            div_widget,
+            fcitx_widget
+        }
+        if bat_widget ~= nil then
+            gears.table.merge(right_widgets, {
+                div_widget,
+                bat_widget
+            })
+        end
         gears.table.merge(right_widgets, {
             div_widget,
-            bat_widget
+            temp_widget,
+            div_widget,
+            vol_widget,
+            div_widget,
+            clock_widget,
+            pad_widget,
+            s.mylayoutbox,
         })
+    else
+        right_widgets = {
+            layout = wibox.layout.fixed.horizontal,
+            s.mylayoutbox,
+        }
     end
-    gears.table.merge(right_widgets, {
-        div_widget,
-        temp_widget,
-        div_widget,
-        vol_widget,
-        div_widget,
-        clock_widget,
-        pad_widget,
-        s.mylayoutbox,
-    })
 
     -- Add widgets to the wibox
     s.mywibox:setup {
