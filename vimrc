@@ -50,6 +50,9 @@ Plug 'leafgarland/typescript-vim'
 " this probably has to be loaded after the js one? not sure if order matters
 " also it covers typescript jsx too which is nice
 Plug 'maxmellon/vim-jsx-pretty'
+" adjust tab size automatically
+" (i'm a softtabstop=4 girl living in a softtabstop=2 world)
+Plug 'tpope/vim-sleuth'
 " this one's mine,
 Plug '~/projects/vim-tweego'
 call plug#end()
