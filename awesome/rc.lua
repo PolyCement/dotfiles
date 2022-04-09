@@ -443,11 +443,20 @@ end
 screen.connect_signal("property::geometry", set_wallpaper)
 
 -- list of tags to add to each screen
+-- TODO: maybe switch the symbols up, the inner planet ones look a bit shit
 local tag_list = {
-    { " ♃ ", awful.layout.layouts[2] },
-    { " ♄ ", awful.layout.layouts[6] },
-    { " ♅ ", awful.layout.layouts[6] },
-    { " ♆ ", awful.layout.layouts[6] }
+    {
+        { " ☿ ", awful.layout.layouts[2] },
+        { " ♀ ", awful.layout.layouts[6] },
+        { " ♁ ", awful.layout.layouts[6] },
+        { " ♂ ", awful.layout.layouts[6] }
+    },
+    {
+        { " ♃ ", awful.layout.layouts[6] },
+        { " ♄ ", awful.layout.layouts[6] },
+        { " ♅ ", awful.layout.layouts[6] },
+        { " ♆ ", awful.layout.layouts[6] }
+    }
 }
 
 awful.screen.connect_for_each_screen(function(s)
@@ -455,7 +464,7 @@ awful.screen.connect_for_each_screen(function(s)
     set_wallpaper(s)
 
     -- add tags
-    for i, d in ipairs(tag_list) do
+    for i, d in ipairs(tag_list[s.index]) do
         local name, layout = table.unpack(d)
         local selected = i == 1 and true or false
         local gap_size = beautiful.useless_gap
@@ -1018,6 +1027,19 @@ client.connect_signal("manage", function (c)
         c.x = 0
         c.y = 0
     end
+
+    -- log transients
+    -- local parent = c.transient_for
+    -- naughty.notify({ preset = naughty.config.presets.critical,
+                     -- title = "Debug",
+                     -- text = tostring(c.window) .. " " .. (parent and tostring(parent.window) or "") })
+    -- if a new client has a parent, move it to the same tag as the parent
+    -- if parent then
+        -- tag = parent.first_tag
+        -- screen = parent.screen
+        -- c:move_to_tag(tag)
+        -- c:move_to_screen(screen)
+    -- end
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
