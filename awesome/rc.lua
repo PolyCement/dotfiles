@@ -17,6 +17,9 @@ require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
 -- it's back baby! fcitxmon: the sequel to mozcmon
 local fcitxmon = require("fcitxmon")
+
+-- set this to true to get spammed with debug notifications
+local print_debug_info = false
  
 -- {{{ Error handling
 -- Check if awesome encountered an error during startup and fell back to
@@ -964,7 +967,6 @@ awful.rules.rules = {
     },
 
     -- if we have 2 screens put firefox on s2t1, else s1t2
-    -- TODO: make child clients open on the same tag as the currently focused ff window
     {
         rule_any = { class = { "Firefox", "firefox" } },
         properties = { tag = browserTag }
@@ -1028,18 +1030,27 @@ client.connect_signal("manage", function (c)
         c.y = 0
     end
 
-    -- log transients
-    -- local parent = c.transient_for
-    -- naughty.notify({ preset = naughty.config.presets.critical,
-                     -- title = "Debug",
-                     -- text = tostring(c.window) .. " " .. (parent and tostring(parent.window) or "") })
-    -- if a new client has a parent, move it to the same tag as the parent
-    -- if parent then
-        -- tag = parent.first_tag
-        -- screen = parent.screen
-        -- c:move_to_tag(tag)
-        -- c:move_to_screen(screen)
-    -- end
+    -- if a new client has a parent (ie. transient_for), move it to the same tag as the parent
+    local parent = c.transient_for
+    if print_debug_info then
+        naughty.notify({
+            preset = naughty.config.presets.critical,
+            title = "Transient record",
+            text = (c.name or "<Unnamed Client>") .. " → " .. (parent and parent.name or "No parent")
+        })
+    end
+    if parent then
+        local tag = parent.first_tag
+        if print_debug_info then
+            naughty.notify({
+                preset = naughty.config.presets.critical,
+                title = "Shifting client to parent tag",
+                text = "Shifting " .. (c.name or "<Unnamed Client>")
+                    .. " to screen " .. tag.screen.index .. " tag " .. tag.index
+            })
+        end
+        c:move_to_tag(tag)
+    end
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
