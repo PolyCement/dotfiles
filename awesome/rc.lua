@@ -850,6 +850,7 @@ clientkeys = gears.table.join(
 -- Bind all key numbers to tags.
 -- Be careful: we use keycodes to make it works on any keyboard layout.
 -- This should map on the top row of your keyboard, usually 1 to 9.
+-- TODO: figure out something better for this with 2 displays
 for i = 1, 9 do
     globalkeys = gears.table.join(globalkeys,
         -- View tag only.
@@ -907,6 +908,8 @@ root.keys(globalkeys)
 -- }}}
 
 -- {{{ Rules
+-- first, figure out what screen and tag firefox should be put on by default
+local browserTag = (screen:count() > 1) and screen[2].tags[1] or screen[1].tags[2]
 -- Rules to apply to new clients (through the "manage" signal).
 awful.rules.rules = {
     -- All clients will match this rule.
@@ -951,10 +954,11 @@ awful.rules.rules = {
         -- properties = { fullscreen = true }
     },
 
-    -- firefox always on web tag
+    -- if we have 2 screens put firefox on s2t1, else s1t2
+    -- TODO: make child clients open on the same tag as the currently focused ff window
     {
         rule_any = { class = { "Firefox", "firefox" } },
-        properties = { tag = screen[1].tags[2] }
+        properties = { tag = browserTag }
     },
 
     -- make firefox windows other than the main one float
