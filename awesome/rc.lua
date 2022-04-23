@@ -283,19 +283,26 @@ local vol_widget = wibox.widget {
     widget = wibox.container.margin,
     bottom = 1
 }
--- could probably be updated less often?
--- but then it wouldn't react to changes in eg. the mixer as fast. hmmm
-vicious.register(vol_widget_info, vicious.widgets.volume, function (widget, args)
-    -- for whatever reason amixer calls don't work right after boot (something to do with pipewire?)
-    -- which, for whatever other reason, stops the widget from ever showing up until i restart awm,
-    -- so if vicious returns empty args show a placeholder so none of that shit happens
-    if #args == 0 then return "🔇 XX%" end
-    local icon = { ["🔉"] = "🔊", ["🔈"] = "🔇" }
-    return icon[args[2]] .. " " .. args[1] .. "%"
-end, 5, "Master")
+
+-- it ain't pretty. but it works.
+awful.widget.watch("pactl get-default-sink", 5, function(widget, default_sink)
+    local cmd = "pactl get-sink-volume " .. default_sink
+    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+        local vol = string.match(stdout, "%d+%%")
+        local cmd = "pactl get-sink-mute " .. default_sink
+        awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
+            local icon = ""
+            if string.find(stdout, "yes") == nil then
+                icon ="🔊"
+            else
+                icon = "🔇"
+            end
+            widget:set_text(icon .. " " .. vol)
+        end)
+    end)
+end, vol_widget_info)
 
 -- volume control functions
--- TODO: maybe i should make these just use amixer so i dont have to fuck w/ individual sinks
 local function change_volume(percent)
     -- first get the "symbolic name"(???) of the default sink
     local cmd = "pactl get-default-sink"
