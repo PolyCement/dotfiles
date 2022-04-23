@@ -292,12 +292,10 @@ local update_vol_widget = function(widget)
     end)
 end
 
--- it ain't pretty. but it works.
-awful.widget.watch('bash -c "DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"', 5, function(widget, stdout)
-    local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
-    local icon = mute == "yes" and "🔇" or "🔊"
-    widget:set_text(icon .. " " .. vol)
-end, vol_widget_info)
+-- update timer
+gears.timer {
+    timeout = 5, call_now = true, autostart = true, callback = function() update_vol_widget(vol_widget_info) end
+}
 
 -- volume control functions
 local function change_volume(percent)
