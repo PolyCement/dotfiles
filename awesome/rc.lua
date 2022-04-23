@@ -275,17 +275,6 @@ if hostname == "doubleslap" then
 end
 
 -- volume widget
--- this is to test my suspicions that the reason the volume widget doesn't show,
--- is because "amixer -M get Master" isn't working straight away
--- (in which case im not really sure how to fix this other than adding a timer or switching libs)
-awful.spawn.easy_async_with_shell("amixer -M get Master", function(stdout, stderr, reason, exit_code)
-    local volume, state = string.match(stdout, "%[([%d]+)%%%].*%[([%l]*)%]")
-    naughty.notify({
-        preset = naughty.config.presets.critical,
-        title = "Amixer Probe",
-        text = "volume: " .. volume .. ", state: " .. state
-    })
-end)
 local vol_widget_info = wibox.widget.textbox()
 local vol_widget = wibox.widget {
     {
@@ -297,11 +286,16 @@ local vol_widget = wibox.widget {
 -- could probably be updated less often?
 -- but then it wouldn't react to changes in eg. the mixer as fast. hmmm
 vicious.register(vol_widget_info, vicious.widgets.volume, function (widget, args)
+    -- for whatever reason amixer calls don't work right after boot (something to do with pipewire?)
+    -- which, for whatever other reason, stops the widget from ever showing up until i restart awm,
+    -- so if vicious returns empty args show a placeholder so none of that shit happens
+    if #args == 0 then return "🔇 XX%" end
     local icon = { ["🔉"] = "🔊", ["🔈"] = "🔇" }
     return icon[args[2]] .. " " .. args[1] .. "%"
 end, 5, "Master")
 
 -- volume control functions
+-- TODO: maybe i should make these just use amixer so i dont have to fuck w/ individual sinks
 local function change_volume(percent)
     -- first get the "symbolic name"(???) of the default sink
     local cmd = "pactl get-default-sink"
@@ -316,7 +310,7 @@ local function toggle_mute()
     -- more or less the same as above, but mute instead
     local cmd = "pactl get-default-sink"
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        awful.spawn("pactl set-sink-mute " .. tonumber(stdout) .. " toggle")
+        awful.spawn("pactl set-sink-mute " .. stdout .. " toggle")
         vicious.force({ vol_widget_info })
     end)
 end
