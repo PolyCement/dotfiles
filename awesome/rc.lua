@@ -275,6 +275,17 @@ if hostname == "doubleslap" then
 end
 
 -- volume widget
+-- this is to test my suspicions that the reason the volume widget doesn't show,
+-- is because "amixer -M get Master" isn't working straight away
+-- (in which case im not really sure how to fix this other than adding a timer or switching libs)
+awful.spawn.easy_async_with_shell("amixer -M get Master", function(stdout, stderr, reason, exit_code)
+    local volume, state = string.match(stdout, "%[([%d]+)%%%].*%[([%l]*)%]")
+    naughty.notify({
+        preset = naughty.config.presets.critical,
+        title = "Amixer Probe",
+        text = "volume: " .. volume .. ", state: " .. state
+    })
+end)
 local vol_widget_info = wibox.widget.textbox()
 local vol_widget = wibox.widget {
     {
@@ -793,18 +804,26 @@ globalkeys = gears.table.join(
     -- Menubar
     -- awful.key({ modkey }, "p", function() menubar.show() end,
     --        {description = "show the menubar", group = "launcher"}),
-    -- print screen
-    awful.key({ }, "Print",
-             function()
-                 local timestamp = os.date("%y%m%d-%H%M%S")
-                 awful.spawn.with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
-             end),
-    awful.key({ "Mod1" }, "Print",
-             function()
-                 local timestamp = os.date("%y%m%d-%H%M%S")
-                 awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
-             end),
-    awful.key({ modkey, "Shift"   }, "o",
+    -- screenshot all screens
+    awful.key({ }, "Print", function()
+        local timestamp = os.date("%y%m%d-%H%M%S")
+        awful.spawn.with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
+    end),
+    -- screenshot only the current screen (ie. the one the cursor is over)
+    awful.key({ "Shift" }, "Print", function()
+        local geo = awful.screen.focused().geometry
+        local geo_string = string.format("%sx%s+%s+%s", geo.width, geo.height, geo.x, geo.y)
+        local timestamp = os.date("%y%m%d-%H%M%S")
+        awful.spawn.with_shell(
+            "maim -g " .. geo_string .. " -u ~/pictures/screenshots/" .. timestamp .. ".png"
+        )
+    end),
+    -- screenshot a selected area (or window if you click instead of dragging)
+    awful.key({ "Mod1" }, "Print", function()
+        local timestamp = os.date("%y%m%d-%H%M%S")
+        awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
+    end),
+    awful.key({ modkey, "Shift" }, "o",
         function ()
             -- TODO: this is getting disgusting, maybe i should boot it to a bash script
             -- get the default sink
@@ -1054,6 +1073,9 @@ client.connect_signal("manage", function (c)
 end)
 
 -- Add a titlebar if titlebars_enabled is set to true in the rules.
+-- TODO: maybe figure out if there's a way to add just the close button on floating clients
+-- a lot of apps like to just not have them on dialogues etc and then i have to roll the dice on
+-- whether ctrl+meta+c will close just the selected client or the entire fucking app
 client.connect_signal("request::titlebars", function(c)
     -- buttons for the titlebar
     local buttons = gears.table.join(
