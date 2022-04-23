@@ -285,21 +285,10 @@ local vol_widget = wibox.widget {
 }
 
 -- it ain't pretty. but it works.
-awful.widget.watch("pactl get-default-sink", 5, function(widget, default_sink)
-    local cmd = "pactl get-sink-volume " .. default_sink
-    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        local vol = string.match(stdout, "%d+%%")
-        local cmd = "pactl get-sink-mute " .. default_sink
-        awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-            local icon = ""
-            if string.find(stdout, "yes") == nil then
-                icon ="🔊"
-            else
-                icon = "🔇"
-            end
-            widget:set_text(icon .. " " .. vol)
-        end)
-    end)
+awful.widget.watch('bash -c "DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"', 5, function(widget, stdout)
+    local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
+    local icon = mute == "yes" and "🔇" or "🔊"
+    widget:set_text(icon .. " " .. vol)
 end, vol_widget_info)
 
 -- volume control functions
