@@ -16,6 +16,7 @@
 
 -- lua libraries:
 -- we're using lgi to listen for dbus signals (it's a dependency of awesomewm, so you have it installed)
+-- TODO: maybe use this??? https://awesomewm.org/doc/api/libraries/awful.spawn.html#read_lines
 -- awful is so we can call fcitx-remote to get the current state
 -- naughty is just for the error notifications, so it's not *strictly* necessary
 local glib = require("lgi").GLib

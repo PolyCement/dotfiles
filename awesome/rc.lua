@@ -284,28 +284,40 @@ local vol_widget = wibox.widget {
     bottom = 1
 }
 
+-- volume update function
+-- TODO: move some of this stuff into its own file,
 local update_vol_widget = function(widget)
-    awful.spawn.easy_async_with_shell("DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK", function(stdout, stderr, reason, exit_code)
+    local cmd = "DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"
+    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
         local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
         local icon = mute == "yes" and "🔇" or "🔊"
         widget:set_text(icon .. " " .. vol)
     end)
 end
 
--- update timer
-gears.timer {
-    timeout = 5, call_now = true, autostart = true, callback = function() update_vol_widget(vol_widget_info) end
-}
+-- gotta run it one time to set its initial value
+update_vol_widget(vol_widget_info)
+
+-- monitor pactl for change events and update whenever one happens
+awful.spawn.with_line_callback("pactl subscribe", {
+    stdout = function(line)
+        -- this will trigger on change events for *any* sink,
+        -- but checking it's the default one requires an extra call so i'd rather not
+        if not (line:find("Event 'change' on sink #") == nil) then
+            update_vol_widget(vol_widget_info)
+        end
+    end
+})
 
 -- volume control functions
 local function change_volume(percent)
     local cmd = "pactl set-sink-volume $(pactl get-default-sink) " .. percent
-    awful.spawn.easy_async_with_shell(cmd, function() update_vol_widget(vol_widget_info) end)
+    awful.spawn.with_shell(cmd)
 end
 
 local function toggle_mute()
     local cmd = "pactl set-sink-mute $(pactl get-default-sink) toggle"
-    awful.spawn.easy_async_with_shell(cmd, function() update_vol_widget(vol_widget_info) end)
+    awful.spawn.with_shell(cmd)
 end
 
 vol_widget:buttons(gears.table.join(
