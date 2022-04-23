@@ -284,6 +284,14 @@ local vol_widget = wibox.widget {
     bottom = 1
 }
 
+local update_vol_widget = function(widget)
+    awful.spawn.easy_async_with_shell("DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK", function(stdout, stderr, reason, exit_code)
+        local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
+        local icon = mute == "yes" and "🔇" or "🔊"
+        widget:set_text(icon .. " " .. vol)
+    end)
+end
+
 -- it ain't pretty. but it works.
 awful.widget.watch('bash -c "DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"', 5, function(widget, stdout)
     local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
@@ -293,22 +301,13 @@ end, vol_widget_info)
 
 -- volume control functions
 local function change_volume(percent)
-    -- first get the "symbolic name"(???) of the default sink
-    local cmd = "pactl get-default-sink"
-    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        -- then actually set the volume
-        awful.spawn("pactl set-sink-volume " .. stdout .. " " .. percent)
-        vicious.force({ vol_widget_info })
-    end)
+    local cmd = "pactl set-sink-volume $(pactl get-default-sink) " .. percent
+    awful.spawn.easy_async_with_shell(cmd, function() update_vol_widget(vol_widget_info) end)
 end
 
 local function toggle_mute()
-    -- more or less the same as above, but mute instead
-    local cmd = "pactl get-default-sink"
-    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        awful.spawn("pactl set-sink-mute " .. stdout .. " toggle")
-        vicious.force({ vol_widget_info })
-    end)
+    local cmd = "pactl set-sink-mute $(pactl get-default-sink) toggle"
+    awful.spawn.easy_async_with_shell(cmd, function() update_vol_widget(vol_widget_info) end)
 end
 
 vol_widget:buttons(gears.table.join(
