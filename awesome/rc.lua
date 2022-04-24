@@ -62,6 +62,7 @@ beautiful.init("~/.config/awesome/themes/default/theme.lua")
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
+naughty.config.defaults.screen = screen:count()
 
 -- hack to make discord notifications replace each other correctly
 -- discord's notifications specify replaces_id, but the id never actually exists
