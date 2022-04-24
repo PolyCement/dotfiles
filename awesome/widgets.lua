@@ -255,12 +255,8 @@ local tag_list = {
     }
 }
 
-awful.screen.connect_for_each_screen(function(s)
-    -- Wallpaper
-    set_wallpaper(s)
-
-    -- add tags
-    for i, d in ipairs(tag_list[s.index]) do
+local function add_tags_to_screen(tags, screen)
+    for i, d in ipairs(tags) do
         local name, layout = table.unpack(d)
         local selected = i == 1 and true or false
         local gap_size = beautiful.useless_gap
@@ -271,52 +267,41 @@ awful.screen.connect_for_each_screen(function(s)
             layout = layout,
             selected = selected,
             gap = gap_size,
-            screen = s,
+            screen = screen,
         })
     end
+end
 
-    -- Create a promptbox for each screen
-    s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-        awful.button({ }, 1, function () awful.layout.inc( 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(-1) end),
-        awful.button({ }, 4, function () awful.layout.inc( 1) end),
-        awful.button({ }, 5, function () awful.layout.inc(-1) end)
-    ))
-
-    -- Create a taglist widget
-    
-    -- function to call when creating/updating taglist widgets
-    local function update_tag(self, t, index, objects)
-        local bg_color, square
-        -- NOTE: tag.urgent isnt really documented? but it's real and it's my friend
-        if t.urgent then
-            bg_color = beautiful.bg_urgent
-        elseif t.selected then
-            bg_color = beautiful.bg_focus
-        else
-            bg_color = beautiful.bg_normal
-        end
-        self.bg = bg_color
-
-        if #t:clients() > 0 then
-            if t.selected then
-                square = beautiful.taglist_squares_sel
-            else
-                square = beautiful.taglist_squares_unsel
-            end
-            if not (t.selected or t.urgent) then
-                square = gears.color.recolor_image(square, beautiful.fg_normal)
-            end
-        end
-        self:get_children_by_id("square_role")[1].image = square
+-- function to call when creating/updating taglist widgets
+local function update_tag(self, t, index, objects)
+    local bg_color, square
+    -- NOTE: tag.urgent isnt really documented? but it's real and it's my friend
+    if t.urgent then
+        bg_color = beautiful.bg_urgent
+    elseif t.selected then
+        bg_color = beautiful.bg_focus
+    else
+        bg_color = beautiful.bg_normal
     end
+    self.bg = bg_color
 
-    s.mytaglist = awful.widget.taglist {
-        screen  = s,
+    if #t:clients() > 0 then
+        if t.selected then
+            square = beautiful.taglist_squares_sel
+        else
+            square = beautiful.taglist_squares_unsel
+        end
+        if not (t.selected or t.urgent) then
+            square = gears.color.recolor_image(square, beautiful.fg_normal)
+        end
+    end
+    self:get_children_by_id("square_role")[1].image = square
+end
+
+-- create a taglist for the given screen
+local function create_taglist(screen)
+    return awful.widget.taglist {
+        screen  = screen,
         filter  = awful.widget.taglist.filter.all,
         buttons = taglist_buttons,
         widget_template = {
@@ -342,7 +327,7 @@ awful.screen.connect_for_each_screen(function(s)
                     content_fill_vertical = true
                 },
                 layout = wibox.layout.stack,
-                -- not super happy about forcing a width like this, is there another way?
+                -- TODO: not super happy about forcing a width like this, is there another way?
                 forced_width = 26
             },
             widget = wibox.container.background,
@@ -350,10 +335,11 @@ awful.screen.connect_for_each_screen(function(s)
             update_callback = update_tag
         }
     }
+end
 
-    -- Create a tasklist widget
-    s.mytasklist = awful.widget.tasklist {
-        screen  = s,
+local function create_tasklist(screen)
+    return awful.widget.tasklist {
+        screen  = screen,
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = tasklist_buttons,
         widget_template = {
@@ -384,20 +370,16 @@ awful.screen.connect_for_each_screen(function(s)
             widget = wibox.container.background
         }
     }
+end
 
-    -- Create the wibox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })
-
-    -- build right widget table
-    -- we only want most of these on 1 screen
-    -- TODO: figure out how to get the rightmost screen specifically
-    -- (indices are not necessarily tied to position)
-    -- TODO: make this a function or something? it kinda sucks
+-- build right widget table
+-- we only want most of these on 1 screen
+local function create_right_widgets(screen, is_last)
     local right_widgets
-    if s.index == screen:count() then
+    if is_last then
         -- for whatever reason the systray has to be told what screen to display on?
         local systray = wibox.widget.systray()
-        systray:set_screen(s)
+        systray:set_screen(screen)
 
         -- this has to be defined here because we need to tell it what screen to show up on,
         local calendar_popup = calendar.month({ screen = s })
@@ -424,14 +406,49 @@ awful.screen.connect_for_each_screen(function(s)
             div_widget,
             clock_widget,
             pad_widget,
-            s.mylayoutbox,
+            screen.mylayoutbox,
         })
     else
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
-            s.mylayoutbox,
+            screen.mylayoutbox,
         }
     end
+    return right_widgets
+end
+
+awful.screen.connect_for_each_screen(function(s)
+    -- Wallpaper
+    set_wallpaper(s)
+
+    -- add tags
+    add_tags_to_screen(tag_list[s.index], s)
+
+    -- Create a promptbox for each screen
+    s.mypromptbox = awful.widget.prompt()
+    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
+    -- We need one layoutbox per screen.
+    s.mylayoutbox = awful.widget.layoutbox(s)
+    s.mylayoutbox:buttons(gears.table.join(
+        awful.button({ }, 1, function () awful.layout.inc( 1) end),
+        awful.button({ }, 3, function () awful.layout.inc(-1) end),
+        awful.button({ }, 4, function () awful.layout.inc( 1) end),
+        awful.button({ }, 5, function () awful.layout.inc(-1) end)
+    ))
+
+    -- Create a taglist widget
+    local mytaglist = create_taglist(s)
+
+    -- Create a tasklist widget
+    local mytasklist = create_tasklist(s)
+
+    -- Create the wibox
+    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })
+
+    -- create right widgets
+    -- TODO: figure out how to get the rightmost screen specifically
+    -- (indices are not necessarily tied to position)
+    local right_widgets = create_right_widgets(s, s.index == screen:count())
 
     -- Add widgets to the wibox
     s.mywibox:setup {
@@ -439,14 +456,15 @@ awful.screen.connect_for_each_screen(function(s)
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
             mylauncher,
-            s.mytaglist,
+            mytaglist,
             s.mypromptbox,
         },
-        s.mytasklist, -- Middle widget
+        mytasklist, -- Middle widget
         right_widgets
     }
 
     -- disable useless gaps when layout is set to maximized or fullscreen
+    -- TODO: should this even be in here?
     awful.tag.attached_connect_signal(s, "property::layout", function(t)
         if t.layout.name == "max" or t.layout.name == "fullscreen" then
             t.gap = 0
@@ -455,4 +473,3 @@ awful.screen.connect_for_each_screen(function(s)
         end
     end)
 end)
--- }}}
