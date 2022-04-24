@@ -17,6 +17,7 @@ require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
 -- it's back baby! fcitxmon: the sequel to mozcmon
 local fcitxmon = require("fcitxmon")
+local volmon = require("volmon")
 
 -- set this to true to get spammed with debug notifications
 local print_debug_info = false
@@ -83,16 +84,6 @@ naughty.config.defaults.screen = screen:count()
 --end
 
 -- get the hostname so i can turn stuff on or off for different machines
--- NOTE: awesome wm documentation says not to use io.popen because it's blocking
--- i'm using it *because* it's blocking - no further code should run until we have the hostname.
--- an alternative would be to export hostname as a var but... idk. might have to if this way is bad
--- ok so it looks like, at some point, awesome.hostname was added as a way to get the hostname
--- and waiting for the hard drive takes several seconds so lets try using this instead
--- if this works better then just delete this whole block and use awesome.hostname directly i guess
--- local f = io.popen("/bin/hostname")
--- local hostname = f:read("*a") or ""
--- f:close()
--- hostname = string.gsub(hostname, "\n$", "")
 local hostname = awesome.hostname
 
 -- This is used later as the default terminal and editor to run.
@@ -284,41 +275,19 @@ local vol_widget = wibox.widget {
     widget = wibox.container.margin,
     bottom = 1
 }
-
--- volume update function
--- TODO: move some of this stuff into its own file,
-local update_vol_widget = function(widget)
-    local cmd = "DEFAULT_SINK=$(pactl get-default-sink); pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"
-    awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
-        local mute, vol = stdout:match("Mute: (%a+).*%s(%d+%%).*")
-        local icon = mute == "yes" and "🔇" or "🔊"
-        widget:set_text(icon .. " " .. vol)
-    end)
-end
-
--- gotta run it one time to set its initial value
-update_vol_widget(vol_widget_info)
-
--- monitor pactl for change events and update whenever one happens
-awful.spawn.with_line_callback("pactl subscribe", {
-    stdout = function(line)
-        -- this will trigger on change events for *any* sink,
-        -- but checking it's the default one requires an extra call so i'd rather not
-        if not (line:find("Event 'change' on sink #") == nil) then
-            update_vol_widget(vol_widget_info)
-        end
-    end
-})
+volmon.register(vol_widget_info, function(vol, mute)
+    local icon = mute and "🔇" or "🔊"
+    return icon .. " " .. vol .. "%"
+end)
+volmon.start()
 
 -- volume control functions
 local function change_volume(percent)
-    local cmd = "pactl set-sink-volume $(pactl get-default-sink) " .. percent
-    awful.spawn.with_shell(cmd)
+    awful.spawn.with_shell("pactl set-sink-volume $(pactl get-default-sink) " .. percent)
 end
 
 local function toggle_mute()
-    local cmd = "pactl set-sink-mute $(pactl get-default-sink) toggle"
-    awful.spawn.with_shell(cmd)
+    awful.spawn.with_shell("pactl set-sink-mute $(pactl get-default-sink) toggle")
 end
 
 vol_widget:buttons(gears.table.join(
