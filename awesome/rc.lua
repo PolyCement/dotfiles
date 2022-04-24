@@ -16,8 +16,8 @@ local vicious = require("vicious")
 require("awful.hotkeys_popup.keys")
 local calendar = require("awful.widget.calendar_popup")
 -- it's back baby! fcitxmon: the sequel to mozcmon
-local fcitxmon = require("fcitxmon")
-local volmon = require("volmon")
+local fcitxmon = require("monitors.fcitxmon")
+local volmon = require("monitors.volmon")
 
 -- set this to true to get spammed with debug notifications
 local print_debug_info = false
