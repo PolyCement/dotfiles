@@ -2,167 +2,18 @@ local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
-local calendar = require("awful.widget.calendar_popup")
--- widget library i'm slowly replacing with my own custom code
-local vicious = require("vicious")
--- custom monitors for events i want to update based on events rather than timers
-local fcitxmon = require("monitors.fcitxmon")
-local volmon = require("monitors.volmon")
 
--- widgets for spacing and dividers
-local pad_widget = wibox.widget.textbox(" ")
-local div_widget = wibox.widget {
-    {
-        text = " | ",
-        widget = wibox.widget.textbox
-    },
-    widget = wibox.container.margin,
-    bottom = 4
-}
-
--- clock widget
-local clock_widget = wibox.widget {
-    {
-        widget = wibox.widget.textclock,
-        format = "🕒 %a %d %b, %H:%M"
-    },
-    widget = wibox.container.margin,
-    bottom = 1
-}
-
--- battery widget, only used on doubleslap
--- TODO: make sure the margin looks right on doubleslap
+local spacers = require("splitwidgets.spacers")
+local clock_widget = require("splitwidgets.clock")
 local bat_widget = nil
 if hostname == "doubleslap" then
-    local bat_widget_info = wibox.widget.textbox()
-    bat_widget = wibox.widget {
-        {
-            widget = bat_widget_info
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    }
-    -- has the low power warning been shown yet?
-    local low_power_warning_shown = false
-    vicious.register(bat_widget_info, vicious.widgets.bat, function (widget, args)
-        -- /!\ GOOD PROGRAMMER ALERT /!\
-        -- when power drops below 15%, spawn a notification warning me about it
-        -- todo: move this literally anywhere else cos it sure as hell shouldn't be tacked on here
-        if args[1] == "-" then
-            if args[2] <= 15 and not low_power_warning_shown then
-                low_power_warning_shown = true
-                naughty.notify({ preset = naughty.config.presets.critical,
-                                 title = "Warning! Battery Low!",
-                                 text = args[2] .. "% power remaining" })
-            end
-        else
-            low_power_warning_shown = false
-        end
-        local icon = args[1] == "-" and "🔋" or "🔌"
-        return icon .. " " .. args[2] .. "%"
-    end, 30, "BAT0")
+     bat_widget = require("splitwidgets.battery")
 end
-
--- volume widget
-local vol_widget_info = wibox.widget.textbox()
-local vol_widget = wibox.widget {
-    {
-        widget = vol_widget_info
-    },
-    widget = wibox.container.margin,
-    bottom = 1
-}
-volmon.register(vol_widget_info, function(vol, mute)
-    local icon = mute and "🔇" or "🔊"
-    return icon .. " " .. vol .. "%"
-end)
-volmon.start()
-
--- volume control functions
-local function change_volume(percent)
-    awful.spawn.with_shell("pactl set-sink-volume $(pactl get-default-sink) " .. percent)
-end
-
-local function toggle_mute()
-    awful.spawn.with_shell("pactl set-sink-mute $(pactl get-default-sink) toggle")
-end
-
-vol_widget:buttons(gears.table.join(
-    awful.button({ }, 1, function()
-        awful.spawn("pavucontrol")
-    end),
-    awful.button({ }, 3, function()
-        toggle_mute()
-    end),
-    awful.button({ }, 4, function()
-        change_volume("+5%")
-    end),
-    awful.button({ }, 5, function()
-        change_volume("-5%")
-    end)
-))
-
--- temp widget (only monitors cpu since that's where my cooling is usually weakest)
-local temp_widget_info = wibox.widget.textbox()
--- rename to temp_container or some shit idk
-local temp_widget = wibox.widget {
-    {
-        {
-            {
-                widget = wibox.widget.textbox,
-                text = "🌡",
-                font = "sans 6",
-                valign = "center"
-            },
-            widget = wibox.container.place,
-            valign = "bottom"
-        },
-        widget = wibox.container.background,
-    },
-    {
-        {
-            widget = temp_widget_info
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    },
-    layout = wibox.layout.fixed.horizontal
-}
-local thermal_zone = hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
-vicious.register(temp_widget_info, vicious.widgets.thermal, " $1°C", 19, thermal_zone)
-
--- input method editor (fcitx) widget
-local fcitx_widget_info = wibox.widget.textbox()
-local fcitx_widget = wibox.widget {
-    {
-        {
-            widget = wibox.widget.textbox,
-            text = "⌨ "
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    },
-    {
-        {
-            widget = fcitx_widget_info
-        },
-        widget = wibox.container.margin,
-        bottom = 1
-    },
-    widget = wibox.layout.fixed.horizontal
-}
-fcitxmon.register(fcitx_widget_info, function(state)
-    local indicator_char
-    if state == 0 then
-        indicator_char = "Ｘ"
-    elseif state == 1 then
-        indicator_char = "ー"
-    elseif state == 2 then
-        indicator_char = "あ"
-    end
-    return indicator_char
-end)
-fcitxmon.start()
+local vol_widget = require("splitwidgets.volume")
+local temp_widget = require("splitwidgets.temperature")(
+    hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
+)
+local fcitx_widget = require("splitwidgets.fcitx")
 
 -- Create a wibox for each screen and add it
 local taglist_buttons = gears.table.join(
@@ -381,31 +232,27 @@ local function create_right_widgets(screen, is_last)
         local systray = wibox.widget.systray()
         systray:set_screen(screen)
 
-        -- this has to be defined here because we need to tell it what screen to show up on,
-        local calendar_popup = calendar.month({ screen = s })
-        calendar_popup:attach(clock_widget, "tr")
-
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
-            pad_widget,
+            spacers.pad_widget,
             systray,
-            div_widget,
+            spacers.div_widget,
             fcitx_widget
         }
         if bat_widget ~= nil then
             gears.table.merge(right_widgets, {
-                div_widget,
+                spacers.div_widget,
                 bat_widget
             })
         end
         gears.table.merge(right_widgets, {
-            div_widget,
+            spacers.div_widget,
             temp_widget,
-            div_widget,
+            spacers.div_widget,
             vol_widget,
-            div_widget,
+            spacers.div_widget,
             clock_widget,
-            pad_widget,
+            spacers.pad_widget,
             screen.mylayoutbox,
         })
     else
