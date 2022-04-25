@@ -12,10 +12,12 @@ local vol_widget = wibox.widget {
     widget = wibox.container.margin,
     bottom = 1
 }
+
 volmon.register(vol_widget_info, function(vol, mute)
     local icon = mute and "🔇" or "🔊"
     return icon .. " " .. vol .. "%"
 end)
+
 volmon.start()
 
 -- volume control functions
