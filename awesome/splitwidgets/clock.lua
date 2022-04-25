@@ -11,7 +11,8 @@ local clock_widget = wibox.widget {
     bottom = 1
 }
 
-local calendar_popup = calendar.month()
-calendar_popup:attach(clock_widget, "tr")
-
-return clock_widget
+return function (screen)
+    local calendar_popup = calendar.month({ screen = screen })
+    calendar_popup:attach(clock_widget, "tr")
+    return clock_widget
+end

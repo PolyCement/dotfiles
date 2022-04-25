@@ -4,7 +4,7 @@ local wibox = require("wibox")
 local beautiful = require("beautiful")
 
 local spacers = require("splitwidgets.spacers")
-local clock_widget = require("splitwidgets.clock")
+local clock = require("splitwidgets.clock")
 local bat_widget = nil
 if hostname == "doubleslap" then
      bat_widget = require("splitwidgets.battery")
@@ -60,7 +60,7 @@ local function create_right_widgets(screen, is_last)
             spacers.div_widget,
             vol_widget,
             spacers.div_widget,
-            clock_widget,
+            clock(screen),
             spacers.pad_widget,
             screen.mylayoutbox,
         })
