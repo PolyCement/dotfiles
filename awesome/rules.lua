@@ -4,8 +4,21 @@ local beautiful = require("beautiful")
 local clientkeys = require("keybinds.client")
 local clientbuttons = require("mousebinds.client")
 
+local leftmost_screen
+local rightmost_screen
+for s in screen do
+    local next_screen_to_left = s:get_next_in_direction("left")
+    if not next_screen_to_left then
+        leftmost_screen = s
+    end
+    local next_screen_to_right = s:get_next_in_direction("right")
+    if not next_screen_to_right then
+        rightmost_screen = s
+    end
+end
+
 -- first, figure out what screen and tag firefox should be put on by default
-local browserTag = (screen:count() > 1) and screen[2].tags[1] or screen[1].tags[2]
+local browserTag = (screen:count() > 1) and rightmost_screen.tags[1] or screen[1].tags[2]
 -- Rules to apply to new clients (through the "manage" signal).
 local rules = {
     -- All clients will match this rule.
@@ -65,9 +78,10 @@ local rules = {
 
     -- ignore discord's size hints, put it on home tag
     -- TODO: is there any way to force this to always start up on the right?
+    -- probably could be done by setting it as master
     {
         rule = { class = "discord" },
-        properties = { size_hints_honor = false, tag = screen[1].tags[1] }
+        properties = { size_hints_honor = false, tag = leftmost_screen.tags[1] }
     },
 
     -- godot.....
@@ -80,7 +94,7 @@ local rules = {
     -- steam always goes on tag 3
     {
         rule = { class = "Steam" },
-        properties = { tag = screen[1].tags[3] }
+        properties = { tag = rightmost_screen.tags[3] }
     }
 
     -- Add titlebars to normal clients and dialogs

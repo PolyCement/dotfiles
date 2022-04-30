@@ -39,9 +39,9 @@ local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
 
 -- build right widget table
 -- we only want most of these on 1 screen
-local function create_right_widgets(screen, is_last)
+local function create_right_widgets(screen)
     local right_widgets
-    if is_last then
+    if screen.position == "right" then
         -- for whatever reason the systray has to be told what screen to display on?
         local systray = wibox.widget.systray()
         systray:set_screen(screen)
@@ -79,6 +79,14 @@ local function create_right_widgets(screen, is_last)
 end
 
 awful.screen.connect_for_each_screen(function(s)
+    -- shitty hack to determine screen position. should really be somewhere else,
+    local next_screen_to_right = s:get_next_in_direction("right")
+    if next_screen_to_right then
+        s.position = "left"
+    else
+        s.position = "right"
+    end
+
     -- Wallpaper
     set_wallpaper(s)
 
@@ -100,7 +108,7 @@ awful.screen.connect_for_each_screen(function(s)
     -- create right widgets
     -- TODO: figure out how to get the rightmost screen specifically
     -- (indices are not necessarily tied to position)
-    local right_widgets = create_right_widgets(s, s.index == screen:count())
+    local right_widgets = create_right_widgets(s)
 
     -- Add widgets to the wibox
     s.mywibox:setup {

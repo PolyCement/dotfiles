@@ -1,6 +1,7 @@
 -- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
+
 require("awful.autofocus")
 -- Widget and layout library
 local wibox = require("wibox")
@@ -45,10 +46,7 @@ do
 end
 -- }}}
 
--- start the compositor
--- i still don't know if this should be in here honestly
--- like, doesnt this mean that every time i restart awesome wm, i make *another* xcompmgr???
--- seems bad. imo.
+-- start the compositor (it can't run more than one instance, don't worry about it)
 awful.spawn.with_shell("xcompmgr &")
 
 -- {{{ Variable definitions
@@ -56,7 +54,7 @@ awful.spawn.with_shell("xcompmgr &")
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
-naughty.config.defaults.screen = screen:count()
+naughty.config.defaults.screen = screen.primary
 
 -- get the hostname so i can turn stuff on or off for different machines
 local hostname = awesome.hostname
@@ -73,35 +71,24 @@ editor_cmd = terminal .. " -e " .. editor
 -- However, you can use another modifier like Mod1, but it may interact with others.
 modkey = "Mod4"
 
--- Table of layouts to cover with awful.layout.inc, order matters.
+-- table of layouts to cover with awful.layout.inc
 awful.layout.layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
-    -- awful.layout.suit.fair,
-    -- awful.layout.suit.fair.horizontal,
-    -- awful.layout.suit.spiral,
-    -- awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    -- awful.layout.suit.magnifier,
-    -- awful.layout.suit.corner.nw,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
 }
--- }}}
 
 root.buttons(require("mousebinds.global"))
 
 -- set up taskbars
 require("widgets")
 
--- Set keys
+-- set keys
 root.keys(globalkeys)
--- }}}
 
 -- set rules
 awful.rules.rules = require("rules")

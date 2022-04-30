@@ -7,13 +7,13 @@ local beautiful = require("beautiful")
 -- TODO: maybe switch the symbols up, the inner planet ones look a bit shit
 -- (on second thought i might just use svgs or something)
 local tag_list = {
-    {
+    left = {
         { " ☿ ", awful.layout.layouts[2] },
         { " ♀ ", awful.layout.layouts[6] },
         { " ♁ ", awful.layout.layouts[6] },
         { " ♂ ", awful.layout.layouts[6] }
     },
-    {
+    right = {
         { " ♃ ", awful.layout.layouts[6] },
         { " ♄ ", awful.layout.layouts[6] },
         { " ♅ ", awful.layout.layouts[6] },
@@ -85,7 +85,7 @@ end
 -- create a taglist for the given screen
 return function (screen)
     -- add tags
-    add_tags_to_screen(tag_list[screen.index], screen)
+    add_tags_to_screen(tag_list[screen.position], screen)
 
     return awful.widget.taglist {
         screen  = screen,
