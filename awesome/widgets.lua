@@ -17,6 +17,8 @@ local fcitx_widget = require("splitwidgets.fcitx")
 local taglist = require("splitwidgets.taglist")
 local tasklist = require("splitwidgets.tasklist")
 
+local menu = require("menu")
+
 local function set_wallpaper(s)
     -- Wallpaper
     if beautiful.wallpaper then
@@ -31,6 +33,9 @@ end
 
 -- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
 screen.connect_signal("property::geometry", set_wallpaper)
+
+local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
+                                     menu = menu })
 
 -- build right widget table
 -- we only want most of these on 1 screen

@@ -6,14 +6,14 @@ require("awful.autofocus")
 local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
+beautiful.init("~/.config/awesome/themes/default/theme.lua")
 -- Notification library
 local naughty = require("naughty")
-local menubar = require("menubar")
 local hotkeys_popup = require("awful.hotkeys_popup").widget
 -- shows hotkeys for the current client (if available) in the hotkeys popup
 require("awful.hotkeys_popup.keys")
-local calendar = require("awful.widget.calendar_popup")
 -- TODO: widgets go here
+local menu = require("menu")
 
 -- set this to true to get spammed with debug notifications
 local print_debug_info = false
@@ -53,31 +53,11 @@ end
 awful.spawn.with_shell("xcompmgr &")
 
 -- {{{ Variable definitions
--- Themes define colours, icons, font and wallpapers.
-beautiful.init("~/.config/awesome/themes/default/theme.lua")
 
 -- make notifications stay on screen longer
 naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
 naughty.config.defaults.screen = screen:count()
-
--- hack to make discord notifications replace each other correctly
--- discord's notifications specify replaces_id, but the id never actually exists
--- this hack checks for replaces_id, then sets the id of the created notification
--- to that id
--- TODO: there's gotta be a better way to do this, one that works for any app
--- known bug: it's possible for the counter to get high enough that a notification is
--- created with the same id as a notification altered by this hack. not sure what'll happen then lol
--- NOTE: i think something changed here... lets go without for a while
---local old_notify = naughty.notify
---function naughty.notify(args)
---    local replaces_id = args.replaces_id
---    notification = old_notify(args)
---    if replaces_id then
---        notification.id = replaces_id
---    end
---    return notification
---end
 
 -- get the hostname so i can turn stuff on or off for different machines
 local hostname = awesome.hostname
@@ -115,85 +95,9 @@ awful.layout.layouts = {
 }
 -- }}}
 
--- {{{ Menu
--- Create a launcher widget and a main menu
-myawesomemenu = {
-   { "hotkeys", function() return false, hotkeys_popup.show_help end},
-   { "manual", terminal .. " -e man awesome" },
-   { "edit config", editor_cmd .. " " .. awesome.conffile },
-   { "restart", awesome.restart },
-   { "quit", function() awesome.quit() end}
-}
-
-mysystemmenu = {
-    { "suspend", "systemctl suspend" },
-    { "shutdown", "shutdown now" },
-    { "reboot", "reboot" }
-}
-
--- some of these are specific to one machine,
--- there's gotta be a way to generate it semi-automatically
-gamesmenu = {
-    { "dolphin", "dolphin-emu" },
-    { "ftb", "feedthebeast" },
-    { "lutris", "lutris" },
-    { "pcsx2", "PCSX2" },
-    { "retroarch", "retroarch" },
-    { "steam", "steam" },
-    { "steam (native)", "steam-native" }
-}
-
-devmenu = {
-    { "godot", "godot" },
-    { "rpg maker mv", "steam-native steam://rungameid/363890" },
-    { "tiled", "tiled" },
-    { "unity", "unityhub" }
-}
-
-graphicsmenu = {
-    { "aseprite", "aseprite" },
-    { "gimp", "gimp" },
-    { "inkscape", "inkscape" },
-    { "krita", "krita" }
-}
-
-musicmenu = {
-    { "jack", "qjackctl" },
-    { "reaper", "reaper" },
-    { "tenacity", "tenacity" },
-}
-
-workmenu = {
-    { "slack", "slack" },
-    { "zoom", "zoom" },
-}
-
-mymainmenu = awful.menu({
-    items = {
-        { "awesome",  myawesomemenu, beautiful.awesome_icon },
-        { "system",   mysystemmenu },
-        { "games",    gamesmenu },
-        { "game dev", devmenu },
-        { "graphics", graphicsmenu },
-        { "music", musicmenu },
-        { "work", workmenu },
-        { "browser",  "firefox" },
-        { "email",  "thunderbird" },
-        { "chat",     "discord-accelerated" },
-        { "terminal", terminal }
-    }
-})
-
-mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
-                                     menu = mymainmenu })
-
--- Menubar configuration
-menubar.utils.terminal = terminal -- Set the terminal for applications that require it
--- }}}
-
 -- {{{ Mouse bindings
 root.buttons(gears.table.join(
-    awful.button({ }, 3, function () mymainmenu:toggle() end),
+    awful.button({ }, 3, function () menu:toggle() end),
     awful.button({ }, 4, awful.tag.viewnext),
     awful.button({ }, 5, awful.tag.viewprev)
 ))
@@ -225,7 +129,7 @@ globalkeys = gears.table.join(
         end,
         {description = "focus previous by index", group = "client"}
     ),
-    awful.key({ modkey,           }, "w", function () mymainmenu:show() end,
+    awful.key({ modkey,           }, "w", function () menu:show() end,
               {description = "show main menu", group = "awesome"}),
 
     -- Layout manipulation
@@ -320,9 +224,6 @@ globalkeys = gears.table.join(
                   }
               end,
               {description = "lua execute prompt", group = "awesome"}),
-    -- Menubar
-    -- awful.key({ modkey }, "p", function() menubar.show() end,
-    --        {description = "show the menubar", group = "launcher"}),
     -- screenshot all screens
     awful.key({ }, "Print", function()
         local timestamp = os.date("%y%m%d-%H%M%S")
