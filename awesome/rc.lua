@@ -9,9 +9,6 @@ local beautiful = require("beautiful")
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
 -- Notification library
 local naughty = require("naughty")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
--- shows hotkeys for the current client (if available) in the hotkeys popup
-require("awful.hotkeys_popup.keys")
 -- TODO: widgets go here
 local menu = require("menu")
 local globalkeys = require("keybinds.global")

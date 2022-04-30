@@ -1,8 +1,8 @@
 -- global keybinds
 local gears = require("gears")
 local awful = require("awful")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
 local menu = require("menu")
+local hotkeys_widget = require("splitwidgets.hotkeys")
 
 modkey = "Mod4"
 
@@ -10,7 +10,7 @@ local globalkeys = gears.table.join(
     -- meta stuff
     awful.key(
         { modkey }, "s",
-        hotkeys_popup.show_help,
+        hotkeys_widget.show_help,
         { description = "show help", group = "awesome" }
     ),
     awful.key(

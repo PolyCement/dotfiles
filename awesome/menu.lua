@@ -1,7 +1,6 @@
 local awful = require("awful")
-local hotkeys_popup = require("awful.hotkeys_popup").widget
 local beautiful = require("beautiful")
-require("awful.hotkeys_popup.keys")
+local hotkeys_widget = require("splitwidgets.hotkeys")
 
 -- TODO: pass these in? define em in advance? fuck if i know with this language
 terminal = "alacritty"
@@ -9,7 +8,7 @@ editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
 local myawesomemenu = {
-    { "hotkeys", function() return false, hotkeys_popup.show_help end},
+    { "hotkeys", function() return false, hotkeys_widget.show_help end},
     { "manual", terminal .. " -e man awesome" },
     { "edit config", editor_cmd .. " " .. awesome.conffile },
     { "restart", awesome.restart },
