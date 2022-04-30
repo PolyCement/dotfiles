@@ -2,6 +2,7 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local clientkeys = require("keybinds.client")
+local clientbuttons = require("mousebinds.client")
 
 -- first, figure out what screen and tag firefox should be put on by default
 local browserTag = (screen:count() > 1) and screen[2].tags[1] or screen[1].tags[2]
