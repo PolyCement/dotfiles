@@ -38,13 +38,13 @@ local mylauncher = awful.widget.launcher({ image = beautiful.awesome_icon,
                                      menu = menu })
 
 -- build right widget table
--- we only want most of these on 1 screen
-local function create_right_widgets(screen)
+-- we only want most of these on the primary screen
+local function create_right_widgets(s)
     local right_widgets
-    if screen.position == "right" then
+    if s == screen.primary then
         -- for whatever reason the systray has to be told what screen to display on?
         local systray = wibox.widget.systray()
-        systray:set_screen(screen)
+        systray:set_screen(s)
 
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
@@ -65,14 +65,14 @@ local function create_right_widgets(screen)
             spacers.div_widget,
             vol_widget,
             spacers.div_widget,
-            clock(screen),
+            clock(s),
             spacers.pad_widget,
-            screen.mylayoutbox,
+            s.mylayoutbox,
         })
     else
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
-            screen.mylayoutbox,
+            s.mylayoutbox,
         }
     end
     return right_widgets
