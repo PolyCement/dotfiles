@@ -4,40 +4,68 @@ local beautiful = require("beautiful")
 local clientkeys = require("keybinds.client")
 local clientbuttons = require("mousebinds.client")
 
-local leftmost_screen
-local rightmost_screen
-for s in screen do
-    local next_screen_to_left = s:get_next_in_direction("left")
-    if not next_screen_to_left then
-        leftmost_screen = s
-    end
-    local next_screen_to_right = s:get_next_in_direction("right")
-    if not next_screen_to_right then
-        rightmost_screen = s
+-- since i use this config with both 1 and 2 displays, we gotta do a little math to make sure
+-- everything goes where i want it. the gist of it is, if i have 1 screen, i want certain clients
+-- to appear on certain tags (standard stuff). but if i have 2, i want the clients that would've
+-- been on tag 1 to be on the secondary screen's tag 1, and everything else on the primary screen,
+-- but 1 tag lower. for example, firefox should be on tag 2 with 1 display, but on primary screen
+-- tag 1 with 2 displays.
+-- NOTE: this setup will almost certainly not handle displays being added and removed.
+-- that's not something i ever plan to do, but if it comes up i can just have rules be recalculated
+-- when the "list" signal is fired
+
+-- first, determine primary and secondary screen
+local num_screens = screen:count()
+local primary = screen.primary
+local secondary
+if num_screens == 1 then
+    -- shouldn't really come up, but just in case,
+    secondary = screen.primary
+else
+    -- it's unclear if the primary display will always be at index 1, so here's this.
+    -- also, this will need changed if i ever somehow end up with 3 displays...
+    secondary = screen[screen.primary.index % num_screens + 1]
+end
+
+-- next, we need a function to figure out what tag we should put things on
+-- tag_index should be a number from 1 to however many tags i currently have per screen, or it'll break
+local function get_tag(tag_index)
+    if num_screens == 1 then
+        return primary.tags[tag_index]
+    else
+        if tag_index == 1 then
+            return secondary.tags[1]
+        else
+            return primary.tags[tag_index - 1]
+        end
     end
 end
 
--- first, figure out what screen and tag firefox should be put on by default
-local browserTag = (screen:count() > 1) and rightmost_screen.tags[1] or screen[1].tags[2]
--- Rules to apply to new clients (through the "manage" signal).
+-- and finally, the rules (applied through the "manage" signal)
+-- TODO: check if all these are still relevant, it's been years since i wrote some of these
 local rules = {
-    -- All clients will match this rule.
+    -- all clients
     {
-        rule = { },
-        properties = { border_width = beautiful.border_width,
-                       border_color = beautiful.border_normal,
-                       focus = awful.client.focus.filter,
-                       raise = true,
-                       keys = clientkeys,
-                       buttons = clientbuttons,
-                       screen = awful.screen.preferred,
-                       placement = awful.placement.no_offscreen+awful.placement.centered
+        rule = {},
+        properties = {
+            border_width = beautiful.border_width,
+            border_color = beautiful.border_normal,
+            focus = awful.client.focus.filter,
+            raise = true,
+            keys = clientkeys,
+            buttons = clientbuttons,
+            screen = awful.screen.preferred,
+            placement = awful.placement.no_offscreen+awful.placement.centered
         }
     },
 
-    -- Floating clients.
+    -- clients that should float
+    -- TODO: do i really want qjackctl to float? hell, do i even use it anymore?
     {
-        rule_any = { class = { "SimpleScreenRecorder", "QjackCtl" }, instance = { "pavucontrol" } },
+        rule_any = {
+            class = { "SimpleScreenRecorder", "QjackCtl" },
+            instance = { "pavucontrol" }
+        },
         properties = { floating = true }
     },
 
@@ -63,10 +91,10 @@ local rules = {
         -- properties = { fullscreen = true }
     },
 
-    -- if we have 2 screens put firefox on s2t1, else s1t2
+    -- firefox goes on tag 2
     {
         rule_any = { class = { "Firefox", "firefox" } },
-        properties = { tag = browserTag }
+        properties = { tag = get_tag(2) }
     },
 
     -- make firefox windows other than the main one float
@@ -81,7 +109,7 @@ local rules = {
     -- probably could be done by setting it as master
     {
         rule = { class = "discord" },
-        properties = { size_hints_honor = false, tag = leftmost_screen.tags[1] }
+        properties = { size_hints_honor = false, tag = get_tag(1) }
     },
 
     -- godot.....
@@ -94,15 +122,15 @@ local rules = {
     -- steam always goes on tag 3
     {
         rule = { class = "Steam" },
-        properties = { tag = rightmost_screen.tags[3] }
+        properties = { tag = get_tag(3) }
     }
 
     -- Add titlebars to normal clients and dialogs
---     {
---         rule_any = { type = { "normal", "dialog" } },
---         properties = { titlebars_enabled = true }
---     },
-
+    -- TODO: might wanna experiment with this for floating clients/dialogs
+    -- {
+    --     rule_any = { type = { "normal", "dialog" } },
+    --     properties = { titlebars_enabled = true }
+    -- }
 }
 
 return rules
