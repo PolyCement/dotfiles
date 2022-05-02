@@ -3,6 +3,7 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 
+local menu = require("menu")
 local spacers = require("widgets.spacers")
 local clock = require("widgets.clock")
 local bat_widget = nil

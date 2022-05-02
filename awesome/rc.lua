@@ -1,7 +1,7 @@
--- Standard awesome library
 local gears = require("gears")
 local awful = require("awful")
 
+-- automatically focus a client if no client was/would be focused
 require("awful.autofocus")
 -- Theme handling library
 local beautiful = require("beautiful")
@@ -9,7 +9,6 @@ beautiful.init("~/.config/awesome/themes/default/theme.lua")
 -- Notification library
 local naughty = require("naughty")
 
-local menu = require("menu")
 local globalkeys = require("keybinds.global")
 local signal_map = require("signals")
 local wibar = require("widgets.wibar")
