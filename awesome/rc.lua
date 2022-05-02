@@ -3,8 +3,6 @@ local gears = require("gears")
 local awful = require("awful")
 
 require("awful.autofocus")
--- Widget and layout library
-local wibox = require("wibox")
 -- Theme handling library
 local beautiful = require("beautiful")
 beautiful.init("~/.config/awesome/themes/default/theme.lua")
@@ -14,6 +12,7 @@ local naughty = require("naughty")
 local menu = require("menu")
 local globalkeys = require("keybinds.global")
 local signal_map = require("signals")
+local wibar = require("widgets.wibar")
 
 -- set this to true to get spammed with debug notifications
 local print_debug_info = false
@@ -73,19 +72,49 @@ modkey = "Mod4"
 
 -- table of layouts to cover with awful.layout.inc
 awful.layout.layouts = {
-    awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
     awful.layout.suit.tile.bottom,
     awful.layout.suit.tile.top,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
+    awful.layout.suit.floating
 }
 
 root.buttons(require("mousebinds.global"))
 
--- set up taskbars
-require("widgets")
+-- set up screens
+-- TODO: think of a good place to put this wallpaper stuff
+local function set_wallpaper(s)
+    -- Wallpaper
+    if beautiful.wallpaper then
+        local wallpaper = beautiful.wallpaper
+        -- If wallpaper is a function, call it with the screen
+        if type(wallpaper) == "function" then
+            wallpaper = wallpaper(s)
+        end
+        gears.wallpaper.maximized(wallpaper, s, true)
+    end
+end
+
+-- Re-set wallpaper when a screen's geometry changes (e.g. different resolution)
+screen.connect_signal("property::geometry", set_wallpaper)
+
+awful.screen.connect_for_each_screen(function(s)
+    set_wallpaper(s)
+
+    wibar(s)
+
+    -- disable useless gaps when layout is set to maximized or fullscreen
+    -- TODO: should this even be in here?
+    awful.tag.attached_connect_signal(s, "property::layout", function(t)
+        if t.layout.name == "max" or t.layout.name == "fullscreen" then
+            t.gap = 0
+        else
+            t.gap = beautiful.useless_gap
+        end
+    end)
+end)
 
 -- set keys
 root.keys(globalkeys)

@@ -1,6 +1,6 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
-local hotkeys_widget = require("splitwidgets.hotkeys")
+local hotkeys_widget = require("widgets.hotkeys")
 
 -- TODO: pass these in? define em in advance? fuck if i know with this language
 terminal = "alacritty"

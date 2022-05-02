@@ -2,7 +2,7 @@
 local gears = require("gears")
 local awful = require("awful")
 local menu = require("menu")
-local hotkeys_widget = require("splitwidgets.hotkeys")
+local hotkeys_widget = require("widgets.hotkeys")
 
 modkey = "Mod4"
 

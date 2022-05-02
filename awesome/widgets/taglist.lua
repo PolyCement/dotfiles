@@ -8,22 +8,22 @@ local beautiful = require("beautiful")
 -- tag layouts for each screen. "single" will be used when there's only one monitor
 local tag_layouts = {
     single = {
-        awful.layout.layouts[2],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6]
+        awful.layout.suit.tile,
+        awful.layout.suit.max,
+        awful.layout.suit.max,
+        awful.layout.suit.max
     },
     primary = {
-        awful.layout.layouts[6],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6]
+        awful.layout.suit.max,
+        awful.layout.suit.max,
+        awful.layout.suit.max,
+        awful.layout.suit.max
     },
     secondary = {
-        awful.layout.layouts[2],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6],
-        awful.layout.layouts[6]
+        awful.layout.suit.tile,
+        awful.layout.suit.max,
+        awful.layout.suit.max,
+        awful.layout.suit.max
     }
 }
 
