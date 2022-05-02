@@ -16,6 +16,7 @@ local temp_widget = require("splitwidgets.temperature")(
 local fcitx_widget = require("splitwidgets.fcitx")
 local taglist = require("splitwidgets.taglist")
 local tasklist = require("splitwidgets.tasklist")
+local layoutbox = require("splitwidgets.layoutbox")
 
 local menu = require("menu")
 
@@ -67,43 +68,26 @@ local function create_right_widgets(s)
             spacers.div_widget,
             clock(s),
             spacers.pad_widget,
-            s.mylayoutbox,
+            layoutbox(s),
         })
     else
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
-            s.mylayoutbox,
+            layoutbox(s),
         }
     end
     return right_widgets
 end
 
 awful.screen.connect_for_each_screen(function(s)
-    -- shitty hack to determine screen position. should really be somewhere else,
-    local next_screen_to_right = s:get_next_in_direction("right")
-    if next_screen_to_right then
-        s.position = "left"
-    else
-        s.position = "right"
-    end
-
     -- Wallpaper
     set_wallpaper(s)
 
     -- Create a promptbox for each screen
     s.mypromptbox = awful.widget.prompt()
-    -- Create an imagebox widget which will contains an icon indicating which layout we're using.
-    -- We need one layoutbox per screen.
-    s.mylayoutbox = awful.widget.layoutbox(s)
-    s.mylayoutbox:buttons(gears.table.join(
-        awful.button({ }, 1, function () awful.layout.inc( 1) end),
-        awful.button({ }, 3, function () awful.layout.inc(-1) end),
-        awful.button({ }, 4, function () awful.layout.inc( 1) end),
-        awful.button({ }, 5, function () awful.layout.inc(-1) end)
-    ))
 
-    -- Create the ribox
-    s.mywibox = awful.wibar({ position = "top", screen = s, height = 20 }) --, bg = beautiful.bg_minimize })
+    -- Create the wibox
+    local mywibox = awful.wibar({ position = "top", screen = s, height = 20 })
 
     -- create right widgets
     -- TODO: figure out how to get the rightmost screen specifically
@@ -111,7 +95,7 @@ awful.screen.connect_for_each_screen(function(s)
     local right_widgets = create_right_widgets(s)
 
     -- Add widgets to the wibox
-    s.mywibox:setup {
+    mywibox:setup {
         layout = wibox.layout.align.horizontal,
         { -- Left widgets
             layout = wibox.layout.fixed.horizontal,
