@@ -91,9 +91,9 @@ local rules = {
         -- properties = { fullscreen = true }
     },
 
-    -- firefox goes on tag 2
+    -- firefox and thunderbird go on tag 2
     {
-        rule_any = { class = { "Firefox", "firefox" } },
+        rule_any = { class = { "Firefox", "firefox", "Thunderbird" } },
         properties = { tag = get_tag(2) }
     },
 
