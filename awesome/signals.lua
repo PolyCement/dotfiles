@@ -60,15 +60,15 @@ local signals = {
     -- in any case, this is currently unused
     {
         "request::titlebars",
-            function(c)
+            function (c)
             -- buttons for the titlebar
             local buttons = gears.table.join(
-                awful.button({ }, 1, function()
+                awful.button({ }, 1, function ()
                     client.focus = c
                     c:raise()
                     awful.mouse.client.move(c)
                 end),
-                awful.button({ }, 3, function()
+                awful.button({ }, 3, function ()
                     client.focus = c
                     c:raise()
                     awful.mouse.client.resize(c)
@@ -111,7 +111,7 @@ local signals = {
     -- allowing it to be maximised manually
     {
         "property::name",
-        function(c)
+        function (c)
             if c.class == "Godot" and not c.godot_hack then
                 if c.name and c.name:find("Godot Engine - ") and not c.name:find("Project Manager") then
                     c.maximized = false
@@ -125,16 +125,19 @@ local signals = {
     -- TODO: try this out, might be useful now i have multiple monitors
     -- would need to be paired with something to hide the cursor if it stays still, though
     -- Enable sloppy focus, so that focus follows mouse.
-    -- "mouse::enter" = function(c)
-    --     if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-    --         and awful.client.focus.filter(c) then
-    --         client.focus = c
-    --     end
-    -- end,
+    {
+        "mouse::enter",
+        function (c)
+            if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+                and awful.client.focus.filter(c) then
+                client.focus = c
+            end
+        end
+    },
 
     -- add/remove borders on focused clients
-    { "focus", function(c) c.border_color = beautiful.border_focus end },
-    { "unfocus", function(c) c.border_color = beautiful.border_normal end }
+    { "focus", function (c) c.border_color = beautiful.border_focus end },
+    { "unfocus", function (c) c.border_color = beautiful.border_normal end }
 }
 
 return signals
