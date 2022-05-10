@@ -44,14 +44,6 @@ do
 end
 -- }}}
 
--- AUTORUN
--- TODO: put these in their own file? also these can probably maybe use async
--- start the compositor (it can't run more than one instance, don't worry about it)
-awful.spawn.with_shell("xcompmgr &")
--- start hhpc (hides the mouse cursor when it stays still)
--- this one might be able to spawn more than once, keep an eye on it...
-awful.spawn.with_shell("hhpc -i 5 &")
-
 -- {{{ Variable definitions
 
 -- make notifications stay on screen longer
