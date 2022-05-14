@@ -61,6 +61,7 @@ link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
 link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
 link_file "$BASEDIR/base16-atelier-heath-vim.theme" ~/.config/cmus/base16-atelier-heath-vim.theme
 link_file "$BASEDIR/mousebright-config.json" ~/.config/mousebright/config.json
+link_file "$BASEDIR/nvim-init.vim" ~/.config/nvim/init.vim
 
 # finally, link directories
 link_file "$BASEDIR/openbox" ~/.config/openbox
