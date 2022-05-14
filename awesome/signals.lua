@@ -127,10 +127,19 @@ local signals = {
                     text = (c.name or "<Unnamed Client>") .. " fullscreen: " .. (c.fullscreen and "True" or "False")
                 })
             end
-            -- borderless fullscreen clients like to misbehave,
+            -- some borderless fullscreen clients like to misbehave,
             -- if they try to disable fullscreen, tell them to fuck off!
             if (not c.fullscreen) and c.borderless_fullscreen_hack then
                 c.fullscreen = true
+            end
+            -- make sure fullscreen clients are aligned properly,
+            if c.fullscreen then
+                -- delaying the call makes sure the geometry is set *after* the client gets fullscreened
+                gears.timer.delayed_call(function ()
+                    if c.valid then
+                        c:geometry(c.screen.geometry)
+                    end
+                end)
             end
         end
     },
