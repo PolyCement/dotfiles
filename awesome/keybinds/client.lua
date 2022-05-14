@@ -8,6 +8,8 @@ local clientkeys = gears.table.join(
     awful.key(
         { modkey }, "f",
         function (c)
+            -- gotta set this false so the property::fullscreen handler knows to let it through
+            c.borderless_fullscreen_hack = false
             c.fullscreen = not c.fullscreen
             c:raise()
         end,

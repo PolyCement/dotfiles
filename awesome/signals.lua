@@ -21,12 +21,27 @@ local signals = {
                 awful.placement.no_offscreen(c)
             end
 
-            -- for whatever reason, fullscreen apps end up kinda shoved off the screen
-            -- this just shoves em back into the right position
-            -- i feel like it's probably not the *right* solution. but it works,
-            if c.fullscreen then
-                c.x = 0
-                c.y = 0
+            -- some apps handle borderless fullscreen by setting the min/max dimensions
+            -- of the client to the screen size and letting the wm sort it out.
+            -- awesome won't do that by default, so here i'm doing it manually
+            -- NOTE: i'm fairly sure this can't be handled with rules, but maybe i'm wrong
+            local borderless_fullscreen =
+                (not c.fullscreen)
+                and c.size_hints.min_width == c.size_hints.max_width
+                and c.size_hints.min_height == c.size_hints.max_height
+                and c.size_hints.min_width == c.screen.geometry.width
+                and c.size_hints.min_height == c.screen.geometry.height
+            if print_debug_info then
+                naughty.notify({
+                    preset = naughty.config.presets.critical,
+                    title = "Borderless Fullscreen Monitor",
+                    text = (c.name or "<Unnamed Client>") .. " borderless fullscreen: " .. (borderless_fullscreen and "True" or "False")
+                })
+            end
+            if borderless_fullscreen then
+                c.borderless_fullscreen_hack = true
+                c.fullscreen = true
+                c:raise()
             end
 
             -- if a new client has a parent (ie. transient_for), move it to the same tag as the parent
@@ -102,6 +117,24 @@ local signals = {
         end
     },
 
+    {
+        "property::fullscreen",
+        function (c)
+            if print_debug_info then
+                naughty.notify({
+                    preset = naughty.config.presets.critical,
+                    title = "Fullscreen Monitor",
+                    text = (c.name or "<Unnamed Client>") .. " fullscreen: " .. (c.fullscreen and "True" or "False")
+                })
+            end
+            -- borderless fullscreen clients like to misbehave,
+            -- if they try to disable fullscreen, tell them to fuck off!
+            if (not c.fullscreen) and c.borderless_fullscreen_hack then
+                c.fullscreen = true
+            end
+        end
+    },
+
     -- TODO: boot up godot for the first time in years and check if this is still relevant
     -- godot uses a single client from the splash screen through the project manager,
     -- all the way to the main editor view
@@ -122,9 +155,7 @@ local signals = {
         end
     },
 
-    -- TODO: try this out, might be useful now i have multiple monitors
-    -- would need to be paired with something to hide the cursor if it stays still, though
-    -- Enable sloppy focus, so that focus follows mouse.
+    -- enable sloppy focus (ie. focus the client under the mouse cursor)
     {
         "mouse::enter",
         function (c)
