@@ -53,6 +53,8 @@ call plug#begin()
     " syntax highlighting
     Plug 'elixir-editors/vim-elixir'
     Plug 'yuezk/vim-js'
+    Plug 'HerringtonDarkholme/yats.vim'
+    Plug 'MaxMEllon/vim-jsx-pretty'
 call plug#end()
 
 " ========== plugin settings ==========
