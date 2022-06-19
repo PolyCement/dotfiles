@@ -67,6 +67,9 @@ local function right_widgets(s)
     else
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
+            spacers.pad_widget,
+            clock(s),
+            spacers.pad_widget,
             layoutbox(s),
         }
     end
