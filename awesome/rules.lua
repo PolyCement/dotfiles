@@ -123,6 +123,13 @@ local rules = {
     {
         rule = { class = "Steam" },
         properties = { tag = get_tag(3) }
+    },
+
+    -- float all bespoke windows other than the main one and keep em on top
+    {
+        rule_any = { class = { "BespokeSynth" } },
+        except = { name = "bespoke synth" },
+        properties = { floating = true, ontop = true }
     }
 
     -- Add titlebars to normal clients and dialogs
