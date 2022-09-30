@@ -33,6 +33,15 @@ set mouse=a
 " suggested so hopefully it won't cause issues?
 tnoremap <Esc> <C-\><C-n>
 
+" ========== custom commands ==========
+
+" open a terminal in a new vertical window
+command -nargs=* STerm split | terminal <args>
+command -nargs=* VTerm vsplit | terminal <args>
+" short versions of the above
+command -nargs=* ST STerm <args>
+command -nargs=* VT VTerm <args>
+
 " ========== autocmds ==========
 
 " disable line numbers in terminal buffers
