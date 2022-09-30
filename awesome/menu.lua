@@ -25,12 +25,11 @@ local mysystemmenu = {
 -- there's gotta be a way to generate it semi-automatically
 local gamesmenu = {
     { "dolphin", "dolphin-emu" },
-    { "ftb", "feedthebeast" },
     { "lutris", "lutris" },
+    { "openrct2", "openrct2" },
     { "pcsx2", "PCSX2" },
     { "retroarch", "retroarch" },
-    { "steam", "steam" },
-    { "steam (native)", "steam-native" }
+    { "steam", "steam" }
 }
 
 local devmenu = {
@@ -48,14 +47,13 @@ local graphicsmenu = {
 }
 
 local musicmenu = {
-    { "jack", "qjackctl" },
     { "reaper", "reaper" },
-    { "tenacity", "tenacity" },
+    { "tenacity", "tenacity" }
 }
 
 local workmenu = {
     { "slack", "slack" },
-    { "zoom", "zoom" },
+    { "zoom", "zoom" }
 }
 
 local mymainmenu = awful.menu({
