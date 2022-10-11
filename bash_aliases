@@ -10,8 +10,8 @@ alias mntphone='go-mtpfs ~/mnt/phone &'
 alias livestreamer='livestreamer -p mpv'
 # use my extension of less
 alias less='less2'
-# force view to call vim instead of vi
-alias view='vim -R'
+# force view to call nvim instead of vi/vim
+alias view='nvim -R'
 # make feh autoscale big images
 alias feh='feh -.'
 # more handy shortcuts
@@ -19,6 +19,7 @@ alias suspend='systemctl suspend'
 # ughhhhhhh
 alias pcsx2='PCSX2'
 alias bookworm='com.github.babluboy.bookworm'
+alias bespokesynth='BespokeSynth'
 # locally installed game's
 alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
