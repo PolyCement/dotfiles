@@ -242,8 +242,12 @@ local globalkeys = gears.table.join(
                 awful.spawn.easy_async_with_shell(cmd_port, function (stdout, stderr, reason, exit_code)
                     if stdout:gsub("%s+", "") == "analog-output-lineout" then
                         awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-headphones")
+                        -- also disable easyeffects global bypass
+                        awful.spawn("easyeffects -b 2")
                     else
                         awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-lineout")
+                        -- also enable easyeffects global bypass
+                        awful.spawn("easyeffects -b 1")
                     end
                 end)
             end)
