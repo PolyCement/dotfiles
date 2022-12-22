@@ -51,9 +51,6 @@ naughty.config.defaults.timeout = 10
 naughty.config.defaults.position = "bottom_right"
 naughty.config.defaults.screen = screen.primary
 
--- get the hostname so i can turn stuff on or off for different machines
-local hostname = awesome.hostname
-
 -- This is used later as the default terminal and editor to run.
 terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"

@@ -7,12 +7,12 @@ local menu = require("menu")
 local spacers = require("widgets.spacers")
 local clock = require("widgets.clock")
 local bat_widget = nil
-if hostname == "doubleslap" then
+if awesome.hostname == "doubleslap" then
      bat_widget = require("widgets.battery")
 end
 local vol_widget = require("widgets.volume")
 local temp_widget = require("widgets.temperature")(
-    hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
+    awesome.hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
 )
 local fcitx_widget = require("widgets.fcitx")
 local taglist = require("widgets.taglist")
