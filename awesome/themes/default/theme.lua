@@ -93,7 +93,8 @@ theme.titlebar_maximized_button_focus_active  = "/usr/share/awesome/themes/defau
 -- maybe theres somewhere better this could go? dont really want my bgs in the
 -- repo tho
 -- TODO: move the wallpapers back in and just put the dir in .gitignore
-theme.wallpaper = "~/pictures/bg/a_cute_chubby.png"
+-- theme.wallpaper = "~/pictures/bg/a_cute_chubby.png"
+theme.wallpaper = "~/pictures/bg/alluring_mirror_split_bg.png"
 
 -- You can use your own layout icons like this:
 theme.layout_fairh = "/usr/share/awesome/themes/default/layouts/fairhw.png"

@@ -50,4 +50,13 @@ volmon.start = function ()
     end)
 end
 
+-- volume control functions for convenience
+volmon.change_volume = function (percent)
+    awful.spawn.with_shell("pactl set-sink-volume $(pactl get-default-sink) " .. percent)
+end
+
+volmon.toggle_mute = function ()
+    awful.spawn.with_shell("pactl set-sink-mute $(pactl get-default-sink) toggle")
+end
+
 return volmon

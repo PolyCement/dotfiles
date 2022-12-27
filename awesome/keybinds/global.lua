@@ -3,6 +3,7 @@ local gears = require("gears")
 local awful = require("awful")
 local menu = require("menu")
 local hotkeys_widget = require("widgets.hotkeys")
+local volmon = require("monitors.volmon")
 
 modkey = "Mod4"
 
@@ -173,15 +174,15 @@ local globalkeys = gears.table.join(
     -- volume controls
     awful.key(
         {}, "XF86AudioLowerVolume",
-        function () change_volume("-5%") end
+        function () volmon.change_volume("-5%") end
     ),
     awful.key(
         {}, "XF86AudioRaiseVolume",
-        function () change_volume("+5%") end
+        function () volmon.change_volume("+5%") end
     ),
     awful.key(
         {}, "XF86AudioMute",
-        function () toggle_mute() end
+        function () volmon.toggle_mute() end
     ),
 
     -- prompt

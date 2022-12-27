@@ -20,27 +20,18 @@ end)
 
 volmon.start()
 
--- volume control functions
-local function change_volume(percent)
-    awful.spawn.with_shell("pactl set-sink-volume $(pactl get-default-sink) " .. percent)
-end
-
-local function toggle_mute()
-    awful.spawn.with_shell("pactl set-sink-mute $(pactl get-default-sink) toggle")
-end
-
 vol_widget:buttons(gears.table.join(
     awful.button({ }, 1, function()
         awful.spawn("pavucontrol")
     end),
     awful.button({ }, 3, function()
-        toggle_mute()
+        volmon.toggle_mute()
     end),
     awful.button({ }, 4, function()
-        change_volume("+5%")
+        volmon.change_volume("+5%")
     end),
     awful.button({ }, 5, function()
-        change_volume("-5%")
+        volmon.change_volume("-5%")
     end)
 ))
 
