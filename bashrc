@@ -40,9 +40,13 @@ if test -f "/usr/share/nvm/init-nvm.sh"; then
     . /usr/share/nvm/init-nvm.sh
 fi
 
-# start keychain (does this belong here???)
-# commented out cos i never use it anymore
-# eval $(keychain -q --eval id_rsa)
+# start keychain
+# turns out i actually do need this on doubleslap, otherwise using ssh is a pain in the ass lmao
+# TODO: check the situation with this on cometpunch, not sure why i don't get pestered for a password on there...
+if [[ $HOSTNAME == doubleslap ]]
+then
+    eval $(keychain -q --eval id_rsa)
+fi
 
 # load pyenv (but only on cometpunch)
 if [[ $HOSTNAME == cometpunch ]]
