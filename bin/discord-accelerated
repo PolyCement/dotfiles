@@ -1,10 +1,24 @@
 #!/usr/bin/env bash
 
+# check for --canary arg and use discord-canary if present
+# getopts won't do long args and i don't wanna risk clashing with builtins
+# so i guess i'm doing it manually...
+DISCORD_VERSION=discord
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    '--canary')
+        DISCORD_VERSION=discord-canary ;;
+    *)
+        set -- "$@" "$arg" ;;
+  esac
+done
+
 # run discord with a bunch of args that make it use hardware acceleration
 # to my knowledge these are all built-in flags of chromium
 # for electron these can just be dumped in ~/.config/electron-flags.conf
 # but i'm unsure if discord's weird setup will even read those, so...
-discord \
+$DISCORD_VERSION \
     --enable-accelerated-mjpeg-decode \
     --enable-accelerated-video \
     --ignore-gpu-blacklist \
