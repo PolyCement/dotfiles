@@ -49,7 +49,7 @@ link_file "$BASEDIR/inputrc" ~/.inputrc
 link_file "$BASEDIR/profile" ~/.profile
 link_file "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
 link_file "$BASEDIR/xprofile" ~/.xprofile
-link_file "$BASEDIR/Xmodmap" ~/.Xmodmap
+link_file "$BASEDIR/Xkeymap" ~/.Xkeymap
 
 # then all the stuff tucked away in .config
 link_file "$BASEDIR/tint2rc" ~/.config/tint2/tint2rc

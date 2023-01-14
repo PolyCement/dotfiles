@@ -2,9 +2,14 @@
 export GTK_IM_MODULE='fcitx'
 export QT_IM_MODULE='fcitx'
 export XMODIFIERS='@im=fcitx'
+
 # caps lock is useless, rebind it so i can use it to toggle direct input mode
-xmodmap -e "remove lock = Caps_Lock"
-xmodmap -e "keysym Caps_Lock = Zenkaku_Hankaku"
+# i have a bluetooth keyboard now and xmodmap doesn't work with hotplugged devices
+# (https://bugs.freedesktop.org/show_bug.cgi?id=25262), so i've switched to xkb instead
+# TODO: i feel like it'd probably be better to generate the keymap dynamically?
+# shouldn't be that hard to just do it with sed...
+test -f ~/.Xkeymap && xkbcomp ~/.Xkeymap $DISPLAY
+
 # autorun:
 # compositor
 xcompmgr &
