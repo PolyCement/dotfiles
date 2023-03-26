@@ -22,7 +22,7 @@ local layoutbox = require("widgets.layoutbox")
 local launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = menu })
 
 local function left_widgets(s)
-    s.mypromptbox = awful.widget.prompt()
+    s.mypromptbox = awful.widget.prompt{ prompt = " Run: " }
 
     return {
         layout = wibox.layout.fixed.horizontal,
