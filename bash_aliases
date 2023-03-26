@@ -6,8 +6,6 @@ alias la='ls -a'
 alias ll='ls -l'
 # mounting devices
 alias mntphone='go-mtpfs ~/mnt/phone &'
-# make livestreamer use mpv
-alias livestreamer='livestreamer -p mpv'
 # use my extension of less
 alias less='less2'
 # force view to call nvim instead of vi/vim
@@ -16,7 +14,7 @@ alias view='nvim -R'
 alias feh='feh -.'
 # more handy shortcuts
 alias suspend='systemctl suspend'
-# ughhhhhhh
+# on god it is 2023 name your fucking executables properly
 alias pcsx2='PCSX2'
 alias bookworm='com.github.babluboy.bookworm'
 alias bespokesynth='BespokeSynth'
