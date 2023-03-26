@@ -10,11 +10,10 @@ local temp_widget = wibox.widget {
             {
                 widget = wibox.widget.textbox,
                 text = "🌡",
-                font = "sans 6",
-                valign = "center"
+                font = "sans 9"
             },
-            widget = wibox.container.place,
-            valign = "bottom"
+            widget = wibox.container.margin,
+            left = -4
         },
         widget = wibox.container.background,
     },
@@ -30,6 +29,6 @@ local temp_widget = wibox.widget {
 
 -- TODO: this is gross but there'll probably be a better way once i ditch vicious and roll my own monitor
 return function (thermal_zone)
-    vicious.register(temp_widget_info, vicious.widgets.thermal, " $1°C", 19, thermal_zone)
+    vicious.register(temp_widget_info, vicious.widgets.thermal, "$1°C", 19, thermal_zone)
     return temp_widget
 end
