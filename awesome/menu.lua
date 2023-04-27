@@ -40,7 +40,6 @@ local devmenu = {
 }
 
 local graphicsmenu = {
-    { "aseprite", "aseprite" },
     { "gimp", "gimp" },
     { "inkscape", "inkscape" },
     { "krita", "krita" }
@@ -53,7 +52,8 @@ local musicmenu = {
 
 local workmenu = {
     { "slack", "slack" },
-    { "zoom", "zoom" }
+    { "zoom", "zoom" },
+    { "postman", "postman" }
 }
 
 local mymainmenu = awful.menu({
