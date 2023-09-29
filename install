@@ -63,6 +63,10 @@ link_file "$BASEDIR/base16-atelier-heath-vim.theme" ~/.config/cmus/base16-atelie
 link_file "$BASEDIR/mousebright-config.json" ~/.config/mousebright/config.json
 link_file "$BASEDIR/nvim-init.vim" ~/.config/nvim/init.vim
 
+# and the stuff tucked away in .local (although right now it's just my fcitx5 addon,)
+link_file "$BASEDIR/fcitx5/addon/awesome-hook.conf" ~/.local/share/fcitx5/addon/awesome-hook.conf
+link_file "$BASEDIR/fcitx5/lua/awesome-hook" ~/.local/share/fcitx5/lua/awesome-hook
+
 # finally, link directories
 link_file "$BASEDIR/openbox" ~/.config/openbox
 link_file "$BASEDIR/awesome" ~/.config/awesome
