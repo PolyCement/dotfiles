@@ -140,7 +140,7 @@ local rules = {
 
     {
         rule_any = { name = { "im-emoji-picker" } },
-        properties = { floating = true, ontop = true, focus = false, focusable = false }
+        properties = { border_width = 0, floating = true, ontop = true, focus = false, focusable = false }
     }
 
     -- Add titlebars to normal clients and dialogs
