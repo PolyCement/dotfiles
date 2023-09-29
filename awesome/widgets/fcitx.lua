@@ -1,6 +1,7 @@
 -- input method editor (fcitx) widget
+local gears = require("gears")
+local awful = require("awful")
 local wibox = require("wibox")
-local fcitxmon = require("monitors.fcitxmon")
 
 local fcitx_widget_info = wibox.widget.textbox()
 local fcitx_widget = wibox.widget {
@@ -14,7 +15,8 @@ local fcitx_widget = wibox.widget {
     },
     {
         {
-            widget = fcitx_widget_info
+            widget = fcitx_widget_info,
+            text = "Ｘ"
         },
         widget = wibox.container.margin,
         bottom = 1
@@ -22,18 +24,24 @@ local fcitx_widget = wibox.widget {
     widget = wibox.layout.fixed.horizontal
 }
 
-fcitxmon.register(fcitx_widget_info, function(state)
+-- this function is left public for the fcitx plugin to use
+-- TODO: there's gotta be a better way to do this than leaving a function public...
+function update_fcitx_widget(active_im)
     local indicator_char
-    if state == 0 then
-        indicator_char = "Ｘ"
-    elseif state == 1 then
+    if active_im == 'keyboard-gb' then
         indicator_char = "ー"
-    elseif state == 2 then
+    elseif active_im == 'mozc' then
         indicator_char = "あ"
+    else
+        indicator_char = "Ｘ"
     end
-    return indicator_char
-end)
+    fcitx_widget_info.text = indicator_char
+end
 
-fcitxmon.start()
+fcitx_widget:buttons(gears.table.join(
+    awful.button({ }, 1, function()
+        awful.spawn("fcitx5-configtool")
+    end)
+))
 
 return fcitx_widget
