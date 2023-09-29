@@ -8,13 +8,19 @@ local registered_widgets = {}
 
 local volmon = {}
 
+-- last known good values, cos the device isn't immediately available on startup
+local last_good_values = { 100, false }
+
 -- get the volume info, then run the callback
 local cmd = "DEFAULT_SINK=$(pactl get-default-sink); "
             .. "pactl get-sink-mute $DEFAULT_SINK; pactl get-sink-volume $DEFAULT_SINK"
 local with_volume_info = function (callback)
     awful.spawn.easy_async_with_shell(cmd, function(stdout, stderr, reason, exit_code)
         local mute, vol = stdout:match("Mute: (%a+).*%s(%d+)%%.*")
-        callback(tonumber(vol), mute == "yes")
+        if vol then
+            last_good_values = { tonumber(vol), mute == "yes" }
+        end
+        callback(table.unpack(last_good_values))
     end)
 end
 
