@@ -18,6 +18,7 @@ local fcitx_widget = require("widgets.fcitx")
 local taglist = require("widgets.taglist")
 local tasklist = require("widgets.tasklist")
 local layoutbox = require("widgets.layoutbox")
+local systray = require("widgets.systray")
 
 local launcher = awful.widget.launcher({ image = beautiful.awesome_icon, menu = menu })
 
@@ -37,14 +38,10 @@ end
 local function right_widgets(s)
     local right_widgets
     if s == screen.primary then
-        -- for whatever reason the systray has to be told what screen to display on?
-        local systray = wibox.widget.systray()
-        systray:set_screen(s)
-
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
             spacers.pad_widget,
-            systray,
+            systray(s),
             spacers.div_widget,
             fcitx_widget
         }

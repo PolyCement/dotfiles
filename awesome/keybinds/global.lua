@@ -4,6 +4,7 @@ local awful = require("awful")
 local menu = require("menu")
 local hotkeys_widget = require("widgets.hotkeys")
 local volmon = require("monitors.volmon")
+local systray = require("widgets.systray")
 
 modkey = "Mod4"
 
@@ -33,6 +34,12 @@ local globalkeys = gears.table.join(
         { modkey, "Shift" }, "q",
         awesome.quit,
         { description = "quit awesome", group = "awesome" }
+    ),
+    -- toggle systray visibility
+    awful.key(
+        { modkey }, "=",
+        systray.toggle_systray,
+        { description = "toggle systray", group = "awesome" }
     ),
 
     -- tag switching
@@ -103,6 +110,9 @@ local globalkeys = gears.table.join(
 
     -- screen switching
     -- TODO: is there some way i can add screen swapping like there is for clients?
+    -- TODO: turns out this does actually swap screen focus even when there's no clients
+    -- is there some way to like. indicate what screen has focus in that case?
+    -- (maybe the non-focused screens have a darker bg colour for their active tag?)
     awful.key(
         { modkey, "Control" }, "j",
         function () awful.screen.focus_relative(1) end,

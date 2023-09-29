@@ -25,6 +25,7 @@ local signals = {
             -- of the client to the screen size and letting the wm sort it out.
             -- awesome won't do that by default, so here i'm doing it manually
             -- NOTE: i'm fairly sure this can't be handled with rules, but maybe i'm wrong
+            -- it's also possible this should be handled in a different signal...
             local borderless_fullscreen =
                 (not c.fullscreen)
                 and c.size_hints.min_width == c.size_hints.max_width
