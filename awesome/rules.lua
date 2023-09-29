@@ -125,11 +125,22 @@ local rules = {
         properties = { tag = get_tag(3) }
     },
 
+    -- zoom always goes on tag 4
+    {
+        rule = { class = "zoom" },
+        properties = { tag = get_tag(4) }
+    },
+
     -- float all bespoke windows other than the main one and keep em on top
     {
         rule_any = { class = { "BespokeSynth" } },
         except = { name = "bespoke synth" },
         properties = { floating = true, ontop = true }
+    },
+
+    {
+        rule_any = { name = { "im-emoji-picker" } },
+        properties = { floating = true, ontop = true, focus = false, focusable = false }
     }
 
     -- Add titlebars to normal clients and dialogs
