@@ -14,6 +14,7 @@ function systray.__call(t, screen)
         spacers.div_widget,
         layout = wibox.layout.align.horizontal
     }
+    systray_widget_container.visible = false
     return systray_widget_container
 end
 
