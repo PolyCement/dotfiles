@@ -116,9 +116,6 @@ theme.awesome_icon = "~/dotfiles/awesome/themes/default/awesome16.png"
 theme.icon_theme = nil
 
 -- notification settings
-theme.notification_width = 250
-theme.notification_height = 80
-theme.notification_icon_size = 72
 
 -- hotkey popup font size
 theme.hotkeys_font = "sans 11"

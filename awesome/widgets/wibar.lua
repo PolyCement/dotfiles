@@ -42,7 +42,7 @@ local function right_widgets(s)
             layout = wibox.layout.fixed.horizontal,
             spacers.pad_widget,
             systray(s),
-            spacers.div_widget,
+            -- systray includes its own spacer so it can be hidden along with the systray itself
             fcitx_widget
         }
         if bat_widget ~= nil then
