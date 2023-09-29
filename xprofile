@@ -14,6 +14,6 @@ test -f ~/.Xkeymap && xkbcomp ~/.Xkeymap $DISPLAY
 # compositor
 xcompmgr &
 # ime
-fcitx &
+fcitx5 &
 # app for hiding the mouse cursor when stationary
 unclutter &

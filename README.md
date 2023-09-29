@@ -7,3 +7,5 @@ my dot files!
     ```
     display-setup-script=xrandr --output HDMI-0 --primary
     ```
+
+- fcitx overrides xkb settings by default, which breaks caps lock being bound to zenkaku/hankaku, so i had to switch it off ("addons" → "xcb" → "allow overriding system xkb settings")
