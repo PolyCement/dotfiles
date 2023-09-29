@@ -15,7 +15,6 @@ alias feh='feh -.'
 # more handy shortcuts
 alias suspend='systemctl suspend'
 # on god it is 2023 name your fucking executables properly
-alias pcsx2='PCSX2'
 alias bookworm='com.github.babluboy.bookworm'
 alias bespokesynth='BespokeSynth'
 # locally installed game's
