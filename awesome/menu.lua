@@ -27,7 +27,7 @@ local gamesmenu = {
     { "dolphin", "dolphin-emu" },
     { "lutris", "lutris" },
     { "openrct2", "openrct2" },
-    { "pcsx2", "PCSX2" },
+    { "pcsx2", "pcsx2-qt" },
     { "retroarch", "retroarch" },
     { "steam", "steam" }
 }
@@ -46,8 +46,9 @@ local graphicsmenu = {
 }
 
 local musicmenu = {
-    { "reaper", "reaper" },
-    { "tenacity", "tenacity" }
+    { "audacity", "audacity" },
+    { "qpwgraph", "qpwgraph" },
+    { "reaper", "reaper" }
 }
 
 local workmenu = {
