@@ -51,6 +51,11 @@ local musicmenu = {
     { "reaper", "reaper" }
 }
 
+local circuitsmenu = {
+    { "circuitjs", "circuitjs1-electron" },
+    { "diylc", "diylc" }
+}
+
 local workmenu = {
     { "slack", "slack" },
     { "zoom", "zoom" },
@@ -65,6 +70,7 @@ local mymainmenu = awful.menu({
         { "game dev", devmenu },
         { "graphics", graphicsmenu },
         { "music", musicmenu },
+        { "circuits", circuitsmenu },
         { "work", workmenu },
         { "browser",  "firefox" },
         { "email",  "thunderbird" },

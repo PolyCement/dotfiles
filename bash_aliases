@@ -17,6 +17,7 @@ alias suspend='systemctl suspend'
 # on god it is 2023 name your fucking executables properly
 alias bookworm='com.github.babluboy.bookworm'
 alias bespokesynth='BespokeSynth'
+alias circuitjs='circuitjs1-electron'
 # locally installed game's
 alias minecraft='~/games/minecraft/run.sh'
 alias atlauncher='~/games/atlauncher/run.sh'
