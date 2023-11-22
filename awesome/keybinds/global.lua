@@ -8,6 +8,14 @@ local systray = require("widgets.systray")
 
 modkey = "Mod4"
 
+-- function for taking screenshots. maybe move it somewhere else?
+local function screenshot(maim_args)
+    local maim_args = maim_args or ""
+    local directory = "~/pictures/screenshots/" .. os.date("%y-%m")
+    local filepath = directory .. "/" .. os.date("%y%m%d-%H%M%S") .. ".png"
+    awful.spawn.with_shell("mkdir -p " .. directory .. "; maim -u " .. maim_args .. " " .. filepath)
+end
+
 local globalkeys = gears.table.join(
     -- meta stuff
     awful.key(
@@ -217,24 +225,15 @@ local globalkeys = gears.table.join(
 
     -- screenshots
     -- screenshot all screens
-    awful.key({ }, "Print", function ()
-        local timestamp = os.date("%y%m%d-%H%M%S")
-        awful.spawn.with_shell("maim -u ~/pictures/screenshots/" .. timestamp .. ".png")
-    end),
+    awful.key({ }, "Print", function () screenshot() end),
     -- screenshot only the current screen (ie. the one the cursor is over)
     awful.key({ "Shift" }, "Print", function ()
         local geo = awful.screen.focused().geometry
         local geo_string = string.format("%sx%s+%s+%s", geo.width, geo.height, geo.x, geo.y)
-        local timestamp = os.date("%y%m%d-%H%M%S")
-        awful.spawn.with_shell(
-            "maim -g " .. geo_string .. " -u ~/pictures/screenshots/" .. timestamp .. ".png"
-        )
+        screenshot("-g " .. geo_string)
     end),
     -- screenshot a selected area (or window if you click instead of dragging)
-    awful.key({ "Mod1" }, "Print", function ()
-        local timestamp = os.date("%y%m%d-%H%M%S")
-        awful.spawn.with_shell("maim -u -s ~/pictures/screenshots/" .. timestamp .. ".png")
-    end),
+    awful.key({ "Mod1" }, "Print", function () screenshot("-s") end),
 
     -- switch default audio sink
     -- TODO: this is pretty disgusting, maybe i should boot it to a bash script
