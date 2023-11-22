@@ -27,6 +27,7 @@ local gamesmenu = {
     { "dolphin", "dolphin-emu" },
     { "lutris", "lutris" },
     { "openrct2", "openrct2" },
+    { "openttd", "openttd" },
     { "pcsx2", "pcsx2-qt" },
     { "retroarch", "retroarch" },
     { "steam", "steam" }
@@ -59,6 +60,7 @@ local circuitsmenu = {
 local workmenu = {
     { "slack", "slack" },
     { "zoom", "zoom" },
+    { "penpot", "penpot-desktop" },
     { "postman", "postman" }
 }
 
