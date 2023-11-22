@@ -58,10 +58,10 @@ local circuitsmenu = {
 }
 
 local workmenu = {
-    { "slack", "slack" },
-    { "zoom", "zoom" },
     { "penpot", "penpot-desktop" },
-    { "postman", "postman" }
+    { "postman", "postman" },
+    { "slack", "slack" },
+    { "zoom", "zoom" }
 }
 
 local mymainmenu = awful.menu({
