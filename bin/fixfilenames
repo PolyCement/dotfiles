@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
-# todos:
-# make this handle other audio file types (mp3 mostly)
-# add args so i can run it on individual tracks or on folders other than the one im currently in
+# script for renaming audio files based on their metadata
+# usage: fixfilenames file1 [file2...]
 
 # list of special characters to strip out
 # from here: http://mywiki.wooledge.org/BashGuide/SpecialCharacters
@@ -14,18 +13,54 @@ SPECIALCHARS="[:space:]\$\'\"\\\#\=\[\]\!\<\>\|\;\{\}\(\)\*\?\~\&\/"
 FILECOUNT=$(ls *.flac | wc -l)
 NUMLENGTH=$((${#FILECOUNT} > 2 ? ${#FILECOUNT} : 2))
 
-# rename flac files according to their metadata
-for x in *.flac
-do
-    TRACKNUM=`metaflac --show-tag="tracknumber" "$x" | sed "s/TRACKNUMBER=//"`
-    TITLE=`metaflac --show-tag="title" "$x" | sed "s/TITLE=//"`
-    DISCNUM=`metaflac --show-tag="discnumber" "$x" | sed "s/DISCNUMBER=//"`
+# pull mp3 data out of the given file
+# im using id3info cos its what i've got installed already - it's included in id3lib, which
+# kid3 lists as a dependency. its fine but pulling info from its output is a bit goofy,
+# (tbh it could probably be less goofy, i'm just using very defensive regex out of paranoia lol)
+get_mp3_data () {
+    TRACKNUM=`id3info "$1" | sed -rn "s/^=== TRCK \(Track number\/Position in set\): ([0-9]*).*/\1/p"`
+    TITLE=`id3info "$1" | sed -n "s/^=== TIT2 (Title\/songname\/content description): //p"`
+    DISCNUM=`id3info "$1" | sed -rn "s/^=== TPOS \(Part of a set\): (.*)\/.*/\1/p"`
+}
+
+# pull flac data out of the given file
+# this one's way less messy...
+get_flac_data () {
+    TRACKNUM=`metaflac --show-tag="tracknumber" "$1" | sed "s/TRACKNUMBER=//"`
+    TITLE=`metaflac --show-tag="title" "$1" | sed "s/TITLE=//"`
+    DISCNUM=`metaflac --show-tag="discnumber" "$1" | sed "s/DISCNUMBER=//"`
+}
+
+rename () {
+    # get file metadata
+    EXTENSION=`echo "${1##*.}"`
+    if [ $EXTENSION = "flac" ]; then
+        get_flac_data "$1"
+    elif [ $EXTENSION = "mp3" ]; then
+        get_mp3_data "$1"
+    else
+        echo error handling "$1": unknown extension \"."$EXTENSION"\"
+        return 1
+    fi
+
+    # actually rename the file
     if [ -n "$DISCNUM" ]
     then
-        NEWNAME=`echo -n "$DISCNUM".$(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE".flac \
+        NEWNAME=`echo -n "$DISCNUM".$(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE"."$EXTENSION" \
                     | tr "$SPECIALCHARS" _`
     else
-        NEWNAME=`echo -n $(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE".flac | tr "$SPECIALCHARS" _`
+        NEWNAME=`echo -n $(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE"."$EXTENSION" \
+                    | tr "$SPECIALCHARS" _`
     fi
-    mv "$x" "$NEWNAME"
+    if [ "$NEWNAME" != "$1" ]; then
+        mv "$1" "$NEWNAME"
+    else
+        echo "$1" is already named correctly
+    fi
+}
+
+# rename files according to their metadata
+for x in "$@"
+do
+    rename "$x"
 done
