@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+# script for ripping cds and converting to flac
+# usage: ripcd [-n discs] directory
+
+# arg handling
+NUMDISCS=1
+while getopts ":n:" opt
+do
+    case $opt in
+        n)
+            NUMDISCS=$OPTARG
+            ;;
+        \?)
+            echo "option -$OPTARG not recognised"
+            exit 1
+            ;;
+        :)
+            echo "-n needs a number of discs"
+    esac
+done
+shift $((OPTIND - 1 ))
+
+# make the directory and move into it
+# (i'm assuming the dir is in ~/music/ but i might change this....)
+TARGDIR=~/music/$1
+mkdir -p $TARGDIR
+cd $TARGDIR
+
+# for each disc, rip the tracks and convert the wavs to flacs, deleting the originals
+# (since flac is lossless there's no need to keep the wav originals, which simplifies things
+# a lot over how the old mp3 version of the script did it)
+echo "ripping $NUMDISCS disc(s) to $TARGDIR..."
+for ((i=1; i<=$NUMDISCS; i++))
+do
+    # "-B 1-" skips track 0 if it exists (in my experience track 0 has always been non-audio data)
+    cdparanoia -B 1-
+    flac -V --best --delete-input-file --output-prefix=$i *.wav
+
+    # ask for the next disc if -n was specified
+    if [ "$i" -ne "$NUMDISCS" ]
+    then
+        eject
+        read -p "insert disc $((i + 1)) and press any key to continue..."
+    fi
+done
+
+echo "finished ripping $NUMDISCS discs"

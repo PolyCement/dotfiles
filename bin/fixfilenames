@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+
+# todos:
+# make this handle other audio file types (mp3 mostly)
+# add args so i can run it on individual tracks or on folders other than the one im currently in
+
+# list of special characters to strip out
+# from here: http://mywiki.wooledge.org/BashGuide/SpecialCharacters
+# and also here: https://stackoverflow.com/a/36930095
+# (might need to add more characters from the second link as i go)
+SPECIALCHARS="[:space:]\$\'\"\\\#\=\[\]\!\<\>\|\;\{\}\(\)\*\?\~\&\/"
+
+# figure out how many 0s to stick at the front of each number
+FILECOUNT=$(ls *.flac | wc -l)
+NUMLENGTH=$((${#FILECOUNT} > 2 ? ${#FILECOUNT} : 2))
+
+# rename flac files according to their metadata
+for x in *.flac
+do
+    TRACKNUM=`metaflac --show-tag="tracknumber" "$x" | sed "s/TRACKNUMBER=//"`
+    TITLE=`metaflac --show-tag="title" "$x" | sed "s/TITLE=//"`
+    DISCNUM=`metaflac --show-tag="discnumber" "$x" | sed "s/DISCNUMBER=//"`
+    if [ -n "$DISCNUM" ]
+    then
+        NEWNAME=`echo -n "$DISCNUM".$(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE".flac \
+                    | tr "$SPECIALCHARS" _`
+    else
+        NEWNAME=`echo -n $(printf %0"$NUMLENGTH"d "${TRACKNUM#0}")_-_"$TITLE".flac | tr "$SPECIALCHARS" _`
+    fi
+    mv "$x" "$NEWNAME"
+done
