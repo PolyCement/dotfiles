@@ -7,7 +7,7 @@
 # from here: http://mywiki.wooledge.org/BashGuide/SpecialCharacters
 # and also here: https://stackoverflow.com/a/36930095
 # (might need to add more characters from the second link as i go)
-SPECIALCHARS="[:space:]\$\'\"\\\#\=\[\]\!\<\>\|\;\{\}\(\)\*\?\~\&\/"
+SPECIALCHARS="[:space:]\$\'\"\\\#\=\[\]\!\<\>\|\;\{\}\(\)\*\?\~\&\/\`"
 
 # figure out how many 0s to stick at the front of each number
 FILECOUNT=$(ls *.flac | wc -l)
