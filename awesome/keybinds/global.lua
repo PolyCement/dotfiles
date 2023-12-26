@@ -233,7 +233,7 @@ local globalkeys = gears.table.join(
         screenshot("-g " .. geo_string)
     end),
     -- screenshot a selected area (or window if you click instead of dragging)
-    awful.key({ "Mod1" }, "Print", function () screenshot("-s") end),
+    awful.key({ "Mod1" }, "Print", function () screenshot("-s -n 1") end),
 
     -- switch default audio sink
     -- TODO: this is pretty disgusting, maybe i should boot it to a bash script
