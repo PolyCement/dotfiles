@@ -25,6 +25,7 @@ local mysystemmenu = {
 -- there's gotta be a way to generate it semi-automatically
 local gamesmenu = {
     { "dolphin", "dolphin-emu" },
+    { "flashpoint", "/home/freya/games/flashpoint/Flashpoint/start-flashpoint.sh" },
     { "lutris", "lutris" },
     { "openrct2", "openrct2" },
     { "openttd", "openttd" },
