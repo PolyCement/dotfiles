@@ -10,6 +10,8 @@ export PATH=$PYENV_ROOT/bin:$PATH:~/bin:~/.local/bin:~/dotfiles/bin:~/.gem/ruby/
 # i guess its best to init pyenv after setting path,
 eval "$(pyenv init --path)"
 export VISUAL=vim
+# enable command history in iex
+export ELIXIR_ERL_OPTIONS="-kernel shell_history enabled"
 # dualshock 2 mapping, taken from https://github.com/gabomdq/SDL_GameControllerDB
 # some games will use this if it's defined, but fall back to autoconfig if it's missing
 # unity doesn't seem to have an autoconfig though, so i'm defining it manually
