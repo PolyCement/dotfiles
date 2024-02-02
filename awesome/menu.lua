@@ -47,8 +47,9 @@ local graphicsmenu = {
     { "krita", "krita" }
 }
 
-local musicmenu = {
+local audiomenu = {
     { "audacity", "audacity" },
+    { "easyeffects", "easyeffects" },
     { "qpwgraph", "qpwgraph" },
     { "reaper", "reaper" }
 }
@@ -72,7 +73,7 @@ local mymainmenu = awful.menu({
         { "games",    gamesmenu },
         { "game dev", devmenu },
         { "graphics", graphicsmenu },
-        { "music", musicmenu },
+        { "audio", audiomenu },
         { "circuits", circuitsmenu },
         { "work", workmenu },
         { "browser",  "firefox" },
