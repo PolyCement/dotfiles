@@ -10,6 +10,8 @@ case $1 in
     7z l "$1" | less ;;
 *.bz2)
     tar -jtvf "$1" | less ;;
+*.gz)
+    tar -ztvf "$1" | less ;;
 *)
     if [[ -z "$1" ]]; then
         less
