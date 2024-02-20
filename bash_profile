@@ -6,19 +6,20 @@
 # NOTE: this only runs when bash is run as a login shell
 # i'm pretty sure there's no weird caveats to this here (unlike with .bashrc,)
 
+# append the given path to $PATH, but only if it exists
+maybe_append_to_path() {
+    [[ -d $1 ]] && export PATH=$PATH:$1
+}
+
 # add my scripts to path (if they exist)
 # TODO: check if .local/bin actually exists on any of my machines,
-BIN_PATH=~/bin
-[[ -d $BIN_PATH ]] && export PATH=$PATH:$BIN_PATH
-LOCAL_BIN_PATH=~/.local/bin
-[[ -d $LOCAL_BIN_PATH ]] && export PATH=$PATH:$LOCAL_BIN_PATH
-DOTFILES_BIN_PATH=~/dotfiles/bin
-[[ -d $DOTFILES_BIN_PATH ]] && export PATH=$PATH:$DOTFILES_BIN_PATH
+maybe_append_to_path ~/bin
+maybe_append_to_path ~/.local/bin
+maybe_append_to_path ~/dotfiles/bin
 
 # add ruby to the path if it's installed
 # TODO: check this version number stuff when i'm back at my desktop
-RUBY_PATH=~/.gem/ruby/2.4.0/bin
-[[ -d $RUBY_PATH ]] && export PATH=$PATH:$RUBY_PATH
+maybe_append_to_path ~/.gem/ruby/2.4.0/bin
 
 # export go vars and add it to path if it's installed
 GO_PATH="~/go"
@@ -31,8 +32,7 @@ fi
 
 # add resolve to the path if it's installed (i'm still annoyed about this,)
 # TODO: i changed this a bit, check it works on desktop
-RESOLVE_PATH="/opt/resolve/bin"
-[[ -d $RESOLVE_PATH ]] && export PATH=$PATH:$RESOLVE_PATH
+maybe_append_to_path /opt/resolve/bin
 
 # set up pyenv if it's installed (doing this last since it has an init step that probably relies on the path,)
 # NOTE: pyenv specifically wants to go at the front of the path rather than at the end,
