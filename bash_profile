@@ -50,6 +50,5 @@ export VISUAL=nvim
 # enable command history in iex
 export ELIXIR_ERL_OPTIONS="-kernel shell_history enabled"
 
-# source .bashrc if it exists
-# TODO: check if this is actually necessary, if it's an interactive login shell wouldn't it source this anyway?
+# source .bashrc if it exists (login shells won't source it by default even if they're interactive)
 [[ -f ~/.bashrc ]] && . ~/.bashrc
