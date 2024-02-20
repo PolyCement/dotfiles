@@ -2,7 +2,13 @@
 # ~/.bashrc
 #
 
-# If not running interactively, don't do anything
+# if not running interactively, don't do anything
+# NOTE: .bashrc is only sourced when bash is run interactively so this seems redundant,
+# but it turns out bash will still source .bashrc in a non-interactive remote shell (eg. when run via ssh)
+# see the "remote shell daemon" section here for more info:
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html
+# also here for a more detailed example:
+# https://unix.stackexchange.com/a/257613
 [[ $- != *i* ]] && return
 
 # set prompt appearance

@@ -1,3 +1,13 @@
+#
+# ~/.xprofile
+#
+
+# env vars that only do anything if x is running
+# overlay scrollbars can fuck off
+export GTK_OVERLAY_SCROLLING=0
+# set this so qt5 can be configured using qt5ct, since im not using a de qt5 can pull a theme from
+export QT_QPA_PLATFORMTHEME="qt5ct"
+
 # afaik these are needed so fcitx will work in gtk and qt apps
 export GTK_IM_MODULE='fcitx'
 export QT_IM_MODULE='fcitx'

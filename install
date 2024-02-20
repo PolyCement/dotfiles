@@ -42,11 +42,11 @@ echo "INSTALLING DOTFILES FROM $BASEDIR"
 # link all the files
 # stuff for the home directory iself goes first
 link_file "$BASEDIR/Xresources" ~/.Xresources
+link_file "$BASEDIR/bash_profile" ~/.bash_profile
 link_file "$BASEDIR/bashrc" ~/.bashrc
 link_file "$BASEDIR/vimrc" ~/.vimrc
 link_file "$BASEDIR/bash_aliases" ~/.bash_aliases
 link_file "$BASEDIR/inputrc" ~/.inputrc
-link_file "$BASEDIR/profile" ~/.profile
 link_file "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
 link_file "$BASEDIR/xprofile" ~/.xprofile
 link_file "$BASEDIR/Xkeymap" ~/.Xkeymap
