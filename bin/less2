@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
-#when trying to less certain file types, list their contents instead
+# when trying to less certain file types, list their contents instead
+# NOTE: lz/lzh is a rare one. there's dedicated tools for it but 7z seems to handle it just fine
+# TODO: maybe the bzip/gzip cases should check for the full .tar.bz/gz extension...?
 case $1 in
 *.zip)
     unzip -l "$1" | less ;;
 *.rar)
     unrar l "$1" | less ;;
 *.7z)
+    7z l "$1" | less ;;
+*.lzh)
     7z l "$1" | less ;;
 *.bz2)
     tar -jtvf "$1" | less ;;
