@@ -41,6 +41,18 @@ command -nargs=* VTerm vsplit | terminal <args>
 " short versions of the above
 command -nargs=* ST STerm <args>
 command -nargs=* VT VTerm <args>
+" replace all single quote/apostrophe type characters with '
+" and all double quote type characters with "
+" list of characters from here (not exhaustive): https://stackoverflow.com/a/62723088
+" TODO: suppress output? or maybe condense it idk
+let singlequotes='\u02BB\u02BC\u066C\u2018-\u201A\u275B\u275C'
+let apostrophes='\u0027\u02B9\u02BB\u02BC\u02BE\u02C8\u02EE\u0301\u0313\u0315'
+    \ . '\u055A\u05F3\u07F4\u07F5\u1FBF\u2018\u2019\u2032\uA78C\uFF07'
+let doublequotes='\u201C-\u201E\u2033\u275D\u275E\u301D\u301E'
+command -range CleanQuotes
+    \ execute <line1> . ',' . <line2> . 's/[' . singlequotes . apostrophes . ']/''/ge'
+    \ | execute <line1> . ',' . <line2> . 's/[' . doublequotes . ']/"/ge'
+command -range CQ <line1>,<line2>CleanQuotes
 
 " ========== autocmds ==========
 
