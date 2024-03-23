@@ -52,11 +52,8 @@ link_file "$BASEDIR/xprofile" ~/.xprofile
 link_file "$BASEDIR/Xkeymap" ~/.Xkeymap
 
 # then all the stuff tucked away in .config
-link_file "$BASEDIR/tint2rc" ~/.config/tint2/tint2rc
-link_file "$BASEDIR/dunstrc" ~/.config/dunst/dunstrc
 link_file "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
 link_file "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
-link_file "$BASEDIR/termiteconf" ~/.config/termite/config
 link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
 link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
 link_file "$BASEDIR/base16-atelier-heath-vim.theme" ~/.config/cmus/base16-atelier-heath-vim.theme
@@ -68,5 +65,4 @@ link_file "$BASEDIR/fcitx5/addon/awesome-hook.conf" ~/.local/share/fcitx5/addon/
 link_file "$BASEDIR/fcitx5/lua/awesome-hook" ~/.local/share/fcitx5/lua/awesome-hook
 
 # finally, link directories
-link_file "$BASEDIR/openbox" ~/.config/openbox
 link_file "$BASEDIR/awesome" ~/.config/awesome
