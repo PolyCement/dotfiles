@@ -31,6 +31,7 @@ local gamesmenu = {
     { "openttd", "openttd" },
     { "pcsx2", "pcsx2-qt" },
     { "retroarch", "retroarch" },
+    { "rmg", "RMG" },
     { "steam", "steam" }
 }
 
