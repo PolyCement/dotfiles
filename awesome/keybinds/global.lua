@@ -16,6 +16,27 @@ local function screenshot(maim_args)
     awful.spawn.with_shell("mkdir -p " .. directory .. "; maim -u " .. maim_args .. " " .. filepath)
 end
 
+-- function for switching default audio sink
+-- easyeffects will switch preset automatically, so i don't have to handle that here anymore
+-- TODO: figure out how to make this work on machines where both are on different ports of the same sink again
+local speakers_sink = "alsa_output.pci-0000_00_1b.0.analog-stereo.2"
+local headphones_sink =
+    "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__scarlett2i_stereo_out_USB_0_0_1__sink"
+local function toggle_headphones()
+    -- get the current default sink
+    awful.spawn.easy_async_with_shell(
+        "pactl get-default-sink",
+        function (stdout, stderr, reason, exit_code)
+            -- now switch to whatever sink isn't currently the default
+            if stdout:gsub("%s+", "") == speakers_sink then
+                awful.spawn("pactl set-default-sink " .. headphones_sink)
+            else
+                awful.spawn("pactl set-default-sink " .. speakers_sink)
+            end
+        end
+    )
+end
+
 local globalkeys = gears.table.join(
     -- meta stuff
     awful.key(
@@ -225,7 +246,7 @@ local globalkeys = gears.table.join(
 
     -- screenshots
     -- screenshot all screens
-    awful.key({ }, "Print", function () screenshot() end),
+    awful.key({ }, "Print", screenshot),
     -- screenshot only the current screen (ie. the one the cursor is over)
     awful.key({ "Shift" }, "Print", function ()
         local geo = awful.screen.focused().geometry
@@ -236,32 +257,9 @@ local globalkeys = gears.table.join(
     awful.key({ "Mod1" }, "Print", function () screenshot("-s -n 1") end),
 
     -- switch default audio sink
-    -- TODO: this is pretty disgusting, maybe i should boot it to a bash script
-    -- alternatively, it might be cleaner if i slot it into volmon and use the helpers there
     awful.key(
         { modkey, "Shift" }, "o",
-        function ()
-            -- get the default sink
-            local cmd_sink = "pactl get-default-sink"
-            awful.spawn.easy_async_with_shell(cmd_sink, function (stdout, stderr, reason, exit_code)
-                local default_sink = stdout:gsub("%s+", "")
-                -- this command takes the output of pactl, cuts it down to only
-                -- the default sink's info, then grabs the active port
-                local cmd_port = "pactl list sinks | sed -n -e '/^\\s*Name: "
-                                 .. default_sink .. "$/,/^$/s/^\\s*Active Port: //p'"
-                awful.spawn.easy_async_with_shell(cmd_port, function (stdout, stderr, reason, exit_code)
-                    if stdout:gsub("%s+", "") == "analog-output-lineout" then
-                        awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-headphones")
-                        -- also disable easyeffects global bypass
-                        awful.spawn("easyeffects -b 2")
-                    else
-                        awful.spawn("pactl set-sink-port " .. default_sink .. " analog-output-lineout")
-                        -- also enable easyeffects global bypass
-                        awful.spawn("easyeffects -b 1")
-                    end
-                end)
-            end)
-        end,
+        toggle_headphones,
         { description = "toggle output device", group = "audio" }
     )
 )
