@@ -19,7 +19,7 @@ end
 -- function for switching default audio sink
 -- easyeffects will switch preset automatically, so i don't have to handle that here anymore
 -- TODO: figure out how to make this work on machines where both are on different ports of the same sink again
-local speakers_sink = "alsa_output.pci-0000_00_1b.0.analog-stereo.2"
+local speakers_sink = "alsa_output.pci-0000_00_1b.0.analog-stereo"
 local headphones_sink =
     "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__scarlett2i_stereo_out_USB_0_0_1__sink"
 local function toggle_headphones()
