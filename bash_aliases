@@ -28,7 +28,5 @@ alias yy='yt-dlp'
 # spleeter needs a specific version of python and having to specify a model is tedious
 alias spleeter2='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:2stems-16kHz -o output'
 alias spleeter5='PYENV_VERSION=3.8.10 spleeter separate -p spleeter:5stems-16kHz -o output'
-# got demucs installed via pip so here's this
-alias demucs='python -m demucs'
 # i'm not adding this one to my path get outta here
 alias resolve='/opt/resolve/bin/resolve'
