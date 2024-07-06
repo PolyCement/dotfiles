@@ -16,25 +16,49 @@ local function screenshot(maim_args)
     awful.spawn.with_shell("mkdir -p " .. directory .. "; maim -u " .. maim_args .. " " .. filepath)
 end
 
--- function for switching default audio sink
--- easyeffects will switch preset automatically, so i don't have to handle that here anymore
--- TODO: figure out how to make this work on machines where both are on different ports of the same sink again
+-- define a function for switching default audio sink port (or just sink on cometpunch)
+-- TODO: clean this up somehow,
 local speakers_sink = "alsa_output.pci-0000_00_1b.0.analog-stereo"
 local headphones_sink =
     "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__scarlett2i_stereo_out_USB_0_0_1__sink"
-local function toggle_headphones()
-    -- get the current default sink
-    awful.spawn.easy_async_with_shell(
-        "pactl get-default-sink",
-        function (stdout, stderr, reason, exit_code)
-            -- now switch to whatever sink isn't currently the default
-            if stdout:gsub("%s+", "") == speakers_sink then
-                awful.spawn("pactl set-default-sink " .. headphones_sink)
-            else
-                awful.spawn("pactl set-default-sink " .. speakers_sink)
+local toggle_headphones
+
+if awesome.hostname == "cometpunch" then
+    -- define toggle_headphones() to switch sink
+    -- easyeffects will switch preset automatically, so i don't have to handle that here anymore
+    toggle_headphones = function ()
+        -- get the current default sink
+        awful.spawn.easy_async_with_shell(
+            "pactl get-default-sink",
+            function (stdout, stderr, reason, exit_code)
+                -- now switch to whatever sink isn't currently the default
+                if stdout:gsub("%s+", "") == speakers_sink then
+                    awful.spawn("pactl set-default-sink " .. headphones_sink)
+                else
+                    awful.spawn("pactl set-default-sink " .. speakers_sink)
+                end
             end
-        end
-    )
+        )
+    end
+else
+    -- define toggle_headphones() to switch port
+    -- easyeffects won't switch preset automatically based on active port so i still gotta do it manually,
+    -- TODO: is there really no way to switch preset automatically based on ports?? maybe i should open an issue,
+    toggle_headphones = function ()
+        awful.spawn.easy_async_with_shell(
+            "pactl list sinks | sed -n -e '/^\\s*Name: " .. speakers_sink .. "$/,/^$/s/^\\s*Active Port: //p'",
+            function (stdout, stderr, reason, exit_code)
+                if stdout:gsub("%s+", "") == "analog-output-speaker" then
+                    awful.spawn("pactl set-sink-port " .. speakers_sink .. " analog-output-headphones")
+                    awful.spawn("easyeffects -l Headphones")
+                else
+                    awful.spawn("pactl set-sink-port " .. speakers_sink .. " analog-output-speaker")
+                    -- also enable easyeffects global bypass
+                    awful.spawn("easyeffects -l Speakers")
+                end
+            end
+        )
+    end
 end
 
 local globalkeys = gears.table.join(
