@@ -18,9 +18,11 @@ end
 
 -- define a function for switching default audio sink port (or just sink on cometpunch)
 -- TODO: clean this up somehow,
+-- TODO: the scarlett's name keeps changing whenever i update, work out a fix...?
 local speakers_sink = "alsa_output.pci-0000_00_1b.0.analog-stereo"
 local headphones_sink =
-    "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__scarlett2i_stereo_out_USB_0_0_1__sink"
+    "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__Line1__sink"
+    -- "alsa_output.usb-Focusrite_Scarlett_2i4_USB-00.HiFi__scarlett2i_stereo_out_USB_0_0_1__sink"
 local toggle_headphones
 
 if awesome.hostname == "cometpunch" then
