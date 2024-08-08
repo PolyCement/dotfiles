@@ -15,6 +15,7 @@ local function is_installed(command, callback)
 end
 
 -- append the given entry to the given table if the given command is installed
+-- TODO: the command arg could probably be optional, for most apps its just the second item of the entry tuple
 local function append_if_installed(t, entry, command)
     is_installed(command, function (installed) if installed then table.insert(t, entry) end end)
 end
@@ -80,6 +81,7 @@ append_if_installed(audiomenu, { "reaper", "reaper" }, "reaper")
 
 local circuitsmenu = {}
 
+append_if_installed(circuitsmenu, { "arduino ide", "arduino-ide" }, "arduino-ide")
 append_if_installed(circuitsmenu, { "circuitjs", "circuitjs1-electron" }, "circuitjs1-electron")
 append_if_installed(circuitsmenu, { "diylc", "diylc" }, "diylc")
 
