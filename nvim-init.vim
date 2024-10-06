@@ -7,9 +7,9 @@
 
 " indentation settings
 set expandtab
-set tabstop=4
-set softtabstop=4
-set shiftwidth=4
+set tabstop=2
+set softtabstop=-1
+set shiftwidth=0
 
 " improve line wrapping behaviour
 set breakindent
