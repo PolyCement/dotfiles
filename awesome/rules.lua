@@ -132,15 +132,39 @@ local rules = {
     },
 
     -- float all bespoke windows other than the main one and keep em on top
+    -- TODO: why did i use rule_any here,
     {
         rule_any = { class = { "BespokeSynth" } },
         except = { name = "bespoke synth" },
         properties = { floating = true, ontop = true }
     },
 
+    -- property tweaks to make im emoji picker act normal
+    -- TODO: this seems to be putting the picker in a weird spot til it's interacted with, at least on
+    -- doubleslap. i swear it doesn't do that on cometpunch tho...?
     {
         rule_any = { name = { "im-emoji-picker" } },
-        properties = { border_width = 0, floating = true, ontop = true, focus = false, focusable = false }
+        properties = {
+            border_width = 0,
+            floating = true,
+            ontop = true,
+            focus = false,
+            focusable = false,
+            skip_taskbar = true
+        }
+    },
+
+    -- stop diylc maximizing itself by default,
+    {
+        rule = { class = "org-diylc-DIYLCStarter" },
+        properties = { maximized = false }
+    },
+
+    -- experiment: make clients that don't appear in the taskbar float
+    -- off the top of my head these have always been dialogs so this seems like a good idea in general...?
+    {
+        rule = { skip_taskbar = true },
+        properties = { floating = true, maximized = false }
     }
 
     -- Add titlebars to normal clients and dialogs
