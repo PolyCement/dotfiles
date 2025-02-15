@@ -91,7 +91,8 @@ if awesome.hostname == "doubleslap" then
 
     -- reads the current brightness and changes it by the given percentage of the max brightness
     -- TODO: maybe add some kind of exponential (log?) scale so it feels smoother? idk
-    change_brightness = function (amount)
+    change_brightness = function (percentage_amount)
+        local amount = tonumber((percentage_amount:gsub("%%$", "")))
         with_brightness(
             brightness_path,
             function (brightness)
@@ -309,12 +310,12 @@ if awesome.hostname == "doubleslap" then
         -- brightness controls
         awful.key(
             {}, "XF86MonBrightnessUp",
-            function () change_brightness(20) end,
+            function () change_brightness("20%") end,
             { description = "increase brightness", group = "monitor" }
         ),
         awful.key(
             {}, "XF86MonBrightnessDown",
-            function () change_brightness(-20) end,
+            function () change_brightness("-20%") end,
             { description = "decrease brightness", group = "monitor" }
         ),
 
