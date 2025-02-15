@@ -322,15 +322,18 @@ if awesome.hostname == "doubleslap" then
         -- volume controls
         awful.key(
             {}, "XF86AudioLowerVolume",
-            function () volmon.change_volume("-5%") end
+            function () volmon.change_volume("-5%") end,
+            { description = "increase volume", group = "audio" }
         ),
         awful.key(
             {}, "XF86AudioRaiseVolume",
-            function () volmon.change_volume("+5%") end
+            function () volmon.change_volume("+5%") end,
+            { description = "decrease volume", group = "audio" }
         ),
         awful.key(
             {}, "XF86AudioMute",
-            function () volmon.toggle_mute() end
+            function () volmon.toggle_mute() end,
+            { description = "toggle mute", group = "audio" }
         )
     )
 end
