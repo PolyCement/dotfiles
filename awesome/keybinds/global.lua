@@ -63,6 +63,44 @@ else
     end
 end
 
+-- new stuff for backlights
+-- TODO: make this exclusive to doubleslap?
+local brightness_path = "/sys/class/backlight/intel_backlight/brightness"
+local max_brightness_path = "/sys/class/backlight/intel_backlight/max_brightness"
+
+-- reads brightness from the given file, then passes it to the callback function
+local function with_brightness (brightness_file_path, callback)
+    awful.spawn.easy_async_with_shell(
+        "cat " .. brightness_file_path,
+        function (stdout, stderr, reason, exit_code) callback(tonumber(stdout)) end
+    )
+end
+
+-- initialise max (and min) brightness. min brightness is 20% (for now)
+-- there's no guarantee this will finish running before change_brightness is called, but it's pretty low risk
+-- and it saves me having to read max brightness again each time...
+-- TODO: maybe i should still add a warning if change_brightness runs without these being set though,
+local max_brightness
+local min_brightness
+
+with_brightness(max_brightness_path, function (brightness)
+    max_brightness = brightness
+    min_brightness = max_brightness // 20
+end)
+
+-- reads the current brightness and changes it by the given percentage of the max brightness
+-- TODO: maybe add some kind of exponential (log?) scale so it feels smoother? idk
+local function change_brightness (amount)
+    with_brightness(
+        brightness_path,
+        function (brightness)
+            local new_brightness = brightness + max_brightness // 100 * amount
+            local clamped_brightness = math.min(math.max(new_brightness, min_brightness), max_brightness)
+            awful.spawn.with_shell("echo " .. clamped_brightness .. " > " .. brightness_path)
+        end
+    )
+end
+
 local globalkeys = gears.table.join(
     -- meta stuff
     awful.key(
@@ -221,22 +259,21 @@ local globalkeys = gears.table.join(
         { description = "select previous", group = "layout" }
     ),
 
-    -- laptop-specific keybinds
-    -- TODO: only do these on doubleslap, also add descriptions
     -- brightness controls
-    -- these are very basic and don't *really* work in a "normal" way
-    -- brightness down applies redshift, brightness up removes it
-    -- TODO: think of something better
+    -- TODO: only do these on doubleslap
     awful.key(
         {}, "XF86MonBrightnessUp",
-        function () awful.spawn("redshift -x") end
+        function () change_brightness(20) end,
+        { description = "increase brightness", group = "monitor" }
     ),
     awful.key(
         {}, "XF86MonBrightnessDown",
-        function () awful.spawn("redshift -O 2700") end
+        function () change_brightness(-20) end,
+        { description = "decrease brightness", group = "monitor" }
     ),
 
     -- volume controls
+    -- TODO: same as above,
     awful.key(
         {}, "XF86AudioLowerVolume",
         function () volmon.change_volume("-5%") end
