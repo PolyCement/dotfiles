@@ -64,41 +64,43 @@ else
 end
 
 -- new stuff for backlights
--- TODO: make this exclusive to doubleslap?
-local brightness_path = "/sys/class/backlight/intel_backlight/brightness"
-local max_brightness_path = "/sys/class/backlight/intel_backlight/max_brightness"
+local change_brightness
+if awesome.hostname == "doubleslap" then
+    local brightness_path = "/sys/class/backlight/intel_backlight/brightness"
+    local max_brightness_path = "/sys/class/backlight/intel_backlight/max_brightness"
 
--- reads brightness from the given file, then passes it to the callback function
-local function with_brightness (brightness_file_path, callback)
-    awful.spawn.easy_async_with_shell(
-        "cat " .. brightness_file_path,
-        function (stdout, stderr, reason, exit_code) callback(tonumber(stdout)) end
-    )
-end
+    -- reads brightness from the given file, then passes it to the callback function
+    local function with_brightness (brightness_file_path, callback)
+        awful.spawn.easy_async_with_shell(
+            "cat " .. brightness_file_path,
+            function (stdout, stderr, reason, exit_code) callback(tonumber(stdout)) end
+        )
+    end
 
--- initialise max (and min) brightness. min brightness is 20% (for now)
--- there's no guarantee this will finish running before change_brightness is called, but it's pretty low risk
--- and it saves me having to read max brightness again each time...
--- TODO: maybe i should still add a warning if change_brightness runs without these being set though,
-local max_brightness
-local min_brightness
+    -- initialise max (and min) brightness. min brightness is 20% (for now)
+    -- there's no guarantee this will finish running before change_brightness is called, but it's pretty low risk
+    -- and it saves me having to read max brightness again each time...
+    -- TODO: maybe i should still add a warning if change_brightness runs without these being set though,
+    local max_brightness
+    local min_brightness
 
-with_brightness(max_brightness_path, function (brightness)
-    max_brightness = brightness
-    min_brightness = max_brightness // 20
-end)
+    with_brightness(max_brightness_path, function (brightness)
+        max_brightness = brightness
+        min_brightness = max_brightness // 20
+    end)
 
--- reads the current brightness and changes it by the given percentage of the max brightness
--- TODO: maybe add some kind of exponential (log?) scale so it feels smoother? idk
-local function change_brightness (amount)
-    with_brightness(
-        brightness_path,
-        function (brightness)
-            local new_brightness = brightness + max_brightness // 100 * amount
-            local clamped_brightness = math.min(math.max(new_brightness, min_brightness), max_brightness)
-            awful.spawn.with_shell("echo " .. clamped_brightness .. " > " .. brightness_path)
-        end
-    )
+    -- reads the current brightness and changes it by the given percentage of the max brightness
+    -- TODO: maybe add some kind of exponential (log?) scale so it feels smoother? idk
+    change_brightness = function (amount)
+        with_brightness(
+            brightness_path,
+            function (brightness)
+                local new_brightness = brightness + max_brightness // 100 * amount
+                local clamped_brightness = math.min(math.max(new_brightness, min_brightness), max_brightness)
+                awful.spawn.with_shell("echo " .. clamped_brightness .. " > " .. brightness_path)
+            end
+        )
+    end
 end
 
 local globalkeys = gears.table.join(
@@ -259,34 +261,6 @@ local globalkeys = gears.table.join(
         { description = "select previous", group = "layout" }
     ),
 
-    -- brightness controls
-    -- TODO: only do these on doubleslap
-    awful.key(
-        {}, "XF86MonBrightnessUp",
-        function () change_brightness(20) end,
-        { description = "increase brightness", group = "monitor" }
-    ),
-    awful.key(
-        {}, "XF86MonBrightnessDown",
-        function () change_brightness(-20) end,
-        { description = "decrease brightness", group = "monitor" }
-    ),
-
-    -- volume controls
-    -- TODO: same as above,
-    awful.key(
-        {}, "XF86AudioLowerVolume",
-        function () volmon.change_volume("-5%") end
-    ),
-    awful.key(
-        {}, "XF86AudioRaiseVolume",
-        function () volmon.change_volume("+5%") end
-    ),
-    awful.key(
-        {}, "XF86AudioMute",
-        function () volmon.toggle_mute() end
-    ),
-
     -- prompt
     awful.key(
         { modkey }, "r",
@@ -326,6 +300,39 @@ local globalkeys = gears.table.join(
         { description = "toggle output device", group = "audio" }
     )
 )
+
+-- laptop-specific keybinds
+if awesome.hostname == "doubleslap" then
+    globalkeys = gears.table.join(
+        globalkeys,
+
+        -- brightness controls
+        awful.key(
+            {}, "XF86MonBrightnessUp",
+            function () change_brightness(20) end,
+            { description = "increase brightness", group = "monitor" }
+        ),
+        awful.key(
+            {}, "XF86MonBrightnessDown",
+            function () change_brightness(-20) end,
+            { description = "decrease brightness", group = "monitor" }
+        ),
+
+        -- volume controls
+        awful.key(
+            {}, "XF86AudioLowerVolume",
+            function () volmon.change_volume("-5%") end
+        ),
+        awful.key(
+            {}, "XF86AudioRaiseVolume",
+            function () volmon.change_volume("+5%") end
+        ),
+        awful.key(
+            {}, "XF86AudioMute",
+            function () volmon.toggle_mute() end
+        )
+    )
+end
 
 -- bind key numbers to tags
 -- the default config says "Be careful: we use keycodes to make it works on any keyboard layout."
