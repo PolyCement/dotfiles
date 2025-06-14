@@ -84,6 +84,7 @@ local circuitsmenu = {}
 append_if_installed(circuitsmenu, { "arduino ide", "arduino-ide" }, "arduino-ide")
 append_if_installed(circuitsmenu, { "circuitjs", "circuitjs1-electron" }, "circuitjs1-electron")
 append_if_installed(circuitsmenu, { "diylc", "diylc" }, "diylc")
+append_if_installed(circuitsmenu, { "kicad", "kicad" }, "kicad")
 
 local workmenu = {}
 
