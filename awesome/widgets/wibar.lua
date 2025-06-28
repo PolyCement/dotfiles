@@ -15,6 +15,9 @@ local temp_widget = require("widgets.temperature")(
     awesome.hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
 )
 local fcitx_widget = require("widgets.fcitx")
+local wifi_widget = require("widgets.wifi")(
+    awesome.hostname == "cometpunch" and "wlp5s0" or "wlp2s0"
+)
 local taglist = require("widgets.taglist")
 local tasklist = require("widgets.tasklist")
 local layoutbox = require("widgets.layoutbox")
@@ -54,6 +57,8 @@ local function right_widgets(s)
         gears.table.merge(right_widgets, {
             spacers.div_widget,
             temp_widget,
+            spacers.div_widget,
+            wifi_widget,
             spacers.div_widget,
             vol_widget,
             spacers.div_widget,
