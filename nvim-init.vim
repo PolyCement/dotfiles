@@ -70,7 +70,7 @@ call plug#begin()
     Plug 'jeffkreeftmeijer/vim-numbertoggle'
     Plug 'ap/vim-buftabline'
     " base16 colourschemes
-    Plug 'chriskempson/base16-vim'
+    Plug 'RRethy/base16-nvim'
     " syntax highlighting
     Plug 'elixir-editors/vim-elixir'
     Plug 'yuezk/vim-js'
@@ -89,10 +89,6 @@ let g:buftabline_numbers=1
 colorscheme base16-atelier-heath
 " stop theme making the background opaque
 highlight Normal guibg=NONE
-" enable 24-bit colour if supported (otherwise vim will look weird in termite/alacritty)
-if $COLORTERM == 'truecolor'
-    set termguicolors
-endif
 
 " vim-elixir:
 " temporary workaround for broken .heex highlighting
