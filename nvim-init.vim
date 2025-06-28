@@ -76,6 +76,8 @@ call plug#begin()
     Plug 'yuezk/vim-js'
     Plug 'HerringtonDarkholme/yats.vim'
     Plug 'MaxMEllon/vim-jsx-pretty'
+    " non-syntax highlighting?
+    Plug 'ap/vim-css-color'
 call plug#end()
 
 " ========== plugin settings ==========
