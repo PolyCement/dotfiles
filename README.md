@@ -9,3 +9,5 @@ my dot files!
     ```
 
 - fcitx overrides xkb settings by default, which breaks caps lock being bound to zenkaku/hankaku, so i had to switch it off ("addons" → "xcb" → "allow overriding system xkb settings")
+
+- the awesomewm theme is set up to use whatever file is at `~/dotfiles/awesome/themes/default/background.png` as the desktop wallpaper. just symlink the file (or copy it? i guess?) there and it'll work
