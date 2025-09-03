@@ -142,6 +142,7 @@ local rules = {
     -- property tweaks to make im emoji picker act normal
     -- TODO: this seems to be putting the picker in a weird spot til it's interacted with, at least on
     -- doubleslap. i swear it doesn't do that on cometpunch tho...?
+    -- TODO: nvm totally does it on cometpunch now too. idk what changed.....
     {
         rule_any = { name = { "im-emoji-picker" } },
         properties = {

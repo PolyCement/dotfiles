@@ -1,4 +1,4 @@
--- battery widget, only used on doubleslap (for now)
+-- battery widget, used on doubleslap and firepunch
 local vicious = require("vicious")
 local wibox = require("wibox")
 local naughty = require("naughty")
@@ -55,12 +55,14 @@ local function maybe_show_low_power_warning(bat_state, bat_power)
     end
 end
 
-vicious.register(bat_widget_info, vicious.widgets.bat, function (widget, args)
-    -- TODO: this really shouldn't be called inside the widget update function, but where else can i call it?
-    -- i considered using vicious.call but it's not really any different than just doing this afaik
-    maybe_show_low_power_warning(args[1], args[2])
-    local icon = args[1] == "-" and "🔋" or "🔌"
-    return icon .. " " .. args[2] .. "%"
-end, 29, "BAT0")
+return function (battery)
+    vicious.register(bat_widget_info, vicious.widgets.bat, function (widget, args)
+        -- TODO: this really shouldn't be called inside the widget update function, but where else can i call it?
+        -- i considered using vicious.call but it's not really any different than just doing this afaik
+        maybe_show_low_power_warning(args[1], args[2])
+        local icon = args[1] == "-" and "🔋" or "🔌"
+        return icon .. " " .. args[2] .. "%"
+    end, 29, battery)
 
-return bat_widget
+    return bat_widget
+end

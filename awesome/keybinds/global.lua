@@ -46,6 +46,7 @@ else
     -- define toggle_headphones() to switch port
     -- easyeffects won't switch preset automatically based on active port so i still gotta do it manually,
     -- TODO: is there really no way to switch preset automatically based on ports?? maybe i should open an issue,
+    -- TODO: check this works on firepunch? it should be fine...
     toggle_headphones = function ()
         awful.spawn.easy_async_with_shell(
             "pactl list sinks | sed -n -e '/^\\s*Name: " .. speakers_sink .. "$/,/^$/s/^\\s*Active Port: //p'",
@@ -65,9 +66,18 @@ end
 
 -- new stuff for backlights
 local change_brightness
-if awesome.hostname == "doubleslap" then
-    local brightness_path = "/sys/class/backlight/intel_backlight/brightness"
-    local max_brightness_path = "/sys/class/backlight/intel_backlight/max_brightness"
+if awesome.hostname == "doubleslap" or awesome.hostname == "firepunch" then
+    local brightness_path
+    local max_brightness_path
+    -- NOTE: the user needs write permissions on the brightness file for this to work
+    -- TODO: add the udev thing that does that to the repo?
+    if awesome.hostname == "firepunch" then
+        brightness_path = "/sys/class/backlight/amdgpu_bl1/brightness"
+        max_brightness_path = "/sys/class/backlight/amdgpu_bl1/max_brightness"
+    else
+        brightness_path = "/sys/class/backlight/intel_backlight/brightness"
+        max_brightness_path = "/sys/class/backlight/intel_backlight/max_brightness"
+    end
 
     -- reads brightness from the given file, then passes it to the callback function
     local function with_brightness (brightness_file_path, callback)
@@ -303,7 +313,8 @@ local globalkeys = gears.table.join(
 )
 
 -- laptop-specific keybinds
-if awesome.hostname == "doubleslap" then
+-- TODO: might be nice to have some way to just do like "is this a laptop"...?
+if awesome.hostname == "doubleslap" or awesome.hostname == "firepunch" then
     globalkeys = gears.table.join(
         globalkeys,
 

@@ -3,12 +3,22 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 
+-- mapping of hostnames to network devices
+-- TODO: maybe i should stop putting this config stuff in here....?
+local wifi_network_devices = {
+    ["doubleslap"] = "wlp2s0",
+    ["cometpunch"] = "wlp5s0",
+    ["firepunch"] = "wlp1s0",
+}
+
 local menu = require("menu")
 local spacers = require("widgets.spacers")
 local clock = require("widgets.clock")
 local bat_widget = nil
-if awesome.hostname == "doubleslap" then
-     bat_widget = require("widgets.battery")
+if awesome.hostname == "doubleslap" or awesome.hostname == "firepunch" then
+     bat_widget = require("widgets.battery")(
+    awesome.hostname == "doubleslap" and "BAT0" or "BAT1"
+)
 end
 local vol_widget = require("widgets.volume")
 local temp_widget = require("widgets.temperature")(
@@ -16,7 +26,7 @@ local temp_widget = require("widgets.temperature")(
 )
 local fcitx_widget = require("widgets.fcitx")
 local wifi_widget = require("widgets.wifi")(
-    awesome.hostname == "cometpunch" and "wlp5s0" or "wlp2s0"
+    wifi_network_devices[awesome.hostname]
 )
 local taglist = require("widgets.taglist")
 local tasklist = require("widgets.tasklist")
