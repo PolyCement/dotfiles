@@ -13,13 +13,13 @@
 
 # set prompt appearance
 PS1='\[\e[0;32m\]\u\[\e[m\]@\[\e[0;33m\]\h\[\e[m\] \W \[\e[0;31m\]❤\[\e[m\] '
-INPUTRC=~/.inputrc
 
 # make command history bigger
 HISTSIZE=1000
 HISTFILESIZE=1000
 
 # colourise man pages
+# TODO: does this even work anymore?
 man() {
     LESS_TERMCAP_md=$'\e[01;31m' \
     LESS_TERMCAP_me=$'\e[0m' \
@@ -31,14 +31,10 @@ man() {
 }
 
 # load aliases
-. ~/.bash_aliases
+test -f ~/.bash_aliases && . ~/.bash_aliases
 
-# enable more autocompletion
-. /usr/share/bash-completion/bash_completion
-
-# fzf stuff
-. /usr/share/fzf/key-bindings.bash
-. /usr/share/fzf/completion.bash
+# load fzf
+command -v fzf > /dev/null 2>&1 && eval "$(fzf --bash)"
 
 # for whatever reason nvm doesn't put itself in the path?
 # i dont know the specifics but there's probably a good reason
@@ -49,6 +45,7 @@ fi
 # start keychain
 # turns out i actually do need this on doubleslap, otherwise using ssh is a pain in the ass lmao
 # TODO: check the situation with this on cometpunch, not sure why i don't get pestered for a password on there...
+# TODO: make these two just load if it's installed like with the other stuff?
 if [[ $HOSTNAME == doubleslap ]]
 then
     eval $(keychain -q --eval id_rsa)
@@ -61,4 +58,4 @@ then
 fi
 
 # load direnv (has to go last, apparently)
-eval "$(direnv hook bash)"
+command -v direnv > /dev/null 2>&1 && eval "$(direnv hook bash)"
