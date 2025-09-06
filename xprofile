@@ -3,6 +3,7 @@
 #
 
 # env vars that only do anything if x is running
+# TODO: check these are still relevant and maybe only load if necessary?
 # gtk 4 apps using libadwaita need the theme to be forced for some reason,
 export GTK_THEME=Adwaita:dark
 # overlay scrollbars can fuck off
@@ -11,9 +12,11 @@ export GTK_OVERLAY_SCROLLING=0
 export QT_QPA_PLATFORMTHEME="qt5ct"
 
 # afaik these are needed so fcitx will work in gtk and qt apps
-export GTK_IM_MODULE='fcitx'
-export QT_IM_MODULE='fcitx'
-export XMODIFIERS='@im=fcitx'
+if command -v fcitx5 > /dev/null 2>&1; then
+    export GTK_IM_MODULE='fcitx'
+    export QT_IM_MODULE='fcitx'
+    export XMODIFIERS='@im=fcitx'
+fi
 
 # caps lock is useless, rebind it so i can use it to toggle direct input mode
 # i have a bluetooth keyboard now and xmodmap doesn't work with hotplugged devices
@@ -24,8 +27,14 @@ test -f ~/.Xkeymap && xkbcomp ~/.Xkeymap $DISPLAY
 
 # autorun:
 # compositor
-xcompmgr &
+command -v xcompmgr > /dev/null 2>&1 && xcompmgr &
+
 # ime
-fcitx5 &
+command -v fcitx5 > /dev/null 2>&1 && fcitx5 &
+
 # app for hiding the mouse cursor when stationary
-unclutter &
+command -v unclutter > /dev/null 2>&1 && unclutter &
+
+# color profile
+# TODO: is there somewhere earlier i should be loading this?
+command -v xiccd > /dev/null 2>&1 && xiccd &
