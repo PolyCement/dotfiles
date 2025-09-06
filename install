@@ -128,7 +128,7 @@ config_xorg () {
 if_installed Xorg config_xorg
 
 # alacritty:
-if_installed alacritty link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
+if_installed alacritty link_file "$BASEDIR/alacritty.toml" ~/.config/alacritty/alacritty.toml
 
 # neovim:
 config_nvim () {

@@ -1,0 +1,76 @@
+[[colors.indexed_colors]]
+color = "#a65926"
+index = 16
+
+[[colors.indexed_colors]]
+color = "#cc33cc"
+index = 17
+
+[[colors.indexed_colors]]
+color = "#292329"
+index = 18
+
+[[colors.indexed_colors]]
+color = "#695d69"
+index = 19
+
+[[colors.indexed_colors]]
+color = "#9e8f9e"
+index = 20
+
+[[colors.indexed_colors]]
+color = "#d8cad8"
+index = 21
+
+[colors.bright]
+black = "#776977"
+blue = "#516aec"
+cyan = "#159393"
+green = "#918b3b"
+magenta = "#7b59c0"
+red = "#ca402b"
+white = "#f7f3f7"
+yellow = "#bb8a35"
+
+[colors.cursor]
+cursor = "#d8cad8"
+text = "#1b181b"
+
+[colors.normal]
+black = "#1b181b"
+blue = "#516aec"
+cyan = "#159393"
+green = "#918b3b"
+magenta = "#7b59c0"
+red = "#ca402b"
+white = "#ab9bab"
+yellow = "#bb8a35"
+
+[colors.primary]
+background = "#1b181b"
+foreground = "#ab9bab"
+
+[colors.selection]
+background = "CellForeground"
+text = "CellBackground"
+
+[colors.vi_mode_cursor]
+cursor = "#d8cad8"
+text = "#1b181b"
+
+[font]
+size = 12
+
+[font.normal]
+family = "Ricty Nerd Font"
+
+[font.offset]
+x = -1
+
+[window]
+dynamic_padding = false
+opacity = 0.98
+
+[window.padding]
+x = 10
+y = 10
