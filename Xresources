@@ -1,13 +1,2 @@
+# force dpi (theoretically only for font rendering but other stuff uses it too,)
 Xft.dpi: 102
-URxvt.scrollBar: false
-!URxvt.font:xft:droid sans mono:pixelsize=14,xft:noto sans mono cjk jp:pixelsize=14,xft:symbola:pixelsize=14,xft:dejavu sans mono:pixelsize=14
-URxvt.font:xft:ricty:pixelsize=16,xft:symbola:pixelsize=16,xft:dejavu sans mono:pixelsize=16
-URxvt.lineSpace: 2
-! by default urxvt attempts to use high intensity colours for boldface
-! this breaks base16 colourschemes, so turn it off
-URxvt.intensityStyles: false
-! remember to specify urxvt otherwise it breaks vim, xterm and probably a bunch of other stuff
-URxvt.depth: 32
-! colour scheme
-#define background_opacity 98
-#include "dotfiles/base16-atelier-heath.Xresources"
