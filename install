@@ -1,35 +1,102 @@
 #!/usr/bin/env bash
 
+# if it sucks hit the bricks
+set -e
+
+# if the given app is installed, run the callback
+# TODO: maybe let the user veto a skip? like how im already letting them
+# force overwrite existing files
+# TODO: also add a way to specify the name of whats being installed separate from
+# the actual executable we're looking for (mostly for gtk and fontconfig)
+if_installed () {
+    echo "============================================================"
+    if command -v $1 > /dev/null 2>&1; then
+	echo "Found $1, installing configs for $1..."
+        echo "============================================================"
+	callback=$2
+	shift 2
+	$callback "$@"
+    else
+        echo "Could not find $1, skipping configs for $1..."
+        echo "============================================================"
+    fi
+}
+
 # function for linking files
 # not entirely happy with how this handles linking directories,
 link_file () {
-    echo "============================================================"
-    echo "$2 -> $1"
+    echo "  $2 -> $1"
     target_dir="$( dirname "$2" )"
     if [[ ! -d $target_dir ]]; then
-        read -p "Directory $target_dir does not exist. Create it now? (Y/n): " -n 1 -r
+        read -p "  Directory $target_dir does not exist. Create it now? (Y/n): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Nn]$ ]]; then
-            echo "Skipping $2..."
+            echo "  Skipping $2..."
             return
         else
-            echo "Creating directory $target_dir"
+            echo "  Creating directory $target_dir"
             mkdir -p "$target_dir"
         fi
     fi
     if [[ -e $2 ]]; then
-        read -p "File $2 already exists. Overwrite it? (y/N): " -n 1 -r
+        read -p "  File $2 already exists. Overwrite it? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
-            echo "Linked dotfile $2 at $1"
-            ln -s -f "$1" "$2"
+            echo "  Linked dotfile $2 at $1"
+            ln -sfT "$1" "$2"
         else
-            echo "Skipping $2..."
+            echo "  Skipping $2..."
             return
         fi
     else
-        echo "Linked dotfile $2 at $1"
+        echo "  Linked dotfile $2 at $1"
         ln -s "$1" "$2"
+    fi
+}
+
+# as above but download the file instead
+actually_download_file () {
+    # TODO: maybe set the default here to "n" if the user is overwriting?
+    read -p "  $2 will be downloaded from $1. Proceed? (Y/n)" -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo "  Skipping $2..."
+        return
+    else
+        target_dir="$( dirname "$2" )"
+        if [[ ! -d $target_dir ]]; then
+            read -p "  Directory $target_dir does not exist. Create it now? (Y/n): " -n 1 -r
+            echo
+            if [[ $REPLY =~ ^[Nn]$ ]]; then
+                echo "  Skipping $2..."
+                return
+            else
+                echo "  Creating directory $target_dir"
+                mkdir -p "$target_dir"
+                echo "  Downloading $1 to $2"
+                curl -fsSLo "$2" "$1"
+            fi
+        else
+            echo "  Downloading $1 to $2"
+            curl -fsSLo "$2" "$1"
+        fi
+    fi
+}
+
+# then the actual function to be called, which checks if the file exists first
+download_file () {
+    echo "  $2 -> $1"
+    if [[ -e $2 ]]; then
+        read -p "  File $2 already exists. Overwrite it? (y/N): " -n 1 -r
+        echo
+        if [[ $REPLY =~ ^[Yy]$ ]]; then
+            actually_download_file "$@"
+        else
+            echo "  Skipping $2..."
+            return
+        fi
+    else
+        actually_download_file "$@"
     fi
 }
 
@@ -40,29 +107,80 @@ echo "============================================================"
 echo "INSTALLING DOTFILES FROM $BASEDIR"
 
 # link all the files
-# stuff for the home directory iself goes first
-link_file "$BASEDIR/Xresources" ~/.Xresources
-link_file "$BASEDIR/bash_profile" ~/.bash_profile
-link_file "$BASEDIR/bashrc" ~/.bashrc
-link_file "$BASEDIR/vimrc" ~/.vimrc
-link_file "$BASEDIR/bash_aliases" ~/.bash_aliases
-link_file "$BASEDIR/inputrc" ~/.inputrc
-link_file "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
-link_file "$BASEDIR/xprofile" ~/.xprofile
-link_file "$BASEDIR/Xkeymap" ~/.Xkeymap
 
-# then all the stuff tucked away in .config
-link_file "$BASEDIR/gtk-3.0/settings.ini" ~/.config/gtk-3.0/settings.ini
-link_file "$BASEDIR/gtk-3.0/gtk.css" ~/.config/gtk-3.0/gtk.css
-link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
-link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
-link_file "$BASEDIR/base16-atelier-heath-vim.theme" ~/.config/cmus/base16-atelier-heath-vim.theme
+# xorg:
+# TODO: probably should put the hidpi check after the check for the file existing
+config_xorg () {
+    link_file "$BASEDIR/xprofile" ~/.xprofile
+    echo
+    link_file "$BASEDIR/Xkeymap" ~/.Xkeymap
+    echo
+    read -p "  Xresources: is the monitor's DPI >= 192? (Y/n): " -n 1 -r
+    echo
+    if [[ $REPLY =~ ^[Nn]$ ]]; then
+        echo "  Proceeding with standard Xresources config..."
+        link_file "$BASEDIR/Xresources" ~/.Xresources
+    else
+        echo "  Proceeding with HiDPI Xresources config..."
+        link_file "$BASEDIR/Xresources-hidpi" ~/.Xresources
+    fi
+}
+if_installed Xorg config_xorg
+
+# alacritty:
+if_installed alacritty link_file "$BASEDIR/alacritty.yml" ~/.config/alacritty/alacritty.yml
+
+# neovim:
+config_nvim () {
+    # install vim-plug (https://github.com/junegunn/vim-plug)
+    download_file https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+                  ~/.local/share/nvim/site/autoload/plug.vim
+    echo
+    # then link the config in
+    link_file "$BASEDIR/nvim-init.vim" ~/.config/nvim/init.vim
+}
+if_installed nvim config_nvim
+
+# gtk3:
+# NOTE: its kinda hard to tell if gui toolkits are installed by checking
+# for executables... i think this should generally work as long as the
+# distro isn't doing anything too goofy with its packaging tho
+if_installed gtk-query-settings link_file "$BASEDIR/gtk-3.0/settings.ini" \
+                                          ~/.config/gtk-3.0/settings.ini
+# gtk2:
+# TODO: this is commented out for now cos i dont know if i actually use anything that
+# uses gtk2 anymore? if not i might as well drop the gtk2 config
+# link_file "$BASEDIR/gtkrc-2.0" ~/.gtkrc-2.0
+
+# awesomewm:
+if_installed awesome link_file "$BASEDIR/awesome" ~/.config/awesome
+
+# bash:
+config_bash () {
+    link_file "$BASEDIR/bash_profile" ~/.bash_profile
+    echo
+    link_file "$BASEDIR/bashrc" ~/.bashrc
+    echo
+    link_file "$BASEDIR/bash_aliases" ~/.bash_aliases
+}
+if_installed bash config_bash
+
+# fontconfig:
+# NOTE: similar to gtk3 i just have to check for fontconfig's tools here
+if_installed fc-list link_file "$BASEDIR/fonts.conf" ~/.config/fontconfig/fonts.conf
+
+# fcitx:
+# TODO: maybe only do this if fcitx and awesome are both installed...
+config_fcitx () {
+    link_file "$BASEDIR/fcitx5/addon/awesome-hook.conf" ~/.local/share/fcitx5/addon/awesome-hook.conf
+    echo
+    link_file "$BASEDIR/fcitx5/lua/awesome-hook" ~/.local/share/fcitx5/lua/awesome-hook
+}
+if_installed fcitx5 config_fcitx
+
+# cmus, as if i still use it:
+if_installed cmus link_file "$BASEDIR/base16-atelier-heath-vim.theme" \
+                            ~/.config/cmus/base16-atelier-heath-vim.theme
+
+# scripts i guess?
 link_file "$BASEDIR/mousebright-config.json" ~/.config/mousebright/config.json
-link_file "$BASEDIR/nvim-init.vim" ~/.config/nvim/init.vim
-
-# and the stuff tucked away in .local (although right now it's just my fcitx5 addon,)
-link_file "$BASEDIR/fcitx5/addon/awesome-hook.conf" ~/.local/share/fcitx5/addon/awesome-hook.conf
-link_file "$BASEDIR/fcitx5/lua/awesome-hook" ~/.local/share/fcitx5/lua/awesome-hook
-
-# finally, link directories
-link_file "$BASEDIR/awesome" ~/.config/awesome

@@ -1,0 +1,2 @@
+# force dpi (theoretically only for font rendering but other stuff uses it too,)
+Xft.dpi: 192
