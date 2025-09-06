@@ -29,6 +29,7 @@ just run `install` and that should link everything into the right places
 - nvim:
     required:
     - curl (for installing vim-plug) (maybe also for actually using vim-plug?)
+    - xclip (for yanking to clipboard)
 
 - bash:
     optional:
