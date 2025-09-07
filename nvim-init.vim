@@ -89,8 +89,12 @@ let g:buftabline_numbers=1
 " base16-vim:
 " set colour scheme
 colorscheme base16-atelier-heath
-" stop theme making the background opaque
+" stop colour scheme making the background opaque on normal text...
 highlight Normal guibg=NONE
+" ...and normal text in non-current splits...
+highlight NormalNC guibg=NONE
+" ...and (non-current) line numbers
+highlight LineNr guibg=NONE
 
 " vim-elixir:
 " temporary workaround for broken .heex highlighting
