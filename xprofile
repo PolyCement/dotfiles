@@ -4,11 +4,13 @@
 
 # env vars that only do anything if x is running
 # TODO: check these are still relevant and maybe only load if necessary?
-# gtk 4 apps using libadwaita need the theme to be forced for some reason,
+# gtk 4 apps using libadwaita need the dark theme to be forced for some reason,
+# (even with a gtk 4 settings.ini :/)
 export GTK_THEME=Adwaita:dark
-# overlay scrollbars can fuck off
+# overlay scrollbars can fuck off (gtk 3 only, apparently :/)
 export GTK_OVERLAY_SCROLLING=0
 # set this so qt5 can be configured using qt5ct, since im not using a de qt5 can pull a theme from
+# TODO: probably only do this if qt5ct is actually installed,
 export QT_QPA_PLATFORMTHEME="qt5ct"
 
 # afaik these are needed so fcitx will work in gtk and qt apps
@@ -38,3 +40,6 @@ command -v unclutter > /dev/null 2>&1 && unclutter &
 # color profile
 # TODO: is there somewhere earlier i should be loading this?
 command -v xiccd > /dev/null 2>&1 && xiccd &
+
+# xsettingsd (currently only used for gtk hidpi config)
+command -v xsettingsd > /dev/null 2>&1 && xsettingsd &

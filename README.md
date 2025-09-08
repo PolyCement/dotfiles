@@ -21,6 +21,7 @@ just run `install` and that should link everything into the right places
     - xcompmgr (compositor)
     - unclutter (for hiding the mouse when stationary)
     - xiccd (for managing colour profiles)
+    - xsettingsd (for hidpi scaling in gtk4 apps)
 
 - alacritty:
     required:

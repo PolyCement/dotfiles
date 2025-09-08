@@ -38,7 +38,7 @@ link_file () {
             mkdir -p "$target_dir"
         fi
     fi
-    if [[ -e $2 ]]; then
+    if [[ -e $2 ]] || [[ -L $2 ]]; then
         read -p "  File $2 already exists. Overwrite it? (y/N): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
@@ -123,6 +123,10 @@ config_xorg () {
     else
         echo "  Proceeding with HiDPI Xresources config..."
         link_file "$BASEDIR/Xresources-hidpi" ~/.Xresources
+        echo
+        # TODO: check for gtk4 here? move to gtk4 section and do hidpi check at start?
+        echo "  Also linking HiDPI xsettingsd config..."
+        link_file "$BASEDIR/xsettingsd.conf" ~/.config/xsettingsd/xsettingsd.conf
     fi
 }
 if_installed Xorg config_xorg
@@ -145,8 +149,13 @@ if_installed nvim config_nvim
 # NOTE: its kinda hard to tell if gui toolkits are installed by checking
 # for executables... i think this should generally work as long as the
 # distro isn't doing anything too goofy with its packaging tho
-if_installed gtk-query-settings link_file "$BASEDIR/gtk-3.0/settings.ini" \
+if_installed gtk-query-settings link_file "$BASEDIR/gtk-3.0-settings.ini" \
                                           ~/.config/gtk-3.0/settings.ini
+
+# gtk4:
+# same situation as above. i'm just using the same settings for both for now,
+if_installed gtk4-query-settings link_file "$BASEDIR/gtk-3.0-settings.ini" \
+                                          ~/.config/gtk-4.0/settings.ini
 # gtk2:
 # TODO: this is commented out for now cos i dont know if i actually use anything that
 # uses gtk2 anymore? if not i might as well drop the gtk2 config
