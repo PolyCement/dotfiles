@@ -2,14 +2,33 @@
 local vicious = require("vicious")
 local wibox = require("wibox")
 local naughty = require("naughty")
+local dpi = require("beautiful.xresources").apply_dpi
 
+local bat_widget_icon = wibox.widget.textbox()
 local bat_widget_info = wibox.widget.textbox()
 local bat_widget = wibox.widget {
     {
-        widget = bat_widget_info
+        {
+            {
+                widget = bat_widget_icon,
+                text = "-",
+                font = "Material Symbols Sharp 11"
+            },
+            widget = wibox.container.margin,
+            left = dpi(-3),
+            right = dpi(1),
+            bottom = dpi(1)
+        },
+        widget = wibox.container.background,
     },
-    widget = wibox.container.margin,
-    bottom = 1
+    {
+        {
+            widget = bat_widget_info
+        },
+        widget = wibox.container.margin,
+        bottom = dpi(1)
+    },
+    layout = wibox.layout.fixed.horizontal
 }
 
 -- value to reset power_at_last_warning to on start and when charging
@@ -60,8 +79,11 @@ return function (battery)
         -- TODO: this really shouldn't be called inside the widget update function, but where else can i call it?
         -- i considered using vicious.call but it's not really any different than just doing this afaik
         maybe_show_low_power_warning(args[1], args[2])
-        local icon = args[1] == "-" and "🔋" or "🔌"
-        return icon .. " " .. args[2] .. "%"
+        -- TODO: theres gotta be a better way to update more than one widget....
+        -- might involve just writing my own monitors tho.......
+        -- or registering multiple widgets i guess but i dont really like the idea of it
+        bat_widget_icon:set_text(args[1] == "-" and '\u{ebe2}' or '\u{e63c}')
+        return args[2] .. "%"
     end, 29, battery)
 
     return bat_widget

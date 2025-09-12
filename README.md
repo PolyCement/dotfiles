@@ -9,7 +9,7 @@ just run `install` and that should link everything into the right places
     required:
     - xorg
     - vicious
-    - ttf-symbola
+    - ttf-material-symbols-variable-git
 
     optional:
     - maim (for screenshots)

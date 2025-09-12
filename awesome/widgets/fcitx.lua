@@ -2,16 +2,20 @@
 local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local fcitx_widget_info = wibox.widget.textbox()
 local fcitx_widget = wibox.widget {
     {
         {
             widget = wibox.widget.textbox,
-            text = "⌨ "
+            text = '\u{f028}',
+            font = "Material Symbols Sharp 11"
         },
         widget = wibox.container.margin,
-        bottom = 1
+        left = dpi(1),
+        right = dpi(1),
+        bottom = dpi(1)
     },
     {
         {
@@ -19,7 +23,7 @@ local fcitx_widget = wibox.widget {
             text = "Ｘ"
         },
         widget = wibox.container.margin,
-        bottom = 1
+        bottom = dpi(1)
     },
     widget = wibox.layout.fixed.horizontal
 }

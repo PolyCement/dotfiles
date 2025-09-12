@@ -1,7 +1,9 @@
 local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
+local dpi = require("beautiful.xresources").apply_dpi
 
+-- TODO: what the fuck even does this do,
 local function client_menu_toggle_fn()
     local instance = nil
 
@@ -60,13 +62,13 @@ return function (screen)
                                 widget = wibox.widget.textbox
                             },
                             widget = wibox.container.margin,
-                            left = 3,
-                            bottom = 1
+                            left = dpi(3),
+                            bottom = dpi(1)
                         },
                         layout = wibox.layout.align.horizontal
                     },
                     widget = wibox.container.margin,
-                    margins = 2
+                    margins = dpi(2)
                 },
                 widget = wibox.container.place
             },

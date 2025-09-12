@@ -1,6 +1,7 @@
 -- temp widget (only monitors cpu since that's where my cooling is usually weakest)
 local wibox = require("wibox")
 local vicious = require("vicious")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local temp_widget_info = wibox.widget.textbox()
 -- rename to temp_container or some shit idk
@@ -9,11 +10,12 @@ local temp_widget = wibox.widget {
         {
             {
                 widget = wibox.widget.textbox,
-                text = "🌡",
-                font = "sans 9"
+                text = '\u{e1ff}',
+                font = "Material Symbols Sharp 11"
             },
             widget = wibox.container.margin,
-            left = -4
+            left = dpi(-4),
+            bottom = dpi(1)
         },
         widget = wibox.container.background,
     },
@@ -22,7 +24,7 @@ local temp_widget = wibox.widget {
             widget = temp_widget_info
         },
         widget = wibox.container.margin,
-        bottom = 1
+        bottom = dpi(1)
     },
     layout = wibox.layout.fixed.horizontal
 }

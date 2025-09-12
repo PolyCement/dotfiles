@@ -1,6 +1,7 @@
 ---------------------------
 -- Default awesome theme --
 ---------------------------
+local dpi = require("beautiful.xresources").apply_dpi
 
 theme = {}
 
@@ -34,7 +35,7 @@ theme.fg_focus      = "#ffffff"
 theme.fg_urgent     = "#ffffff"
 theme.fg_minimize   = "#ffffff"
 
-theme.border_width  = 1
+theme.border_width  = dpi(1)
 theme.border_normal = "#40177e"
 theme.border_focus  = "#c0a1fd"
 theme.border_marked = "#91231c"
@@ -49,6 +50,7 @@ theme.border_marked = "#91231c"
 -- mouse_finder_[color|timeout|animate_timeout|radius|factor]
 -- Example:
 --theme.taglist_bg_focus = "#ff0000"
+theme.wibar_height = dpi(20)
 
 -- Display the taglist squares
 theme.taglist_squares_sel   = "~/dotfiles/awesome/themes/default/taglist/squarefw.png"
@@ -58,8 +60,8 @@ theme.taglist_squares_unsel = "~/dotfiles/awesome/themes/default/taglist/squarew
 -- menu_[bg|fg]_[normal|focus]
 -- menu_[border_color|border_width]
 theme.menu_submenu_icon = "~/dotfiles/awesome/themes/default/submenu.png"
-theme.menu_height = 15
-theme.menu_width  = 100
+theme.menu_height = dpi(15)
+theme.menu_width  = dpi(100)
 
 -- You can add as many variables as
 -- you wish and access them by using
@@ -114,9 +116,9 @@ theme.awesome_icon = "~/dotfiles/awesome/themes/default/awesome16.png"
 theme.icon_theme = nil
 
 -- notification settings
-theme.notification_width = 250
-theme.notification_height = 80
-theme.notification_icon_size = 72
+theme.notification_width = dpi(250)
+theme.notification_height = dpi(80)
+theme.notification_icon_size = dpi(72)
 
 -- hotkey popup font size
 theme.hotkeys_font = "sans 11"
@@ -124,7 +126,7 @@ theme.hotkeys_description_font = "sans 11"
 
 -- put gaps round windows (but only when there's multiple clients)
 -- TODO: disable gaps on maximized layouts
-theme.useless_gap = 6
+theme.useless_gap = dpi(6)
 theme.gap_single_client = false
 
 -- calendar font

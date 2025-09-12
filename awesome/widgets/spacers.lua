@@ -1,5 +1,6 @@
 -- widgets for spacing and dividers
 local wibox = require("wibox")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local pad_widget = wibox.widget.textbox(" ")
 local div_widget = wibox.widget {
@@ -8,7 +9,9 @@ local div_widget = wibox.widget {
         widget = wibox.widget.textbox
     },
     widget = wibox.container.margin,
-    bottom = 4
+    left = dpi(-1),
+    right = dpi(-1),
+    bottom = dpi(3)
 }
 
 return {

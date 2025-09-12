@@ -2,6 +2,7 @@ local gears = require("gears")
 local awful = require("awful")
 local wibox = require("wibox")
 local beautiful = require("beautiful")
+local dpi = require("beautiful.xresources").apply_dpi
 
 -- more stuff for handling 1 or 2 monitors. again, will need changing if i ever end up with 3
 
@@ -152,7 +153,7 @@ return function (s)
                             widget = wibox.widget.textbox
                         },
                         widget = wibox.container.margin,
-                        bottom = 1
+                        bottom = dpi(1)
                     },
                     widget = wibox.container.place
                 },
@@ -167,7 +168,7 @@ return function (s)
                 },
                 layout = wibox.layout.stack,
                 -- TODO: not super happy about forcing a width like this, is there another way?
-                forced_width = 26
+                forced_width = dpi(26)
             },
             widget = wibox.container.background,
             create_callback = update_tag,

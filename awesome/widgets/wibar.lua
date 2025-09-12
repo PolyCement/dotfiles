@@ -89,7 +89,7 @@ local function right_widgets(s)
 end
 
 return function (s)
-    local mywibox = awful.wibar({ position = "top", screen = s, height = 20 })
+    local mywibox = awful.wibar({ position = "top", screen = s })
     mywibox:setup {
         layout = wibox.layout.align.horizontal,
         left_widgets(s),

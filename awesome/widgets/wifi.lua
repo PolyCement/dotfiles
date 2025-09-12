@@ -3,6 +3,7 @@ local wibox = require("wibox")
 local vicious = require("vicious")
 local awful = require("awful")
 local gears = require("gears")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local wifi_widget_info = wibox.widget.textbox()
 -- rename to wifi_container?
@@ -11,12 +12,12 @@ local wifi_widget = wibox.widget {
         {
             {
                 widget = wibox.widget.textbox,
-                text = " 📶 ",
-                font = "sans 7"
+                text = '\u{ef10}',
+                font = "Material Symbols Sharp 10"
             },
             widget = wibox.container.margin,
-            left = -4,
-            bottom = 1
+            right = dpi(3),
+            bottom = dpi(2)
         },
         widget = wibox.container.background,
     },
@@ -25,7 +26,7 @@ local wifi_widget = wibox.widget {
             widget = wifi_widget_info
         },
         widget = wibox.container.margin,
-        bottom = 1
+        bottom = dpi(1)
     },
     layout = wibox.layout.fixed.horizontal
 }
@@ -46,9 +47,9 @@ local wifi_popup = awful.popup {
             },
             layout = wibox.layout.fixed.vertical,
         },
-        bottom = 5,
-        left = 5,
-        right = 5,
+        bottom = dpi(5),
+        left = dpi(5),
+        right = dpi(5),
         widget = wibox.container.margin
     },
     ontop = true,
