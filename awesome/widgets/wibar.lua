@@ -3,8 +3,16 @@ local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
 
--- mapping of hostnames to network devices
+-- mapping of hostnames to which of their thermal zones is the cpu
 -- TODO: maybe i should stop putting this config stuff in here....?
+local cpu_thermal_zones = {
+    ["doubleslap"] = "thermal_zone0",
+    ["cometpunch"] = "thermal_zone2",
+    ["firepunch"] = "thermal_zone3",
+}
+
+-- mapping of hostnames to network devices
+-- TODO: yeah dont put these here,
 local wifi_network_devices = {
     ["doubleslap"] = "wlp2s0",
     ["cometpunch"] = "wlp5s0",
@@ -22,7 +30,7 @@ if awesome.hostname == "doubleslap" or awesome.hostname == "firepunch" then
 end
 local vol_widget = require("widgets.volume")
 local temp_widget = require("widgets.temperature")(
-    awesome.hostname == "cometpunch" and "thermal_zone2" or "thermal_zone0"
+    cpu_thermal_zones[awesome.hostname]
 )
 local fcitx_widget = require("widgets.fcitx")
 local wifi_widget = require("widgets.wifi")(

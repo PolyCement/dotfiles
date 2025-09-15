@@ -16,7 +16,6 @@ local bat_widget = wibox.widget {
             },
             widget = wibox.container.margin,
             left = dpi(-3),
-            right = dpi(1),
             bottom = dpi(1)
         },
         widget = wibox.container.background,
