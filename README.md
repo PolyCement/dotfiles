@@ -14,6 +14,7 @@ just run `install` and that should link everything into the right places
     optional:
     - maim (for screenshots)
     - pulse/pipewire-pulse, pavucontrol (for volume control)
+    - playerctl (for additional media key functionality)
 
 - xorg:
     optional:

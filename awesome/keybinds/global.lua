@@ -345,6 +345,23 @@ if awesome.hostname == "doubleslap" or awesome.hostname == "firepunch" then
             {}, "XF86AudioMute",
             function () volmon.toggle_mute() end,
             { description = "toggle mute", group = "audio" }
+        ),
+
+        -- media controls
+        awful.key(
+            {}, "XF86AudioPlay",
+            function () awful.spawn.with_shell("playerctl play-pause") end,
+            { description = "play/pause media", group = "media" }
+        ),
+        awful.key(
+            {}, "XF86AudioNext",
+            function () awful.spawn.with_shell("playerctl next") end,
+            { description = "next media item", group = "media" }
+        ),
+        awful.key(
+            {}, "XF86AudioPrev",
+            function () awful.spawn.with_shell("playerctl previous") end,
+            { description = "previous media item", group = "media" }
         )
     )
 end
