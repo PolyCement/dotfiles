@@ -2,6 +2,7 @@ local gears = require("gears")
 local awful = require("awful")
 local beautiful = require("beautiful")
 local wibox = require("wibox")
+local utils = require("utils")
 
 -- mapping of hostnames to which of their thermal zones is the cpu
 -- TODO: maybe i should stop putting this config stuff in here....?
@@ -32,7 +33,11 @@ local vol_widget = require("widgets.volume")
 local temp_widget = require("widgets.temperature")(
     cpu_thermal_zones[awesome.hostname]
 )
-local fcitx_widget = require("widgets.fcitx")
+local fcitx_widget = nil
+utils.is_installed(
+    "fcitx5",
+    function (installed) if installed then fcitx_widget = require("widgets.fcitx") end end
+)
 local wifi_widget = require("widgets.wifi")(
     wifi_network_devices[awesome.hostname]
 )
@@ -59,21 +64,26 @@ end
 local function right_widgets(s)
     local right_widgets
     if s == screen.primary then
+        -- NOTE: systray includes its own spacer so it can be hidden along with
+        -- the systray itself
         right_widgets = {
             layout = wibox.layout.fixed.horizontal,
             spacers.pad_widget,
             systray(s),
-            -- systray includes its own spacer so it can be hidden along with the systray itself
-            fcitx_widget
         }
+        if fcitx_widget ~= nil then
+            gears.table.merge(right_widgets, {
+                fcitx_widget,
+                spacers.div_widget,
+            })
+        end
         if bat_widget ~= nil then
             gears.table.merge(right_widgets, {
+                bat_widget,
                 spacers.div_widget,
-                bat_widget
             })
         end
         gears.table.merge(right_widgets, {
-            spacers.div_widget,
             temp_widget,
             spacers.div_widget,
             wifi_widget,

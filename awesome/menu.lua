@@ -1,23 +1,19 @@
 local awful = require("awful")
 local beautiful = require("beautiful")
 local hotkeys_widget = require("widgets.hotkeys")
+local utils = require("utils")
 
 -- TODO: pass these in? define em in advance? fuck if i know with this language
 terminal = "alacritty"
 editor = os.getenv("EDITOR") or "nano"
 editor_cmd = terminal .. " -e " .. editor
 
--- checks if the given command is installed
-local function is_installed(command, callback)
-    awful.spawn.easy_async_with_shell("command -v " .. command, function (stdout, stderr, reason, exit_code)
-        callback(exit_code == 0)
-    end)
-end
-
 -- append the given entry to the given table if the given command is installed
 -- TODO: the command arg could probably be optional, for most apps its just the second item of the entry tuple
 local function append_if_installed(t, entry, command)
-    is_installed(command, function (installed) if installed then table.insert(t, entry) end end)
+    utils.is_installed(
+        command, function (installed) if installed then table.insert(t, entry) end end
+    )
 end
 
 local myawesomemenu = {
