@@ -43,3 +43,6 @@ command -v xiccd > /dev/null 2>&1 && xiccd &
 
 # xsettingsd (currently only used for gtk hidpi config)
 command -v xsettingsd > /dev/null 2>&1 && xsettingsd &
+
+# blueman tray icon (for now. maybe i'll make a widget for this instead at some point)
+command -v blueman-applet > /dev/null 2>&1 && blueman-applet &
