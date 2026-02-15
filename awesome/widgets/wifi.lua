@@ -34,18 +34,43 @@ local wifi_widget = wibox.widget {
 -- define textbox widgets outside the main popup so i can update em individually
 local wifi_widget_ssid = wibox.widget.textbox("SSID: Unknown")
 local wifi_widget_rate = wibox.widget.textbox("Transfer Rate: Unknown")
+local vpn_widget_status = wibox.widget.textbox("Status: Unknown")
+local vpn_widget_relay = wibox.widget.textbox("Relay: Unknown")
+local vpn_widget_location = wibox.widget.textbox("Location: Unknown")
 
 -- now make the main popup widget
 local wifi_popup = awful.popup {
     widget = {
         {
             {
-                widget = wifi_widget_ssid
+                {
+                    widget = wibox.widget.textbox("<b>Local Network</b>")
+                },
+                {
+                    widget = wifi_widget_ssid
+                },
+                {
+                    widget = wifi_widget_rate
+                },
+                layout = wibox.layout.fixed.vertical,
             },
             {
-                widget = wifi_widget_rate
+                {
+                    widget = wibox.widget.textbox("<b>VPN</b>")
+                },
+                {
+                    widget = vpn_widget_status
+                },
+                {
+                    widget = vpn_widget_relay
+                },
+                {
+                    widget = vpn_widget_location
+                },
+                layout = wibox.layout.fixed.vertical,
             },
             layout = wibox.layout.fixed.vertical,
+            spacing = dpi(5),
         },
         bottom = dpi(5),
         left = dpi(5),
@@ -57,10 +82,49 @@ local wifi_popup = awful.popup {
     parent = wifi_widget
 }
 
+-- reconnect the vpn
+local reconnect_vpn = function ()
+    awful.spawn.with_shell("mullvad reconnect")
+end
+
+-- update vpn status. only gonna call it when the window is shown (for now)
+-- TODO: maybe this and the reconnect function should go in a monitor module?
+local get_vpn_status = function ()
+    awful.spawn.easy_async_with_shell(
+        "mullvad status",
+        function (stdout, stderr, reason, exit_code)
+            -- gotta use 2 separate matches cos afaik lua regex doesn't have optional
+            -- capture groups :/
+            local connected =
+                stdout:match("(%a+).*")
+            local relay, location =
+                stdout:match(".*Relay:*%s*(%S+).*Visible location:%s*([^%.]+)%..*")
+
+            -- set relay and location to "N/A" if they come back nil
+            if relay == nil then
+                relay = "N/A"
+            end
+
+            if location == nil then
+                location = "N/A"
+            end
+
+            -- update widget text
+            -- TODO: should probably do it with callbacks instead,
+            vpn_widget_status.text = "Status: " .. connected
+            vpn_widget_relay.text = "Relay: " .. relay
+            vpn_widget_location.text = "Location: " .. location
+        end
+    )
+end
+
 -- show widget on hover
 local visibility_locked = false
 wifi_widget:connect_signal("mouse::enter", function(c)
     if not visibility_locked then
+        -- update vpn status
+        get_vpn_status()
+
         -- i don't really get how the placement stuff works but this is good enough for now
         awful.placement.next_to(wifi_popup,
             {
@@ -90,7 +154,8 @@ end
 
 wifi_widget:buttons(
     gears.table.join(
-        awful.button({}, 1, toggle_visibility_lock)
+        awful.button({}, 1, toggle_visibility_lock),
+        awful.button({}, 3, reconnect_vpn)
     )
 )
 
